@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import InputBox from './InputBox';
 
 const DisplayContainer = styled.div`
   display: flex;
@@ -23,11 +24,6 @@ const HistoryContainer = styled.div`
   background-color: blue; /* Default color */
 `;
 
-const InputBoxContainer = styled.div`
-  height: 50px; /* Default height */
-  background-color: red; /* Default color */
-`;
-
 function Display() {
 
   return (
@@ -36,7 +32,9 @@ function Display() {
       <PanelContainer/>
       <WritingFieldContainer>
         <HistoryContainer/>
-        <InputBoxContainer/>
+        <div>
+          <InputBox/>
+        </div>
       </WritingFieldContainer>
       <PanelContainer/>
 

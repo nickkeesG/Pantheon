@@ -36,6 +36,19 @@ const InputBox = () => {
     resizeTextArea();
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevents the addition of a new line
+
+      //Save the text to the history
+
+      if (textAreaRef.current) {
+        textAreaRef.current.value = '';
+        resizeTextArea();
+      }
+    }
+  };
+
   useEffect(() => {
     resizeTextArea();
   }, []);
@@ -45,6 +58,7 @@ const InputBox = () => {
       ref={textAreaRef} 
       placeholder="Enter text here..." 
       onChange={handleTextChange}
+      onKeyDown={handleKeyDown}
     />
   );
 };

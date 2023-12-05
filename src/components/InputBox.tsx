@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
+import { Provider, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { store, addString } from '../redux/textSlice';
 
 // Component
 const TextAreaField = styled.textarea`
@@ -23,6 +25,7 @@ const TextAreaField = styled.textarea`
 `;
 
 const InputBox = () => {
+  const dispatch = useDispatch();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const resizeTextArea = () => {
@@ -41,6 +44,9 @@ const InputBox = () => {
       event.preventDefault(); // Prevents the addition of a new line
 
       //Save the text to the history
+      if (textAreaRef.current) {
+        dispatch(addString(textAreaRef.current.value));
+      }
 
       if (textAreaRef.current) {
         textAreaRef.current.value = '';

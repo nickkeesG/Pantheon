@@ -17,7 +17,7 @@ const HistoryContainer = () => {
     const atoms = useSelector((state: TextState) => state.atoms);
     return (
         <Container>
-            // TODO Add some cute animation when adding blocks
+            {/* TODO Add some cute animation when adding blocks */}
             {atoms.map((atom, index) => (
                 <Atom key={index}>
                     {atom}

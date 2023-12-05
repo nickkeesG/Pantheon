@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, configureStore } from '@reduxjs/toolkit';
 
 interface TextState {
   openaiKey: string;
@@ -25,4 +25,6 @@ const textSlice = createSlice({
 });
 
 export const { setOpenaiKey, addString } = textSlice.actions;
-export default textSlice.reducer;
+export const store = configureStore({
+  reducer: textSlice.reducer
+});

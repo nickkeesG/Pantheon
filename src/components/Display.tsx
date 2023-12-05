@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import InputBox from './InputBox';
+import HistoryContainer from './HistoryContainer';
 
 const DisplayContainer = styled.div`
   display: flex;
@@ -17,11 +18,6 @@ const WritingFieldContainer = styled.div`
   flex-direction: column;
   flex: 1 1 60%;
   min-width: 60%;
-`;
-
-const HistoryContainer = styled.div`
-  height: 200px; /* Default height */
-  background-color: blue; /* Default color */
 `;
 
 function Display() {

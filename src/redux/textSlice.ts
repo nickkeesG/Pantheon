@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction, configureStore } from '@reduxjs/toolkit';
 
-interface TextState {
+export interface TextState {
   openaiKey: string;
   atoms: string[];
 }
 
 const initialState: TextState = {
   openaiKey: '',
-  atoms: [],
+  atoms: ['Example block'],
 };
 
 const textSlice = createSlice({

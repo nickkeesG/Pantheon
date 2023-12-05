@@ -12,8 +12,20 @@ const PanelContainer = styled.div`
 `;
 
 const WritingFieldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1 1 60%;
   min-width: 60%;
+`;
+
+const HistoryContainer = styled.div`
+  height: 200px; /* Default height */
+  background-color: blue; /* Default color */
+`;
+
+const InputBoxContainer = styled.div`
+  height: 50px; /* Default height */
+  background-color: red; /* Default color */
 `;
 
 function Display() {
@@ -22,7 +34,10 @@ function Display() {
     <DisplayContainer>
 
       <PanelContainer/>
-      <WritingFieldContainer/>
+      <WritingFieldContainer>
+        <HistoryContainer/>
+        <InputBoxContainer/>
+      </WritingFieldContainer>
       <PanelContainer/>
 
     </DisplayContainer>

@@ -49,7 +49,7 @@ const InputBox = () => {
       event.preventDefault(); // Prevents the addition of a new line
 
       //Save the text to the history
-      if (textAreaRef.current) {
+      if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
         dispatch(addIdea(textAreaRef.current.value));
       }
 

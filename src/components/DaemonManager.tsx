@@ -1,6 +1,6 @@
 import { useEffect, useState} from 'react';
 import { useSelector} from 'react-redux';
-import { TextState } from '../redux/textSlice';
+import { TextState } from '../redux/contentSlice';
 
 const DaemonManager = () => {
   const lastTimeActive = useSelector((state: TextState) => state.lastTimeActive);

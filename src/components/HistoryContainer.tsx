@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { TextState } from '../redux/textSlice';
+import { TextState } from '../redux/contentSlice';
 import IdeaContainer from './IdeaContainer';
 
 const StyledHistoryContainer = styled.div`

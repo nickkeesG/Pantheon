@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Idea, TextState, selectCommentsByIdeaId } from '../redux/textSlice';
+import { Idea, TextState, selectCommentsByIdeaId } from '../redux/contentSlice';
 import CommentContainer from './CommentContainer';
 import { useSelector } from 'react-redux';
 

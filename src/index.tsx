@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { store } from './redux/textSlice'; // import your store from TextSlice.ts
+import { store } from './redux/contentSlice'; // import your store from TextSlice.ts
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

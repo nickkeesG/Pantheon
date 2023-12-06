@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiSettings, FiX } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { setOpenaiKey, setOpenaiOrgId, TextState } from '../redux/textSlice';
+import { setOpenaiKey, setOpenaiOrgId, TextState } from '../redux/contentSlice';
 
 const SettingsButton = styled(FiSettings)`
   position: absolute;

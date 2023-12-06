@@ -1,13 +1,15 @@
 import { useEffect, useState} from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { TextState, selectRecentIdeasWithoutComments} from '../redux/contentSlice';
+import { TextState, selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented} from '../redux/contentSlice';
 import { addComment} from '../redux/contentSlice';
 
 const DaemonManager = () => {
   const dispatch = useDispatch();
   const lastTimeActive = useSelector((state: TextState) => state.lastTimeActive);
-  const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
+  
+  const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
+  const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
 
   useEffect(() => {
     const interval = setInterval(() => {

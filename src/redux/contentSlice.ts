@@ -77,6 +77,15 @@ export const selectRecentIdeasWithoutComments = createSelector(
   }
 )
 
+export const selectIdeasUpToMaxCommented = createSelector(
+  [(state: TextState) => state.ideas, (state: TextState) => state.comments],
+  (ideas, comments) => {
+    const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
+    const maxIdeaIdWithComment = Math.max(...Array.from(ideaIdsWithComments));
+    return ideas.filter(idea => idea.id <= maxIdeaIdWithComment);
+  }
+)
+
 export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive} = textSlice.actions;
 export const store = configureStore({
   reducer: textSlice.reducer

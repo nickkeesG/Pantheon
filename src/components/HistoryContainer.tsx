@@ -9,7 +9,7 @@ const Container = styled.div`
 const Atom = styled.div`
     padding: 10px;
     margin: 10px 0px;
-    border: 0.1px solid #55555560;
+    border: 0.1px solid var(--line-color-dark);
     border-radius: 4px;
 `
 

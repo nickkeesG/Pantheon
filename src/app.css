@@ -2,7 +2,15 @@ html, body, #root, .App {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #1c2028;
-  color: #ffffff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: monospace;
+  --bg-color: #1c2028;
+  --bg-color-light: #2c3038;
+  --bg-color-lighter: #3c4048;
+  --text-color: rgb(215, 216, 219);
+  --text-color-dark: rgb(145, 150, 162);
+  --line-color: #707070;
+  --line-color-light: #b7b7b7;
+  --line-color-dark: #4e4e4e;
 }

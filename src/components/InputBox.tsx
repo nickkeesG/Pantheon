@@ -8,19 +8,19 @@ const TextAreaField = styled.textarea`
   box-sizing: border-box;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--line-color);
   border-radius: 4px;
   width: 100%; // Change this line
   height: 100%;
   margin: auto;
   display: block;
-  background-color: #2c3038;
-  color: #ffffff;
+  background-color: var(--bg-color-light);
+  color: var(--text-color);
   overflow: hidden;
   resize: none;
   &:focus {
     outline: none;
-    border-color: #6c757d; 
+    border-color: var(--line-color-light); 
   }
 `;
 

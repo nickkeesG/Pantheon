@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
+import DaemonPanel from './DaemonPanel';
 
 const DisplayContainer = styled.div`
   display: flex;
@@ -25,14 +26,16 @@ function Display() {
   return (
     <DisplayContainer>
 
-      <PanelContainer/>
+      <PanelContainer>
+        <DaemonPanel/>
+      </PanelContainer>      
       <WritingFieldContainer>
         <HistoryContainer/>
-        <div>
-          <InputBox/>
-        </div>
+        <InputBox/>
       </WritingFieldContainer>
-      <PanelContainer/>
+      <PanelContainer>
+        <DaemonPanel/>
+      </PanelContainer>  
 
     </DisplayContainer>
   );

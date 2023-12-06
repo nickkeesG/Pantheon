@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
+import Settings from './Settings';
 import DaemonPanel from './DaemonPanel';
 
 const DisplayContainer = styled.div`
@@ -25,7 +26,7 @@ function Display() {
 
   return (
     <DisplayContainer>
-
+      <Settings />
       <PanelContainer>
         <DaemonPanel/>
       </PanelContainer>      

@@ -2,11 +2,13 @@ import { createSlice, PayloadAction, configureStore } from '@reduxjs/toolkit';
 
 export interface TextState {
   openaiKey: string;
+  openaiOrgId: string;
   atoms: string[];
 }
 
 const initialState: TextState = {
   openaiKey: '',
+  openaiOrgId: '',
   atoms: ['Example block'],
 };
 
@@ -17,6 +19,9 @@ const textSlice = createSlice({
     setOpenaiKey(state, action: PayloadAction<string>) {
       state.openaiKey = action.payload;
     },
+    setOpenaiOrgId(state, action: PayloadAction<string>) {
+        state.openaiOrgId = action.payload;
+    },
     addString(state, action: PayloadAction<string>) {
       state.atoms.push(action.payload);
     },
@@ -24,7 +29,7 @@ const textSlice = createSlice({
   },
 });
 
-export const { setOpenaiKey, addString } = textSlice.actions;
+export const { setOpenaiKey, setOpenaiOrgId, addString } = textSlice.actions;
 export const store = configureStore({
   reducer: textSlice.reducer
 });

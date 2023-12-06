@@ -3,6 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { TextState, selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented} from '../redux/contentSlice';
 import { addComment} from '../redux/contentSlice';
 
+import ChatDaemon from '../daemons/ChatDaemon';
 import defaultDaemonList from '../daemons/DefaultDaemonList';
 
 const DaemonManager = () => {
@@ -13,14 +14,8 @@ const DaemonManager = () => {
   const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
   const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
 
-  const generateComment = async (ideaId: number, daemon: any) => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return `Hi, my name is ${daemon.name}`;
-  }
-
-  const dispatchComment = async (ideaId: number, daemon: any) => {
-    const comment = await generateComment(ideaId, daemon);
+  const dispatchComment = async (ideaId: number, daemon: ChatDaemon) => {
+    const comment = await daemon.generateComment(ideaId);
     dispatch(addComment({ ideaId, text: comment }));
   }
 

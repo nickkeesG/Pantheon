@@ -1,12 +1,12 @@
 import { useEffect, useState} from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { TextState } from '../redux/contentSlice';
+import { TextState, selectRecentIdeasWithoutComments} from '../redux/contentSlice';
 import { addComment} from '../redux/contentSlice';
 
 const DaemonManager = () => {
   const dispatch = useDispatch();
   const lastTimeActive = useSelector((state: TextState) => state.lastTimeActive);
-  const ideas = useSelector((state: TextState) => state.ideas);
+  const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
 
   useEffect(() => {
@@ -16,10 +16,11 @@ const DaemonManager = () => {
         console.log('User inactive');
         setHasBeenInactive(true);
 
-        // Make new comment 
-        if (ideas.length > 0) {
-          var lastIdeaId = ideas[ideas.length - 1].id;
-          dispatch(addComment({ideaId: lastIdeaId, text: 'I see you have been inactive for a while. What are you thinking about?'}));
+        // Make new comments
+        if (currentIdeas.length > 0) {
+          for (let i = 0; i < currentIdeas.length; i++) {
+            dispatch(addComment({ideaId: currentIdeas[i].id, text: 'I see you have been inactive for a while. What are you thinking about?'}));
+          }
         }
       }
 
@@ -30,7 +31,7 @@ const DaemonManager = () => {
     }, 10);
 
     return () => clearInterval(interval);
-  }, [lastTimeActive, hasBeenInactive]);
+  }, [lastTimeActive, hasBeenInactive, currentIdeas, dispatch]);
 
   return null;
 }

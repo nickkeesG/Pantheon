@@ -68,6 +68,15 @@ export const selectCommentsByIdeaId = createSelector(
   (ideaId, comments) => comments.filter(comment => comment.ideaId === ideaId)
 )
 
+export const selectRecentIdeasWithoutComments = createSelector(
+  [(state: TextState) => state.ideas, (state: TextState) => state.comments],
+  (ideas, comments) => {
+    const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
+    const maxIdeaIdWithComment = Math.max(...Array.from(ideaIdsWithComments));
+    return ideas.filter(idea => !ideaIdsWithComments.has(idea.id) && idea.id > maxIdeaIdWithComment);
+  }
+)
+
 export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive} = textSlice.actions;
 export const store = configureStore({
   reducer: textSlice.reducer

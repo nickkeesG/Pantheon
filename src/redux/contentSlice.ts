@@ -51,6 +51,15 @@ const textSlice = createSlice({
       };
       state.ideas.push(newIdea);
     },
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string }>) {
+      const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;
+      const newComment: Comment = {
+        id: newId,
+        ideaId: action.payload.ideaId,
+        text: action.payload.text
+      };
+      state.comments.push(newComment);
+    }
   },
 });
 
@@ -59,7 +68,7 @@ export const selectCommentsByIdeaId = createSelector(
   (ideaId, comments) => comments.filter(comment => comment.ideaId === ideaId)
 )
 
-export const { setOpenaiKey, setOpenaiOrgId, addIdea, setLastTimeActive} = textSlice.actions;
+export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive} = textSlice.actions;
 export const store = configureStore({
   reducer: textSlice.reducer
 });

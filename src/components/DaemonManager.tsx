@@ -13,6 +13,17 @@ const DaemonManager = () => {
   const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
   const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
 
+  const generateComment = async (ideaId: number, daemon: any) => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return `Hi, my name is ${daemon.name}`;
+  }
+
+  const dispatchComment = async (ideaId: number, daemon: any) => {
+    const comment = await generateComment(ideaId, daemon);
+    dispatch(addComment({ ideaId, text: comment }));
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
@@ -25,7 +36,7 @@ const DaemonManager = () => {
           for (let i = 0; i < currentIdeas.length; i++) {
             // Randomly select a daemon
             const randomDaemon = defaultDaemonList[Math.floor(Math.random() * defaultDaemonList.length)];
-            dispatch(addComment({ideaId: currentIdeas[i].id, text: `Hi, my name is ${randomDaemon.name}`}));
+            dispatchComment(currentIdeas[i].id, randomDaemon);
           }
         }
       }

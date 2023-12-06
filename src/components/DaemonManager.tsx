@@ -3,6 +3,8 @@ import { useSelector, useDispatch} from 'react-redux';
 import { TextState, selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented} from '../redux/contentSlice';
 import { addComment} from '../redux/contentSlice';
 
+import defaultDaemonList from '../daemons/DefaultDaemonList';
+
 const DaemonManager = () => {
   const dispatch = useDispatch();
   const lastTimeActive = useSelector((state: TextState) => state.lastTimeActive);
@@ -21,7 +23,9 @@ const DaemonManager = () => {
         // Make new comments
         if (currentIdeas.length > 0) {
           for (let i = 0; i < currentIdeas.length; i++) {
-            dispatch(addComment({ideaId: currentIdeas[i].id, text: 'I see you have been inactive for a while. What are you thinking about?'}));
+            // Randomly select a daemon
+            const randomDaemon = defaultDaemonList[Math.floor(Math.random() * defaultDaemonList.length)];
+            dispatch(addComment({ideaId: currentIdeas[i].id, text: `Hi, my name is ${randomDaemon.name}`}));
           }
         }
       }

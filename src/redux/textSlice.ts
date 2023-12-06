@@ -15,6 +15,7 @@ export interface Comment {
 export interface TextState {
   openaiKey: string;
   openaiOrgId: string;
+  lastTimeActive: Date;
   ideas: Idea[];
   comments: Comment[];
 }
@@ -22,6 +23,7 @@ export interface TextState {
 const initialState: TextState = {
   openaiKey: '',
   openaiOrgId: '',
+  lastTimeActive: new Date(),
   ideas: [
     { id: 0, text: "Ooh, new writing app!" },
     { id: 1, text: "I don't know what to write about..." },
@@ -39,6 +41,9 @@ const textSlice = createSlice({
     setOpenaiOrgId(state, action: PayloadAction<string>) {
       state.openaiOrgId = action.payload;
     },
+    updateLastTimeActive(state) {
+      state.lastTimeActive = new Date();
+    },
     addIdea(state, action: PayloadAction<string>) {
       const newId = state.ideas.length > 0 ? state.ideas[state.ideas.length - 1].id + 1 : 0;
       const newIdea: Idea = {
@@ -55,7 +60,7 @@ export const selectCommentsByIdeaId = createSelector(
   (ideaId, comments) => comments.filter(comment => comment.ideaId === ideaId)
 )
 
-export const { setOpenaiKey, setOpenaiOrgId, addIdea } = textSlice.actions;
+export const { setOpenaiKey, setOpenaiOrgId, addIdea, updateLastTimeActive} = textSlice.actions;
 export const store = configureStore({
   reducer: textSlice.reducer
 });

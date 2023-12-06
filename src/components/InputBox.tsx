@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { addIdea } from '../redux/textSlice';
+import { addIdea, updateLastTimeActive} from '../redux/textSlice';
 
 const Centered = styled.div`
   width: 60%;
@@ -44,6 +44,7 @@ const InputBox = () => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    dispatch(updateLastTimeActive())
     if (event.key === 'Enter') {
       event.preventDefault(); // Prevents the addition of a new line
 

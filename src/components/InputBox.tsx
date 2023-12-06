@@ -1,9 +1,13 @@
 import React, { useRef, useEffect } from 'react';
-import { Provider, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { store, addString } from '../redux/textSlice';
+import { addIdea } from '../redux/textSlice';
 
-// Component
+const Centered = styled.div`
+  width: 60%;
+  margin: auto;
+`
+
 const TextAreaField = styled.textarea`
   box-sizing: border-box;
   padding: 10px;
@@ -45,7 +49,7 @@ const InputBox = () => {
 
       //Save the text to the history
       if (textAreaRef.current) {
-        dispatch(addString(textAreaRef.current.value));
+        dispatch(addIdea(textAreaRef.current.value));
       }
 
       if (textAreaRef.current) {
@@ -60,12 +64,14 @@ const InputBox = () => {
   }, []);
 
   return (
-    <TextAreaField 
-      ref={textAreaRef} 
-      placeholder="Enter text here..." 
-      onChange={handleTextChange}
-      onKeyDown={handleKeyDown}
-    />
+    <Centered>
+      <TextAreaField
+        ref={textAreaRef}
+        placeholder="Enter text here..."
+        onChange={handleTextChange}
+        onKeyDown={handleKeyDown}
+      />
+    </Centered>
   );
 };
 

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { TextState } from '../redux/contentSlice';
 import IdeaContainer from './IdeaContainer';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 const StyledHistoryContainer = styled.div`
   padding: 10px 0px;

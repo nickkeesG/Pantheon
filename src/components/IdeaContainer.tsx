@@ -66,7 +66,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentO
 
     if (commentPanelRef.current) { commentPanelResizeObserver.observe(commentPanelRef.current); }
     return () => { commentPanelResizeObserver.disconnect(); };
-  }, [commentPanelRef, idea.id, offset]);
+  }, [commentPanelRef, idea.id, offset, setCommentOverflow]);
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
 

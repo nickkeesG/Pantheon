@@ -8,6 +8,7 @@ const Container = styled.div`
   display: flex;
   position: relative;
   width: 100%;
+  word-break: break-word;
 `;
 
 const SidePanel = styled.div`

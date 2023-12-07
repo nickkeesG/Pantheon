@@ -24,6 +24,9 @@ const initialState: TextState = {
   openaiKey: '',
   openaiOrgId: '',
   lastTimeActive: Date.now(),
+  ideas: [],
+  comments: []
+  /*
   ideas: [
     { id: 0, text: "Ooh, new writing app!" },
     { id: 1, text: "I don't know what to write about..." },
@@ -37,6 +40,7 @@ const initialState: TextState = {
     { id: 2, ideaId: 2, text: "It sounds like you're feeling inspired!", daemonName: 'DefaultName'},
     { id: 3, ideaId: 5, text: "Don't give up!", daemonName: 'DefaultName'}
   ]
+  */
 };
 
 const textSlice = createSlice({

@@ -12,22 +12,22 @@ const Container = styled.div`
 `;
 
 const SidePanel = styled.div`
-  flex: 1 1 20%;
-  min-width: 20%;
+  flex: 1 1 30%;
+  min-width: 30%;
 `;
 
 const CenterPanel = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1 1 60%;
-  min-width: 60%;
+  flex: 1 1 40%;
+  min-width: 40%;
 `;
 
 const CommentPanel = styled.div`
   position: absolute;
   right: 0;
   top: 0;
-  width: 20%;
+  width: 30%;
   z-index: 10;
 `;
 

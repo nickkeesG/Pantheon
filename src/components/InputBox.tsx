@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { addIdea, setLastTimeActive} from '../redux/contentSlice';
 
 const Centered = styled.div`
-  width: 60%;
+  width: 40%;
   margin: auto;
 `
 

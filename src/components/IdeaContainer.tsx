@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Idea, TextState, selectCommentsByIdeaId } from '../redux/contentSlice';
 import CommentContainer from './CommentContainer';
@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 const Container = styled.div`
   display: flex;
+  position: relative;
   width: 100%;
 `;
 
@@ -21,6 +22,13 @@ const CenterPanel = styled.div`
   min-width: 60%;
 `;
 
+const CommentPanel = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20%;
+`;
+
 const StyledIdeaContainer = styled.div`
   padding: 10px;
   margin: 10px 0px;
@@ -28,22 +36,43 @@ const StyledIdeaContainer = styled.div`
   border-radius: 4px;
 `;
 
-const IdeaContainer: React.FC<{ idea: Idea }> = ({ idea }) => {
+interface IdeaContainerProps {
+  idea: Idea;
+  offset: number;
+  setCommentOverflow: (ideaId: number, height: number) => void;
+}
+
+const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentOverflow }) => {
   const comments = useSelector((state: TextState) => selectCommentsByIdeaId(state, idea.id));
+  const containerRef = useRef<HTMLDivElement>(null);
+  const commentPanelRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const commentPanelResizeObserver = new ResizeObserver(entries => {
+      const commentPanelHeight = entries[0].contentRect.height;
+      const containerHeight = containerRef.current?.getBoundingClientRect().height || 0;
+      const commentOverflow = (offset || 0) + commentPanelHeight - containerHeight;
+      setCommentOverflow(idea.id, Math.max(0, commentOverflow));
+    });
+
+    if (commentPanelRef.current) { commentPanelResizeObserver.observe(commentPanelRef.current); }
+    return () => { commentPanelResizeObserver.disconnect(); };
+  }, [commentPanelRef, idea.id, offset]);
 
   return (
-    <Container>
+    <Container ref={containerRef}>
       <SidePanel />
       <CenterPanel>
         <StyledIdeaContainer>
           {idea.text}
         </StyledIdeaContainer>
       </CenterPanel>
-      <SidePanel>
-        {comments.length > 0 && comments.map((comment) => (
+      <SidePanel />
+      <CommentPanel ref={commentPanelRef} style={{ top: `${offset}px` }}>
+        {comments.length > 0 && comments.map(comment => (
           <CommentContainer key={comment.id} comment={comment} />
         ))}
-      </SidePanel>
+      </CommentPanel>
     </Container>
   );
 };

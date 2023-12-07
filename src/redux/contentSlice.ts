@@ -26,8 +26,16 @@ const initialState: TextState = {
   ideas: [
     { id: 0, text: "Ooh, new writing app!" },
     { id: 1, text: "I don't know what to write about..." },
-    { id: 2, text: "I'm feeling creative." }],
-  comments: [{ id: 0, ideaId: 1, text: "Here's an idea: Write about how you're feeling in this moment." }]
+    { id: 2, text: "I'm feeling creative." },
+    { id: 3, text: "I don't know what to write about..." },
+    { id: 4, text: "I don't know what to write about..." },
+    { id: 5, text: "I don't know what to write about..." }],
+  comments: [
+    { id: 0, ideaId: 1, text: "Here's an idea: Write about how you're feeling in this moment." },
+    { id: 1, ideaId: 1, text: "You could also write about your weekend plans." },
+    { id: 2, ideaId: 2, text: "It sounds like you're feeling inspired!"},
+    { id: 3, ideaId: 5, text: "Don't give up!"}
+  ]
 };
 
 const textSlice = createSlice({

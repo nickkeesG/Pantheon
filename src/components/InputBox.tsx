@@ -51,6 +51,7 @@ const InputBox = () => {
       //Save the text to the history
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
         dispatch(addIdea(textAreaRef.current.value));
+        textAreaRef.current.scrollIntoView();
       }
 
       if (textAreaRef.current) {

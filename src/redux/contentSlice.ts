@@ -21,8 +21,8 @@ export interface TextState {
 }
 
 const initialState: TextState = {
-  openaiKey: '',
-  openaiOrgId: '',
+  openaiKey: localStorage.getItem('openaiKey') || '',
+  openaiOrgId: localStorage.getItem('openaiOrgId') || '',
   lastTimeActive: Date.now(),
   ideas: [],
   comments: []
@@ -48,9 +48,11 @@ const textSlice = createSlice({
   initialState,
   reducers: {
     setOpenaiKey(state, action: PayloadAction<string>) {
+      localStorage.setItem('openaiKey', action.payload);
       state.openaiKey = action.payload;
     },
     setOpenaiOrgId(state, action: PayloadAction<string>) {
+      localStorage.setItem('openaiOrgId', action.payload);
       state.openaiOrgId = action.payload;
     },
     setLastTimeActive(state) {

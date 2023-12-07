@@ -19,7 +19,7 @@ const DaemonManager = () => {
 
   const dispatchComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
     const results = await daemon.generateComment(pastIdeas, currentIdeas, openaiKey, openaiOrgId);
-    dispatch(addComment({ ideaId: results[0].id, text: results[0].content }));
+    dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.name}));
   }
 
   useEffect(() => {

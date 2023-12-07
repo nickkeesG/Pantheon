@@ -20,7 +20,7 @@ const CommentText = styled.div`
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
   return (
     <StyledCommentContainer>
-      <CommentName>Daemon</CommentName>
+      <CommentName>{comment.daemonName}</CommentName>
       <CommentText>{comment.text}</CommentText>
     </StyledCommentContainer>
   );

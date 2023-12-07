@@ -9,6 +9,7 @@ export interface Comment {
   id: number;
   ideaId: number;
   text: string;
+  daemonName: string;
 }
 
 export interface TextState {
@@ -31,10 +32,10 @@ const initialState: TextState = {
     { id: 4, text: "I don't know what to write about..." },
     { id: 5, text: "I don't know what to write about..." }],
   comments: [
-    { id: 0, ideaId: 1, text: "Here's an idea: Write about how you're feeling in this moment." },
-    { id: 1, ideaId: 1, text: "You could also write about your weekend plans." },
-    { id: 2, ideaId: 2, text: "It sounds like you're feeling inspired!"},
-    { id: 3, ideaId: 5, text: "Don't give up!"}
+    { id: 0, ideaId: 1, text: "Here's an idea: Write about how you're feeling in this moment.", daemonName: 'DefaultName'},
+    { id: 1, ideaId: 1, text: "You could also write about your weekend plans.", daemonName: 'DefaultName'},
+    { id: 2, ideaId: 2, text: "It sounds like you're feeling inspired!", daemonName: 'DefaultName'},
+    { id: 3, ideaId: 5, text: "Don't give up!", daemonName: 'DefaultName'}
   ]
 };
 
@@ -59,12 +60,13 @@ const textSlice = createSlice({
       };
       state.ideas.push(newIdea);
     },
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string }>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string}>) {
       const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;
       const newComment: Comment = {
         id: newId,
         ideaId: action.payload.ideaId,
-        text: action.payload.text
+        text: action.payload.text,
+        daemonName: action.payload.daemonName
       };
       state.comments.push(newComment);
     }

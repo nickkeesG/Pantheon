@@ -1,5 +1,6 @@
 import {GenerateComments} from '../LLMHandler';
 
+const historyTemplate = `    {"content": "{}"}`;
 const ideaTemplate = `    {"id": {}, "content": "{}"}`;
 const contextTemplate = `First, read this history of thoughts from the user:
 {
@@ -25,6 +26,7 @@ class ChatDaemon {
   endInstruction: string;
   
   ideaTemplate: string;
+  historyTemplate: string;
   contextTemplate: string;
 
   constructor(name: string, prompt: string, startInstruction: string, chainOfThoughtInstructions: string[], endInstruction: string) {
@@ -35,13 +37,14 @@ class ChatDaemon {
       this.endInstruction = endInstruction;
 
       this.ideaTemplate = ideaTemplate;
+      this.historyTemplate = historyTemplate;
       this.contextTemplate = contextTemplate;
   }
 
   async generateComment(pastIdeas: any, currentIdeas: any, openaiKey: string, openaiOrgId: string) {
     var history = "";
     for (var i = 0; i < pastIdeas.length; i++) {
-      history += this.ideaTemplate.replace("{}", pastIdeas[i].id).replace("{}", pastIdeas[i].text);
+      history += this.historyTemplate.replace("{}", pastIdeas[i].text);
       if (i != pastIdeas.length - 1) {
         history += ",\n";
       }

@@ -14,9 +14,12 @@ const DaemonManager = () => {
   const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
   const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
 
-  const dispatchComment = async (ideaId: number, daemon: ChatDaemon) => {
-    const comment = await daemon.generateComment(ideaId);
-    dispatch(addComment({ ideaId, text: comment }));
+  const openaiKey = useSelector((state: TextState) => state.openaiKey);
+  const openaiOrgId = useSelector((state: TextState) => state.openaiOrgId);
+
+  const dispatchComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
+    const results = await daemon.generateComment(pastIdeas, currentIdeas, openaiKey, openaiOrgId);
+    dispatch(addComment({ ideaId: results[0].id, text: results[0].content }));
   }
 
   useEffect(() => {
@@ -27,12 +30,9 @@ const DaemonManager = () => {
         setHasBeenInactive(true);
 
         // Make new comments
-        if (currentIdeas.length > 0) {
-          for (let i = 0; i < currentIdeas.length; i++) {
-            // Randomly select a daemon
-            const randomDaemon = defaultDaemonList[Math.floor(Math.random() * defaultDaemonList.length)];
-            dispatchComment(currentIdeas[i].id, randomDaemon);
-          }
+        if (currentIdeas.length > 0 && openaiKey && openaiOrgId) {
+          const randomDaemon = defaultDaemonList[Math.floor(Math.random() * defaultDaemonList.length)];
+          dispatchComment(pastIdeas, currentIdeas, randomDaemon);
         }
       }
 

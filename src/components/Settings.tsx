@@ -10,6 +10,7 @@ const SettingsButton = styled(FiSettings)`
   right: 0px;
   padding: 12px;
   cursor: pointer;
+  z-index: 50;
 `;
 
 const ExitButton = styled(FiX)`
@@ -33,6 +34,7 @@ const SettingsPanel = styled.div`
   width: 50%;
   max-width: 500px;
   text-align: center;
+  z-index: 100;
 `;
 
 const SettingLabel = styled.p`

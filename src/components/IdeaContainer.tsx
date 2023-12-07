@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Idea, TextState, selectCommentsByIdeaId } from '../redux/contentSlice';
 import CommentContainer from './CommentContainer';
@@ -27,6 +27,7 @@ const CommentPanel = styled.div`
   right: 0;
   top: 0;
   width: 20%;
+  z-index: 10;
 `;
 
 const StyledIdeaContainer = styled.div`
@@ -46,6 +47,14 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentO
   const comments = useSelector((state: TextState) => selectCommentsByIdeaId(state, idea.id));
   const containerRef = useRef<HTMLDivElement>(null);
   const commentPanelRef = useRef<HTMLDivElement>(null);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHighlighted(true);
+  };
+  const handleMouseLeave = () => {
+    setIsHighlighted(false)
+  };
 
   useLayoutEffect(() => {
     const commentPanelResizeObserver = new ResizeObserver(entries => {
@@ -59,16 +68,23 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentO
     return () => { commentPanelResizeObserver.disconnect(); };
   }, [commentPanelRef, idea.id, offset]);
 
+  const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
+
   return (
     <Container ref={containerRef}>
       <SidePanel />
       <CenterPanel>
-        <StyledIdeaContainer>
+        <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
         </StyledIdeaContainer>
       </CenterPanel>
       <SidePanel />
-      <CommentPanel ref={commentPanelRef} style={{ top: `${offset}px` }}>
+      <CommentPanel
+        ref={commentPanelRef}
+        style={{ top: `${offset}px` }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {comments.length > 0 && comments.map(comment => (
           <CommentContainer key={comment.id} comment={comment} />
         ))}

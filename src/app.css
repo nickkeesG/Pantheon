@@ -6,7 +6,7 @@ html, body, #root, .App {
   color: var(--text-color);
   font-family: monospace;
   --bg-color: #1c2028;
-  --bg-color-light: #2c3038;
+  --bg-color-light: #232830;
   --bg-color-lighter: #3c4048;
   --text-color: rgb(215, 216, 219);
   --text-color-dark: rgb(145, 150, 162);

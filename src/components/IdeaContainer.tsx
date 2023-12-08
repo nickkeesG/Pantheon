@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea, selectCommentsByIdeaId } from '../redux/textSlice';
+import { Idea, selectCommentsForIdea } from '../redux/textSlice';
 import CommentContainer from './CommentContainer';
 import { useAppSelector } from '../hooks';
 
@@ -45,8 +45,8 @@ interface IdeaContainerProps {
 }
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentOverflow }) => {
-  const chatComments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id, "chat"));
-  const baseComments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id, "base"));
+  const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
+  const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const commentPanelRef = useRef<HTMLDivElement>(null);

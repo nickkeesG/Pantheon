@@ -51,7 +51,8 @@ class ChatDaemon {
     }
     var currentContext = "";
     for (var i = 0; i < currentIdeas.length; i++) {
-      currentContext += this.ideaTemplate.replace("{}", currentIdeas[i].id).replace("{}", currentIdeas[i].text);
+      let tempId: number = i + 1;
+      currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
       if (i != currentIdeas.length - 1) {
         currentContext += ",\n";
       }
@@ -74,7 +75,8 @@ class ChatDaemon {
     for (var i = 0; i < ranking.length; i++) {
       console.log(`id: ${ranking[i].id}, content: ${ranking[i].content}`);
       // Add the id and content to the results array
-      results.push({id: ranking[i].id, content: ranking[i].content});
+      let tempId: number = ranking[i].id - 1;
+      results.push({id: currentIdeas[tempId].id, content: ranking[i].content});
     }
 
     return results;

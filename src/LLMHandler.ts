@@ -13,7 +13,7 @@ async function CallAPI(data: any, config: any) {
 export async function GenerateComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string) {
 
     var data = {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-1106-preview",
         messages: [
             {role: "system", content: systemPrompt},
             {role: "user", content: userPrompts[0]}

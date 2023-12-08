@@ -14,3 +14,12 @@ html, body, #root, .App {
   --line-color-light: #b7b7b7;
   --line-color-dark: #4e4e4e;
 }
+
+button {
+  font-family: monospace;
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  border-radius: 2px;
+  border: 1px solid var(--line-color-dark);
+  padding: 4px;
+}

@@ -3,6 +3,7 @@ import { FiSettings, FiX } from 'react-icons/fi';
 import styled from 'styled-components';
 import { setOpenaiKey, setOpenaiOrgId } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import ChatDaemonSettings from './ChatDaemonSettings';
 
 const SettingsButton = styled(FiSettings)`
   position: absolute;
@@ -23,9 +24,9 @@ const ExitButton = styled(FiX)`
 
 const SettingsPanel = styled.div`
   position: fixed;
-  top: 20%;
+  top: 10%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   background-color: var(--bg-color-lighter);
   color: var(--main-color);
   padding: 20px;
@@ -70,6 +71,7 @@ const Settings = () => {
   const dispatch = useAppDispatch();
   const openAIKey = useAppSelector(state => state.text.openAIKey);
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
+  const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons)
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
@@ -100,7 +102,7 @@ const Settings = () => {
       <SettingsButton onClick={toggleSettings} />
       {isSettingsOpen && (
         <SettingsPanel>
-          SETTINGS
+          <h3>SETTINGS</h3>
           <ExitButton onClick={toggleSettings} />
           <TextSettingContainer>
             <SettingLabel>OpenAI API key</SettingLabel>
@@ -118,6 +120,12 @@ const Settings = () => {
               onChange={handleOrgIdChange} 
             />
           </TextSettingContainer>
+          <div>
+            <h4>Chat daemons</h4>
+            {chatDaemonConfigs.map((config) => (
+              <ChatDaemonSettings key={config.id} config={config} />
+            ))}
+          </div>
         </SettingsPanel>
       )}
     </div>

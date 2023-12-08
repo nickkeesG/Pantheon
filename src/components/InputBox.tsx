@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { addIdea, setLastTimeActive} from '../redux/contentSlice';
+import { addIdea, setLastTimeActive} from '../redux/textSlice';
+import { useAppDispatch } from '../hooks';
 
 const Centered = styled.div`
   width: 40%;
@@ -29,7 +29,7 @@ const TextAreaField = styled.textarea`
 `;
 
 const InputBox = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const resizeTextArea = () => {

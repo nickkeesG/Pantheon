@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FiSettings, FiX } from 'react-icons/fi';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { setOpenaiKey, setOpenaiOrgId, TextState } from '../redux/contentSlice';
+import { setOpenaiKey, setOpenaiOrgId } from '../redux/textSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
 const SettingsButton = styled(FiSettings)`
   position: absolute;
@@ -67,9 +67,9 @@ const TextSettingInput = styled.input`
 
 const Settings = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const dispatch = useDispatch();
-  const openAIKey = useSelector((state: TextState) => state.openAIKey);
-  const openAIOrgId = useSelector((state: TextState) => state.openAIOrgId);
+  const dispatch = useAppDispatch();
+  const openAIKey = useAppSelector(state => state.text.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);

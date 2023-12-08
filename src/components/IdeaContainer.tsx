@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea, TextState, selectCommentsByIdeaId } from '../redux/contentSlice';
+import { Idea, selectCommentsByIdeaId } from '../redux/textSlice';
 import CommentContainer from './CommentContainer';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../hooks';
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +45,7 @@ interface IdeaContainerProps {
 }
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentOverflow }) => {
-  const comments = useSelector((state: TextState) => selectCommentsByIdeaId(state, idea.id));
+  const comments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id))
   const containerRef = useRef<HTMLDivElement>(null);
   const commentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);

@@ -1,23 +1,23 @@
 import { useEffect, useState} from 'react';
-import { useSelector, useDispatch} from 'react-redux';
-import { TextState, 
-         selectRecentIdeasWithoutComments,
+import { selectRecentIdeasWithoutComments,
          selectIdeasUpToMaxCommented,
-         selectCommentsByIdeaId} from '../redux/contentSlice';
-import { addComment} from '../redux/contentSlice';
+         selectCommentsByIdeaId} from '../redux/textSlice';
+import { addComment} from '../redux/textSlice';
 
 import ChatDaemon from '../daemons/ChatDaemon';
 import BaseDaemon from '../daemons/BaseDaemon';
 import defaultDaemonList from '../daemons/DefaultDaemonList';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { RootState } from '../redux/store';
 
 const DaemonManager = () => {
-  const dispatch = useDispatch();
-  const lastTimeActive = useSelector((state: TextState) => state.lastTimeActive);
+  const dispatch = useAppDispatch();
+  const lastTimeActive = useAppSelector(state => state.text.lastTimeActive);
 
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
 
-  const getCommentsForPastIdeas = (pastIdeas: any[], state: TextState) => {
+  const getCommentsForPastIdeas = (pastIdeas: any[], state: RootState) => {
     return pastIdeas.reduce((acc, idea) => {
       // Use the selector to get comments for each past idea
       const comments = selectCommentsByIdeaId(state, idea.id);
@@ -26,12 +26,12 @@ const DaemonManager = () => {
     }, {} as Record<number, Comment[]>);
   };
   
-  const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
-  const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
-  const commentsForPastIdeas = useSelector((state: TextState) => getCommentsForPastIdeas(pastIdeas, state));
+  const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
+  const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
+  const commentsForPastIdeas: Record<number, any[]> = useAppSelector((state: RootState) => getCommentsForPastIdeas(pastIdeas, state));
 
-  const openAIKey = useSelector((state: TextState) => state.openAIKey);
-  const openAIOrgId = useSelector((state: TextState) => state.openAIOrgId);
+  const openAIKey = useAppSelector(state => state.text.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
 
   const dispatchChatComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
     const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId);
@@ -64,7 +64,10 @@ const DaemonManager = () => {
 
           // Base Daemons
           const baseDaemon = new BaseDaemon();
-          dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
+          const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
+          if (hasComments) {
+            dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
+          }
         }
       }
 

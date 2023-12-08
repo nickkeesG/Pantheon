@@ -73,7 +73,8 @@ Rules:
 5. Be simple and easy to understand.`,
       startInstruction: defaultStartInstruction,
       chainOfThoughtInstructions: [],
-      endInstruction: defaultEndInstruction
+      endInstruction: defaultEndInstruction,
+      enabled: true
     },
     {
       id: 2,

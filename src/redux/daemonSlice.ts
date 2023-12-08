@@ -36,9 +36,9 @@ Instruction 2: Restate your rules
 
 Instruction 3: For each idea in the current context, restate the idea, its id, and provide a single response.
 If there is only one idea only give one response`,
-      chainOfThoughtInstructions: ['For each of your responses to the user, please provide your best one sentence criticism.'],
+      chainOfThoughtInstructions: [],
       endInstruction:
-        `Considering the criticism, please rank your original responses from most to least useful. Output the answers in valid json with the format:
+        `Please rank your responses from most to least useful. Output the answers in valid json with the format:
 {
     "ranking": [
         {

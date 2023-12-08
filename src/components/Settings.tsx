@@ -65,6 +65,7 @@ function createEmptyChatDaemonConfig(): ChatDaemonConfig {
     startInstruction: '',
     chainOfThoughtInstructions: [],
     endInstruction: '',
+    enabled: false
   };
 }
 

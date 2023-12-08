@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react';
 import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsForIdea, Idea, Comment } from '../redux/textSlice';
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { useSelector } from 'react-redux';
+import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
   const lastTimeActive = useAppSelector(state => state.text.lastTimeActive);
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
-  const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons)
+  const chatDaemonConfigs = useSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
   const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);

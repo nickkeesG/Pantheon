@@ -16,10 +16,11 @@ type ChatDaemonSettingsProps = {
 
 const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDaemon }) => {
   const [isCollapsed, setIsCollapsed] = useState(!isNewDaemon);
+  const [isEnabled, setIsEnabled] = useState(config.enabled);
   const [isEdited, setIsEdited] = useState(false);
   const [json, setJson] = useState(() => {
-    const { id, ...configWithoutId } = config;
-    return JSON.stringify(configWithoutId, null, 2);
+    const { id, enabled, ...editableFields } = config;
+    return JSON.stringify(editableFields, null, 2);
   })
   const dispatch = useAppDispatch();
 
@@ -27,6 +28,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
     try {
       const newConfig = JSON.parse(json);
       newConfig.id = config.id;
+      newConfig.enabled = isEnabled;
       if (isNewDaemon) {
         dispatch(addChatDaemon(newConfig));
       } else {
@@ -38,9 +40,11 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
     }
   }
 
+  // TODO Styling for the checkbox
   return (
     <ChatDaemonSettingsContainer>
       <span>
+        <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} /> 
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
           {isNewDaemon && (<>New daemon</>)}

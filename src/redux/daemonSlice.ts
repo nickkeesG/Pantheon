@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from './store';
 
 export interface ChatDaemonConfig {
   id: number;
@@ -7,6 +8,7 @@ export interface ChatDaemonConfig {
   startInstruction: string;
   chainOfThoughtInstructions: string[];
   endInstruction: string;
+  enabled: boolean;
 }
 
 export interface DaemonState {
@@ -53,7 +55,8 @@ Rules:
 5. Be original. Do not rephrase ideas. Questions must be genuinely new. `,
       startInstruction: defaultStartInstruction,
       chainOfThoughtInstructions: [],
-      endInstruction: defaultEndInstruction
+      endInstruction: defaultEndInstruction,
+      enabled: true
     },
     {
       id: 1,
@@ -86,7 +89,8 @@ Rules:
 4. Be concise. Do not respond with more than 2 sentences.`,
       startInstruction: defaultStartInstruction,
       chainOfThoughtInstructions: [],
-      endInstruction: defaultEndInstruction
+      endInstruction: defaultEndInstruction,
+      enabled: true
     }
   ]
 };
@@ -112,6 +116,11 @@ const daemonSlice = createSlice({
     },
   },
 });
+
+export const selectEnabledChatDaemons = createSelector(
+  [(state: RootState) => state.daemon.chatDaemons],
+  (chatDaemons) => chatDaemons.filter(daemon => daemon.enabled)
+);
 
 export const { addChatDaemon, removeChatDaemon, updateChatDaemon } = daemonSlice.actions;
 export default daemonSlice.reducer;

@@ -13,34 +13,19 @@ export interface Comment {
 }
 
 export interface TextState {
-  openaiKey: string;
-  openaiOrgId: string;
+  openAIKey: string;
+  openAIOrgId: string;
   lastTimeActive: number;
   ideas: Idea[];
   comments: Comment[];
 }
 
 const initialState: TextState = {
-  openaiKey: localStorage.getItem('openaiKey') || '',
-  openaiOrgId: localStorage.getItem('openaiOrgId') || '',
+  openAIKey: localStorage.getItem('openAIKey') || '',
+  openAIOrgId: localStorage.getItem('openAIOrgId') || '',
   lastTimeActive: Date.now(),
   ideas: [],
   comments: []
-  /*
-  ideas: [
-    { id: 0, text: "Ooh, new writing app!" },
-    { id: 1, text: "I don't know what to write about..." },
-    { id: 2, text: "I'm feeling creative." },
-    { id: 3, text: "I don't know what to write about..." },
-    { id: 4, text: "I don't know what to write about..." },
-    { id: 5, text: "I don't know what to write about..." }],
-  comments: [
-    { id: 0, ideaId: 1, text: "Here's an idea: Write about how you're feeling in this moment.", daemonName: 'DefaultName'},
-    { id: 1, ideaId: 1, text: "You could also write about your weekend plans.", daemonName: 'DefaultName'},
-    { id: 2, ideaId: 2, text: "It sounds like you're feeling inspired!", daemonName: 'DefaultName'},
-    { id: 3, ideaId: 5, text: "Don't give up!", daemonName: 'DefaultName'}
-  ]
-  */
 };
 
 const textSlice = createSlice({
@@ -48,12 +33,12 @@ const textSlice = createSlice({
   initialState,
   reducers: {
     setOpenaiKey(state, action: PayloadAction<string>) {
-      localStorage.setItem('openaiKey', action.payload);
-      state.openaiKey = action.payload;
+      localStorage.setItem('openAIKey', action.payload);
+      state.openAIKey = action.payload;
     },
     setOpenaiOrgId(state, action: PayloadAction<string>) {
-      localStorage.setItem('openaiOrgId', action.payload);
-      state.openaiOrgId = action.payload;
+      localStorage.setItem('openAIOrgId', action.payload);
+      state.openAIOrgId = action.payload;
     },
     setLastTimeActive(state) {
       state.lastTimeActive = Date.now();

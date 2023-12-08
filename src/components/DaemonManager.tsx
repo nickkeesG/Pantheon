@@ -17,11 +17,11 @@ const DaemonManager = () => {
   const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
   const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
 
-  const openaiKey = useSelector((state: TextState) => state.openaiKey);
-  const openaiOrgId = useSelector((state: TextState) => state.openaiOrgId);
+  const openAIKey = useSelector((state: TextState) => state.openAIKey);
+  const openAIOrgId = useSelector((state: TextState) => state.openAIOrgId);
 
   const dispatchComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
-    const results = await daemon.generateComment(pastIdeas, currentIdeas, openaiKey, openaiOrgId);
+    const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId);
     dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.name}));
     setIsCommenting(false);
   }
@@ -35,7 +35,7 @@ const DaemonManager = () => {
         
 
         // Make new comments
-        if (currentIdeas.length > 0 && openaiKey && openaiOrgId) {
+        if (currentIdeas.length > 0 && openAIKey && openAIOrgId) {
           setIsCommenting(true);
           const randomDaemon = defaultDaemonList[Math.floor(Math.random() * defaultDaemonList.length)];
           dispatchComment(pastIdeas, currentIdeas, randomDaemon);
@@ -46,10 +46,10 @@ const DaemonManager = () => {
         console.log('User active');
         setHasBeenInactive(false);
       }
-    }, 10);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [lastTimeActive, hasBeenInactive, currentIdeas, dispatch]);
+  }, [lastTimeActive, hasBeenInactive, currentIdeas, dispatchComment]);
 
   return null;
 }

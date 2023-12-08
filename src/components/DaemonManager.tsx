@@ -20,7 +20,7 @@ const DaemonManager = () => {
   const getCommentsForPastIdeas = (pastIdeas: any[], state: RootState) => {
     return pastIdeas.reduce((acc, idea) => {
       // Use the selector to get comments for each past idea
-      const comments = selectCommentsByIdeaId(state, idea.id);
+      const comments = selectCommentsByIdeaId(state, idea.id, "chat");
       acc[idea.id] = comments;
       return acc;
     }, {} as Record<number, Comment[]>);
@@ -41,15 +41,16 @@ const DaemonManager = () => {
 
   const dispatchBaseComment = async (pastIdeas: any, currentIdeas: any, commentsForPastIdeas: any, daemon: BaseDaemon) => {
     const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId);
-    const name = result.daemonName + " (base)";
-    dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: name, daemonType: "chat"})); //change daemon type when left column implemented
+    if (result) {
+      dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base"}));
+    }
     setIsCommenting(false);
   }
 
   useEffect(() => {
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
-      if (secondsSinceLastActive > 5 && !hasBeenInactive && !isCommenting) {
+      if (secondsSinceLastActive > 2 && !hasBeenInactive && !isCommenting) {
         console.log('User inactive');
         setHasBeenInactive(true);
         
@@ -71,7 +72,7 @@ const DaemonManager = () => {
         }
       }
 
-      if (secondsSinceLastActive < 5 && hasBeenInactive) {
+      if (secondsSinceLastActive < 2 && hasBeenInactive) {
         console.log('User active');
         setHasBeenInactive(false);
       }

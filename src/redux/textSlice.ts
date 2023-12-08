@@ -69,8 +69,8 @@ const textSlice = createSlice({
 });
 
 export const selectCommentsByIdeaId = createSelector(
-  [(state: RootState, ideaId: number, daemonType: string = 'chat') => ({ideaId, daemonType}), (state: RootState) => state.text.comments],
-  ({ ideaId, daemonType }, comments) => comments.filter(comment => comment.ideaId === ideaId && comment.daemonType === daemonType)
+  [(state: RootState, ideaId: number, daemonType: string = '') => ({ideaId, daemonType}), (state: RootState) => state.text.comments],
+  ({ ideaId, daemonType }, comments) => comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
 )
 
 export const selectRecentIdeasWithoutComments = createSelector(

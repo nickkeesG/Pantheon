@@ -16,7 +16,7 @@ class BaseDaemon {
       
       var comments = commentsForPastIdeas[pastIdeas[i].id];
       for (var j = 0; j < comments.length; j++) {
-        context += '\n' + commentTemplate + ' ' + comments[j].daemonName + ": " + comments[j].text;
+        context += '\n' + commentTemplate + ' [' + comments[j].daemonName + "]: " + comments[j].text;
       }
     }
     
@@ -26,16 +26,24 @@ class BaseDaemon {
       context += '\n' + ideaTemplate + ' ' + currentIdeas[i].text;
     }
 
-    context += '\n' + commentTemplate; 
+    context += '\n' + commentTemplate + ' ['; 
     console.log(context);
 
     var response = await GenerateBaseComments(context, openaiKey, openaiOrgId);
     console.log(context + response);
     
-    // Split the response by the first instance of ":"
-    const [daemonName, content] = response[0].split(/:(.+)/);
+    // Adjust the regex to account for the brackets
+    const [daemonNameWithBrackets, content] = response[0].split(/]:\s*(.+)/);
+    // Remove the brackets from the daemon name
+    const daemonName = daemonNameWithBrackets.replace('[', '').replace(']', '').trim();
+
     console.log(daemonName);
     console.log(content);
+
+    if(daemonName == "" || content == "") {
+      return null;
+    }
+
     return {
       id: currentIdeas[randomIndex].id,
       daemonName: daemonName.trim(),

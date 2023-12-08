@@ -45,7 +45,8 @@ interface IdeaContainerProps {
 }
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentOverflow }) => {
-  const comments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id))
+  const comments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id));
+
   const containerRef = useRef<HTMLDivElement>(null);
   const commentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);

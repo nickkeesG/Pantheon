@@ -40,6 +40,9 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
 
     var finalData = {
         model: "gpt-4-1106-preview",
+        response_format: {
+            type: "json_object",
+        },
         messages: data.messages
     };
     var finalResponse = await CallChatAPI(finalData, config);

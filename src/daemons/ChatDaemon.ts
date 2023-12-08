@@ -1,4 +1,5 @@
 import {GenerateChatComments} from '../LLMHandler';
+import { ChatDaemonConfig } from '../redux/daemonSlice';
 
 const historyTemplate = `    {"content": "{}"}`;
 const ideaTemplate = `    {"id": {}, "content": "{}"}`;
@@ -19,23 +20,13 @@ Next, read these ideas which make up their current context:
 
 
 class ChatDaemon {
-  name: string;
-  systemPrompt: string;
-  startInstruction: string;
-  chainOfThoughtInstructions: string[];
-  endInstruction: string;
-  
+  config: ChatDaemonConfig;
   ideaTemplate: string;
   historyTemplate: string;
   contextTemplate: string;
 
-  constructor(name: string, prompt: string, startInstruction: string, chainOfThoughtInstructions: string[], endInstruction: string) {
-      this.name = name;
-      this.systemPrompt = prompt;
-      this.startInstruction = startInstruction;
-      this.chainOfThoughtInstructions = chainOfThoughtInstructions;
-      this.endInstruction = endInstruction;
-
+  constructor(config: ChatDaemonConfig) {
+      this.config = config;
       this.ideaTemplate = ideaTemplate;
       this.historyTemplate = historyTemplate;
       this.contextTemplate = contextTemplate;
@@ -45,7 +36,7 @@ class ChatDaemon {
     var history = "";
     for (var i = 0; i < pastIdeas.length; i++) {
       history += this.historyTemplate.replace("{}", pastIdeas[i].text);
-      if (i != pastIdeas.length - 1) {
+      if (i !== pastIdeas.length - 1) {
         history += ",\n";
       }
     }
@@ -53,19 +44,19 @@ class ChatDaemon {
     for (var i = 0; i < currentIdeas.length; i++) {
       let tempId: number = i + 1;
       currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
-      if (i != currentIdeas.length - 1) {
+      if (i !== currentIdeas.length - 1) {
         currentContext += ",\n";
       }
     }
     var context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
     var userPrompts = [];
-    userPrompts.push(context + "\n\n" + this.startInstruction);
-    for (var i = 0; i < this.chainOfThoughtInstructions.length; i++) {
-      userPrompts.push(this.chainOfThoughtInstructions[i]);
+    userPrompts.push(context + "\n\n" + this.config.startInstruction);
+    for (var i = 0; i < this.config.chainOfThoughtInstructions.length; i++) {
+      userPrompts.push(this.config.chainOfThoughtInstructions[i]);
     }
-    userPrompts.push(this.endInstruction);
+    userPrompts.push(this.config.endInstruction);
 
-    var comments = await GenerateChatComments(this.systemPrompt, userPrompts, openAIKey, openAIOrgId);
+    var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId);
 
     // Parse the JSON string to a JavaScript object
     var commentsObj = JSON.parse(comments);

@@ -1,39 +1,83 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface Daemon {
+export interface ChatDaemonConfig {
   id: number;
   name: string;
-  status: string;
+  systemPrompt: string;
+  startInstruction: string;
+  chainOfThoughtInstructions: string[];
+  endInstruction: string;
 }
 
 export interface DaemonState {
-  daemons: Daemon[];
+  chatDaemons: ChatDaemonConfig[];
 }
 
 const initialDaemonState: DaemonState = {
-  daemons: []
+  chatDaemons: [
+    {
+      id: 0,
+      name: 'Athena',
+      systemPrompt:
+        `You are Athena, an AI assistant.
+You have been designed to ask questions to improve a user's thinking.
+You have access to a vast knowledge-base, and use this to ask wise questions.
+Rules:
+1. Be surprising. Ask unexpected questions. Bad is better than boring.
+2. Be concise. Do not respond with more than 2 sentences. 
+3. Be simple and direct. Flowery language is distracting. 
+4. Be brave. Disagree, push against the user, be contrarian.
+5. Be original. Do not rephrase ideas. Questions must be genuinely new. `,
+      startInstruction:
+        `Instruction 1: Jot down some bullets that come to mind about history. 
+This is only for your personal use, and does not need to conform to your rules, so please write lots of thoughts and feel free to be a bit chaotic. 
+
+Instruction 2: Restate your rules
+
+Instruction 3: For each idea in the current context, restate the idea, its id, and provide a single response.
+If there is only one idea only give one response`,
+      chainOfThoughtInstructions: ['For each of your responses to the user, please provide your best one sentence criticism.'],
+      endInstruction:
+        `Considering the criticism, please rank your original responses from most to least useful. Output the answers in valid json with the format:
+{
+    "ranking": [
+        {
+        "id": <id>,
+        "content": <content>
+        },
+        {
+        "id": <id>,
+        "content": <content>
+        },
+        etc...
+    ] 
+}
+Do not write any other text, just give the json.`
+    }
+  ]
 };
 
 const daemonSlice = createSlice({
   name: 'daemon',
   initialState: initialDaemonState,
   reducers: {
-    addDaemon(state, action: PayloadAction<Daemon>) {
-      state.daemons.push(action.payload);
+    addChatDaemon(state, action: PayloadAction<ChatDaemonConfig>) {
+      state.chatDaemons.push(action.payload);
     },
-    removeDaemon(state, action: PayloadAction<number>) {
-      state.daemons = state.daemons.filter(daemon => daemon.id !== action.payload);
+    removeChatDaemon(state, action: PayloadAction<number>) {
+      state.chatDaemons = state.chatDaemons.filter(daemon => daemon.id !== action.payload);
     },
-    updateDaemonStatus(state, action: PayloadAction<{ id: number; status: string }>) {
-      const index = state.daemons.findIndex(daemon => daemon.id === action.payload.id);
+    updateChatDaemon(state, action: PayloadAction<ChatDaemonConfig>) {
+      const index = state.chatDaemons.findIndex(daemon => daemon.id === action.payload.id);
       if (index !== -1) {
-        state.daemons[index].status = action.payload.status;
+        state.chatDaemons[index] = {
+          ...state.chatDaemons[index],
+          ...action.payload
+        };
       }
     },
-    // Add more reducers as needed for your application
   },
 });
 
-export const { addDaemon, removeDaemon, updateDaemonStatus } = daemonSlice.actions;
-
+export const { addChatDaemon, removeChatDaemon, updateChatDaemon } = daemonSlice.actions;
 export default daemonSlice.reducer;

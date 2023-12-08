@@ -1,4 +1,4 @@
-import {GenerateBaseComments} from '../LLMHandler';
+mport {GenerateBaseComments} from '../LLMHandler';
 import { Comment, Idea } from '../redux/textSlice';
 
 const baseTemplate = '# Brainstorming';
@@ -34,16 +34,20 @@ class BaseDaemon {
     console.log(context + response);
     
     // Adjust the regex to account for the brackets
-    const [daemonNameWithBrackets, content] = response[0].split(/]:\s*(.+)/);
+    const splitResponse = response[0].split(/]:\s*(.+)/);
+    if (splitResponse.length < 2) {
+      return null;
+    }
+    const [daemonNameWithBrackets, content] = splitResponse;
     // Remove the brackets from the daemon name
     const daemonName = daemonNameWithBrackets.replace('[', '').replace(']', '').trim();
-
-    console.log(daemonName);
-    console.log(content);
 
     if(daemonName == "" || content == "") {
       return null;
     }
+
+    console.log(daemonName);
+    console.log(content);
 
     return {
       id: currentIdeas[randomIndex].id,

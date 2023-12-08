@@ -13,6 +13,29 @@ export interface DaemonState {
   chatDaemons: ChatDaemonConfig[];
 }
 
+const defaultStartInstruction = `Instruction 1: Jot down some bullets that come to mind about the history.
+This is only for your personal use, and does not need to conform to your rules, so please write lots of thoughts and feel free to be a bit chaotic.
+
+Instruction 2: Restate your rules
+
+Instruction 3: For each idea in the current context, restate the idea, its id, and provide a single response.`;
+
+const defaultEndInstruction = `Please rank your responses from most to least useful. Output the answers in valid json with the format:
+{
+    "ranking": [
+        {
+          "id": <id>,
+          "content": <content>
+        },
+        {
+          "id": <id>,
+          "content": <content>
+        },
+        etc...
+    ]
+}
+Do not write any other text, just give the json.`;
+
 const initialDaemonState: DaemonState = {
   chatDaemons: [
     {
@@ -28,31 +51,25 @@ Rules:
 3. Be simple and direct. Flowery language is distracting. 
 4. Be brave. Disagree, push against the user, be contrarian.
 5. Be original. Do not rephrase ideas. Questions must be genuinely new. `,
-      startInstruction:
-        `Instruction 1: Jot down some bullets that come to mind about history. 
-This is only for your personal use, and does not need to conform to your rules, so please write lots of thoughts and feel free to be a bit chaotic. 
-
-Instruction 2: Restate your rules
-
-Instruction 3: For each idea in the current context, restate the idea, its id, and provide a single response.
-If there is only one idea only give one response`,
+      startInstruction: defaultStartInstruction,
       chainOfThoughtInstructions: [],
-      endInstruction:
-        `Please rank your responses from most to least useful. Output the answers in valid json with the format:
-{
-    "ranking": [
-        {
-        "id": <id>,
-        "content": <content>
-        },
-        {
-        "id": <id>,
-        "content": <content>
-        },
-        etc...
-    ] 
-}
-Do not write any other text, just give the json.`
+      endInstruction: defaultEndInstruction
+    },
+    {
+      id: 1,
+      name: 'Librarian',
+      systemPrompt:
+        `You are Librarian, an AI assistant.
+You have been designed to use your vast knowledge to point out interesting connections.
+You have read everything that has ever been written, and can use this to find unexpected connections.
+Rules:
+1. Be surprising. Don't make obvious connections.
+2. Be concise. Do not respond with more than 2 sentences. 
+3. Be simple and direct. Flowery language is distracting. 
+4. Be brave. Don't be afraid to suggest connections that seem far-fetched.`,
+      startInstruction: defaultStartInstruction,
+      chainOfThoughtInstructions: [],
+      endInstruction: defaultEndInstruction
     }
   ]
 };

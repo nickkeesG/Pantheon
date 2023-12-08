@@ -14,16 +14,16 @@ export interface Comment {
 }
 
 export interface TextState {
-  openaiKey: string;
-  openaiOrgId: string;
+  openAIKey: string;
+  openAIOrgId: string;
   lastTimeActive: number;
   ideas: Idea[];
   comments: Comment[];
 }
 
 const initialState: TextState = {
-  openaiKey: localStorage.getItem('openaiKey') || '',
-  openaiOrgId: localStorage.getItem('openaiOrgId') || '',
+  openAIKey: localStorage.getItem('openAIKey') || '',
+  openAIOrgId: localStorage.getItem('openAIOrgId') || '',
   lastTimeActive: Date.now(),
   ideas: [],
   comments: []
@@ -35,12 +35,12 @@ const textSlice = createSlice({
   initialState,
   reducers: {
     setOpenaiKey(state, action: PayloadAction<string>) {
-      localStorage.setItem('openaiKey', action.payload);
-      state.openaiKey = action.payload;
+      localStorage.setItem('openAIKey', action.payload);
+      state.openAIKey = action.payload;
     },
     setOpenaiOrgId(state, action: PayloadAction<string>) {
-      localStorage.setItem('openaiOrgId', action.payload);
-      state.openaiOrgId = action.payload;
+      localStorage.setItem('openAIOrgId', action.payload);
+      state.openAIOrgId = action.payload;
     },
     setLastTimeActive(state) {
       state.lastTimeActive = Date.now();

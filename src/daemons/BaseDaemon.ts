@@ -1,3 +1,5 @@
+import {GenerateBaseComments} from '../LLMHandler';
+
 const baseTemplate = '# Brainstorming';
 const ideaTemplate = '-';
 const commentTemplate = '  -';
@@ -7,44 +9,38 @@ class BaseDaemon {
 
 
   async generateComment(pastIdeas: any, currentIdeas: any, commentsForPastIdeas: any, openaiKey: string, openaiOrgId: string) {
-    var context = "";
+    var context = baseTemplate;
+
     for (var i = 0; i < pastIdeas.length; i++) {
-      history += this.historyTemplate.replace("{}", pastIdeas[i].text);
-      if (i != pastIdeas.length - 1) {
-        history += ",\n";
+      context += '\n' + ideaTemplate + ' ' + pastIdeas[i].text;
+      
+      var comments = commentsForPastIdeas[pastIdeas[i].id];
+      for (var j = 0; j < comments.length; j++) {
+        context += '\n' + commentTemplate + ' ' + comments[j].daemonName + ": " + comments[j].text;
       }
     }
-    var currentContext = "";
-    for (var i = 0; i < currentIdeas.length; i++) {
-      let tempId: number = i + 1;
-      currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
-      if (i != currentIdeas.length - 1) {
-        currentContext += ",\n";
-      }
-    }
-    var context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
-    var userPrompts = [];
-    userPrompts.push(context + "\n\n" + this.startInstruction);
-    for (var i = 0; i < this.chainOfThoughtInstructions.length; i++) {
-      userPrompts.push(this.chainOfThoughtInstructions[i]);
-    }
-    userPrompts.push(this.endInstruction);
-
-    var comments = await GenerateChatComments(this.systemPrompt, userPrompts, openaiKey, openaiOrgId);
-
-    // Parse the JSON string to a JavaScript object
-    var commentsObj = JSON.parse(comments);
-    var ranking = commentsObj.ranking;
-
-    var results = [];
-    for (var i = 0; i < ranking.length; i++) {
-      console.log(`id: ${ranking[i].id}, content: ${ranking[i].content}`);
-      // Add the id and content to the results array
-      let tempId: number = ranking[i].id - 1;
-      results.push({id: currentIdeas[tempId].id, content: ranking[i].content});
+    
+    // Pick a random current idea
+    var randomIndex = Math.floor(Math.random() * currentIdeas.length);
+    for (var i = 0; i < randomIndex + 1; i++) {
+      context += '\n' + ideaTemplate + ' ' + currentIdeas[i].text;
     }
 
-    return results;
+    context += '\n' + commentTemplate; 
+    console.log(context);
+
+    var response = await GenerateBaseComments(context, openaiKey, openaiOrgId);
+    console.log(context + response);
+    
+    // Split the response by the first instance of ":"
+    const [daemonName, content] = response[0].split(/:(.+)/);
+    console.log(daemonName);
+    console.log(content);
+    return {
+      id: currentIdeas[randomIndex].id,
+      daemonName: daemonName.trim(),
+      content: content.trim()
+    };
   }
 }
 

@@ -10,6 +10,16 @@ async function CallChatAPI(data: any, config: any) {
   }
 }
 
+async function CallBaseAPI(data: any, config: any) {
+    try {
+        const response = await axios.post('https://api.openai.com/v1/completions', data, config);
+        return response.data.choices.map((choice: { text: string }) => choice.text.trim());
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
 export async function GenerateChatComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string) {
 
     var data = {
@@ -48,4 +58,24 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
     var finalResponse = await CallChatAPI(finalData, config);
     console.log(finalResponse);
     return finalResponse;
+}
+
+export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string) {
+    var data = {
+        model: "davinci-002",
+        prompt: prompt,
+        max_tokens: 128,
+        stop: "\n"
+    };
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAIKey}`,
+            'OpenAI-Organization': openAIOrgId
+        }
+    };
+
+    var response = await CallBaseAPI(data, config);
+    return response;
 }

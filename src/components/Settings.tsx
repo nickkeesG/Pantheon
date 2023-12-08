@@ -68,8 +68,8 @@ const TextSettingInput = styled.input`
 const Settings = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const dispatch = useDispatch();
-  const openAIKey = useSelector((state: TextState) => state.openaiKey);
-  const openaiOrgId = useSelector((state: TextState) => state.openaiOrgId);
+  const openAIKey = useSelector((state: TextState) => state.openAIKey);
+  const openAIOrgId = useSelector((state: TextState) => state.openAIOrgId);
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
@@ -114,7 +114,7 @@ const Settings = () => {
             <SettingLabel>OpenAI organization ID</SettingLabel>
             <TextSettingInput 
               placeholder="org-..." 
-              value={openaiOrgId} 
+              value={openAIOrgId} 
               onChange={handleOrgIdChange} 
             />
           </TextSettingContainer>

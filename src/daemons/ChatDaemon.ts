@@ -1,4 +1,4 @@
-import {GenerateComments} from '../LLMHandler';
+import {GenerateChatComments} from '../LLMHandler';
 
 const historyTemplate = `    {"content": "{}"}`;
 const ideaTemplate = `    {"id": {}, "content": "{}"}`;
@@ -65,7 +65,7 @@ class ChatDaemon {
     }
     userPrompts.push(this.endInstruction);
 
-    var comments = await GenerateComments(this.systemPrompt, userPrompts, openaiKey, openaiOrgId);
+    var comments = await GenerateChatComments(this.systemPrompt, userPrompts, openaiKey, openaiOrgId);
 
     // Parse the JSON string to a JavaScript object
     var commentsObj = JSON.parse(comments);

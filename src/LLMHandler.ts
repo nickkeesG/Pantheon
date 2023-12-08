@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function CallAPI(data: any, config: any) {
+async function CallChatAPI(data: any, config: any) {
   try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', data, config);
       return response.data.choices.map((choice: { message: { content: string } }) => choice.message.content.trim());
@@ -10,7 +10,7 @@ async function CallAPI(data: any, config: any) {
   }
 }
 
-export async function GenerateComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string) {
+export async function GenerateChatComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string) {
 
     var data = {
         model: "gpt-4-1106-preview",
@@ -31,7 +31,7 @@ export async function GenerateComments(systemPrompt: string, userPrompts: string
     console.log(userPrompts[0])
     
     for (let userPrompt of userPrompts.slice(1)) {
-      var response = await CallAPI(data, config);
+      var response = await CallChatAPI(data, config);
       console.log(response);
       data.messages.push({role: "assistant", content: response[0]});
       data.messages.push({role: "user", content: userPrompt});
@@ -39,9 +39,10 @@ export async function GenerateComments(systemPrompt: string, userPrompts: string
     }
 
     var finalData = {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-1106-preview",
         messages: data.messages
     };
-    var finalResponse = await CallAPI(finalData, config);
+    var finalResponse = await CallChatAPI(finalData, config);
+    console.log(finalResponse);
     return finalResponse;
 }

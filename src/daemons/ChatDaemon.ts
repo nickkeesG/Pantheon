@@ -1,5 +1,6 @@
 import {GenerateChatComments} from '../LLMHandler';
 import { ChatDaemonConfig } from '../redux/daemonSlice';
+import { Idea } from '../redux/textSlice';
 
 const historyTemplate = `    {"content": "{}"}`;
 const ideaTemplate = `    {"id": {}, "content": "{}"}`;
@@ -32,7 +33,7 @@ class ChatDaemon {
       this.contextTemplate = contextTemplate;
   }
 
-  async generateComment(pastIdeas: any, currentIdeas: any, openAIKey: string, openAIOrgId: string) {
+  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string) {
     var history = "";
     for (var i = 0; i < pastIdeas.length; i++) {
       history += this.historyTemplate.replace("{}", pastIdeas[i].text);

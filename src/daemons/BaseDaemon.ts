@@ -1,4 +1,5 @@
 import {GenerateBaseComments} from '../LLMHandler';
+import { Comment, Idea } from '../redux/textSlice';
 
 const baseTemplate = '# Brainstorming';
 const ideaTemplate = '-';
@@ -8,13 +9,13 @@ const commentTemplate = '  -';
 class BaseDaemon {
 
 
-  async generateComment(pastIdeas: any, currentIdeas: any, commentsForPastIdeas: any, openaiKey: string, openaiOrgId: string) {
+  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string) {
     var context = baseTemplate;
 
     for (var i = 0; i < pastIdeas.length; i++) {
       context += '\n' + ideaTemplate + ' ' + pastIdeas[i].text;
       
-      var comments = commentsForPastIdeas[pastIdeas[i].id];
+      var comments = commentsForPastIdeas[pastIdeas[i].id] || [];
       for (var j = 0; j < comments.length; j++) {
         context += '\n' + commentTemplate + ' [' + comments[j].daemonName + "]: " + comments[j].text;
       }

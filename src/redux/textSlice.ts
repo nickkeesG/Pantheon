@@ -28,7 +28,6 @@ const initialState: TextState = {
   lastTimeActive: Date.now(),
   ideas: [],
   comments: []
-
 };
 
 const textSlice = createSlice({
@@ -54,7 +53,7 @@ const textSlice = createSlice({
       };
       state.ideas.push(newIdea);
     },
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string}>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
       const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;
       const newComment: Comment = {
         id: newId,
@@ -68,10 +67,24 @@ const textSlice = createSlice({
   },
 });
 
-export const selectCommentsByIdeaId = createSelector(
-  [(state: RootState, ideaId: number, daemonType: string = '') => ({ideaId, daemonType}), (state: RootState) => state.text.comments],
+export const selectCommentsForIdea = createSelector(
+  [(state: RootState, ideaId: number, daemonType: string = '') => ({ ideaId, daemonType }), (state: RootState) => state.text.comments],
   ({ ideaId, daemonType }, comments) => comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
-)
+);
+
+export const selectCommentsGroupedByIdea = createSelector(
+  [(state: RootState) => state.text.comments],
+  (comments) => {
+    return comments.reduce((acc, comment) => {
+      const { ideaId } = comment;
+      if (!acc[ideaId]) {
+        acc[ideaId] = [];
+      }
+      acc[ideaId].push(comment);
+      return acc;
+    }, {} as Record<number, Comment[]>);
+  }
+);
 
 export const selectRecentIdeasWithoutComments = createSelector(
   [(state: RootState) => state.text.ideas, (state: RootState) => state.text.comments],
@@ -91,5 +104,5 @@ export const selectIdeasUpToMaxCommented = createSelector(
   }
 )
 
-export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive} = textSlice.actions;
+export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

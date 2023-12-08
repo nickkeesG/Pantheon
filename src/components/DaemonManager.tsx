@@ -1,9 +1,8 @@
 import BaseDaemon from '../daemons/BaseDaemon';
 import { useEffect, useState } from 'react';
-import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, selectCommentsByIdeaId, addComment } from '../redux/textSlice';
+import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsGroupedByIdea, Idea, Comment } from '../redux/textSlice';
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { RootState } from '../redux/store';
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
@@ -14,27 +13,18 @@ const DaemonManager = () => {
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
   const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
+  const commentsForPastIdeas = useAppSelector(selectCommentsGroupedByIdea)
 
   const openAIKey = useAppSelector(state => state.text.openAIKey);
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
 
-  const getCommentsForPastIdeas = (pastIdeas: any[], state: RootState) => {
-    return pastIdeas.reduce((acc, idea) => {
-      // Use the selector to get comments for each past idea
-      const comments = selectCommentsByIdeaId(state, idea.id, "chat");
-      acc[idea.id] = comments;
-      return acc;
-    }, {} as Record<number, Comment[]>);
-  };
-  const commentsForPastIdeas: Record<number, any[]> = useAppSelector(state => getCommentsForPastIdeas(pastIdeas, state));
-
-  const dispatchChatComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
+  const dispatchChatComment = async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
     const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId);
     dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
     setIsCommenting(false);
   }
 
-  const dispatchBaseComment = async (pastIdeas: any, currentIdeas: any, commentsForPastIdeas: any, daemon: BaseDaemon) => {
+  const dispatchBaseComment = async (pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, daemon: BaseDaemon) => {
     const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId);
     if (result) {
       dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));

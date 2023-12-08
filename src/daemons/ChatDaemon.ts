@@ -1,4 +1,4 @@
-import {GenerateChatComments} from '../LLMHandler';
+import { GenerateChatComments } from '../LLMHandler';
 import { ChatDaemonConfig } from '../redux/daemonSlice';
 import { Idea } from '../redux/textSlice';
 
@@ -27,10 +27,10 @@ class ChatDaemon {
   contextTemplate: string;
 
   constructor(config: ChatDaemonConfig) {
-      this.config = config;
-      this.ideaTemplate = ideaTemplate;
-      this.historyTemplate = historyTemplate;
-      this.contextTemplate = contextTemplate;
+    this.config = config;
+    this.ideaTemplate = ideaTemplate;
+    this.historyTemplate = historyTemplate;
+    this.contextTemplate = contextTemplate;
   }
 
   async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string) {
@@ -68,7 +68,12 @@ class ChatDaemon {
       console.log(`id: ${ranking[i].id}, content: ${ranking[i].content}`);
       // Add the id and content to the results array
       let tempId: number = ranking[i].id - 1;
-      results.push({id: currentIdeas[tempId].id, content: ranking[i].content});
+      try {
+        results.push({ id: currentIdeas[tempId].id, content: ranking[i].content });
+      }
+      catch {
+        console.log("Something went wrong while generating comments.")
+      }
     }
 
     return results;

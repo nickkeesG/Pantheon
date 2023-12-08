@@ -2,30 +2,17 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { addIdea, setLastTimeActive} from '../redux/textSlice';
 import { useAppDispatch } from '../hooks';
+import { TextArea } from '../styles/SharedStyles';
 
 const Centered = styled.div`
   width: 40%;
   margin: auto;
 `
 
-const TextAreaField = styled.textarea`
-  box-sizing: border-box;
-  padding: 10px;
+const TextAreaField = styled(TextArea)`
   font-size: 16px;
-  border: 1px solid var(--line-color);
-  border-radius: 4px;
-  width: 100%; // Change this line
-  height: 100%;
-  margin: auto;
-  display: block;
-  background-color: var(--bg-color-light);
-  color: var(--text-color);
   overflow: hidden;
   resize: none;
-  &:focus {
-    outline: none;
-    border-color: var(--line-color-light); 
-  }
 `;
 
 const InputBox = () => {

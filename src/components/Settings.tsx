@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { setOpenaiKey, setOpenaiOrgId } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
+import { TextArea, TextButton, TextInput } from '../styles/SharedStyles';
 
 const SettingsButton = styled(FiSettings)`
   position: absolute;
@@ -34,12 +35,14 @@ const SettingsPanel = styled.div`
   border: 1px solid var(--line-color-dark);
   width: 50%;
   max-width: 500px;
-  text-align: center;
   z-index: 100;
 `;
 
+const SettingsHeader = styled.h3`
+  text-align: center;
+`;
+
 const SettingLabel = styled.p`
-  text-align: left;
   font-size: 0.8em;
   margin-bottom: 5px;
 `;
@@ -48,21 +51,7 @@ const TextSettingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 80%;
   margin: 0 auto;
-`;
-
-const TextSettingInput = styled.input`
-  padding: 10px;
-  width: 94.5%;
-  border-radius: 4px;
-  color: var(--text-color);
-  background-color: var(--bg-color-light);
-  border: 1px solid var(--line-color);
-  &:focus {
-    outline: none;
-    border-color: var(--line-color-light); 
-  }
 `;
 
 
@@ -102,26 +91,26 @@ const Settings = () => {
       <SettingsButton onClick={toggleSettings} />
       {isSettingsOpen && (
         <SettingsPanel>
-          <h3>SETTINGS</h3>
+          <SettingsHeader>SETTINGS</SettingsHeader>
           <ExitButton onClick={toggleSettings} />
           <TextSettingContainer>
             <SettingLabel>OpenAI API key</SettingLabel>
-            <TextSettingInput 
-              placeholder="sk-..." 
-              value={openAIKey} 
-              onChange={handleApiKeyChange} 
+            <TextInput
+              placeholder="sk-..."
+              value={openAIKey}
+              onChange={handleApiKeyChange}
             />
           </TextSettingContainer>
           <TextSettingContainer>
             <SettingLabel>OpenAI organization ID</SettingLabel>
-            <TextSettingInput 
-              placeholder="org-..." 
-              value={openAIOrgId} 
-              onChange={handleOrgIdChange} 
+            <TextInput
+              placeholder="org-..."
+              value={openAIOrgId}
+              onChange={handleOrgIdChange}
             />
           </TextSettingContainer>
+          <h4>Chat daemons</h4>
           <div>
-            <h4>Chat daemons</h4>
             {chatDaemonConfigs.map((config) => (
               <ChatDaemonSettings key={config.id} config={config} />
             ))}

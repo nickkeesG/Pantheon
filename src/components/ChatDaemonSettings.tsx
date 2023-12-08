@@ -2,22 +2,12 @@ import { useState } from 'react';
 import { ChatDaemonConfig, updateChatDaemon } from "../redux/daemonSlice"
 import styled from 'styled-components';
 import { useAppDispatch } from '../hooks';
+import { Button, TextArea, TextButton } from '../styles/SharedStyles';
 
 
 const ChatDaemonSettingsContainer = styled.div`
   text-align: left;
 `;
-
-const ExpandButton = styled.button`
-  background: none;
-  border: none;
-  color: var(--text-color-dark);
-  padding: 12px;
-`
-
-const SaveButton = styled.button`
-  margin: 4px;
-`
 
 const ChatDaemonSettings: React.FC<{ config: ChatDaemonConfig }> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -42,18 +32,18 @@ const ChatDaemonSettings: React.FC<{ config: ChatDaemonConfig }> = ({ config }) 
   return (
     <ChatDaemonSettingsContainer>
       <span>
-        <ExpandButton onClick={() => setIsCollapsed(!isCollapsed)}>
+        <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
           {config.name}
-        </ExpandButton>
+        </TextButton>
         {isEdited && (
-          <SaveButton onClick={updateDaemonConfig}>
+          <Button onClick={updateDaemonConfig}>
             Save
-          </SaveButton>
+          </Button>
         )}
       </span>
       {!isCollapsed && (
-        <textarea 
+        <TextArea
           value={json} 
           onChange={(e) => {
             setJson(e.target.value);

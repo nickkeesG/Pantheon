@@ -13,13 +13,7 @@ html, body, #root, .App {
   --line-color: #707070;
   --line-color-light: #b7b7b7;
   --line-color-dark: #4e4e4e;
-}
-
-button {
-  font-family: monospace;
-  background-color: var(--text-color);
-  color: var(--bg-color);
-  border-radius: 2px;
-  border: 1px solid var(--line-color-dark);
-  padding: 4px;
+  --highlight: #ffffff11;
+  --accent-color: #abc5df;
+  --accent-color-dark: #809bb6;
 }

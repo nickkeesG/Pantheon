@@ -1,24 +1,24 @@
 import { useEffect, useState} from 'react';
-import { useSelector, useDispatch} from 'react-redux';
-import { TextState, selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented} from '../redux/contentSlice';
-import { addComment} from '../redux/contentSlice';
+import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented} from '../redux/textSlice';
+import { addComment} from '../redux/textSlice';
 
 import ChatDaemon from '../daemons/ChatDaemon';
 import defaultDaemonList from '../daemons/DefaultDaemonList';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
 const DaemonManager = () => {
-  const dispatch = useDispatch();
-  const lastTimeActive = useSelector((state: TextState) => state.lastTimeActive);
+  const dispatch = useAppDispatch();
+  const lastTimeActive = useAppSelector(state => state.text.lastTimeActive);
 
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
 
   
-  const currentIdeas = useSelector((state: TextState) => selectRecentIdeasWithoutComments(state));
-  const pastIdeas = useSelector((state: TextState) => selectIdeasUpToMaxCommented(state));
+  const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
+  const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
 
-  const openAIKey = useSelector((state: TextState) => state.openAIKey);
-  const openAIOrgId = useSelector((state: TextState) => state.openAIOrgId);
+  const openAIKey = useAppSelector(state => state.text.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
 
   const dispatchComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
     const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId);

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Comment } from '../redux/contentSlice';
+import { Comment } from '../redux/textSlice';
 
 const StyledCommentContainer = styled.div`
   padding: 6px 12px;

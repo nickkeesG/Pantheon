@@ -1,4 +1,5 @@
-import { createSlice, createSelector, PayloadAction, configureStore } from '@reduxjs/toolkit';
+import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from './store';
 
 export interface Idea {
   id: number;
@@ -65,12 +66,12 @@ const textSlice = createSlice({
 });
 
 export const selectCommentsByIdeaId = createSelector(
-  [(state: TextState, ideaId: number) => ideaId, (state: TextState) => state.comments],
+  [(state: RootState, ideaId: number) => ideaId, (state: RootState) => state.text.comments],
   (ideaId, comments) => comments.filter(comment => comment.ideaId === ideaId)
 )
 
 export const selectRecentIdeasWithoutComments = createSelector(
-  [(state: TextState) => state.ideas, (state: TextState) => state.comments],
+  [(state: RootState) => state.text.ideas, (state: RootState) => state.text.comments],
   (ideas, comments) => {
     const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
     const maxIdeaIdWithComment = Math.max(...Array.from(ideaIdsWithComments));
@@ -79,7 +80,7 @@ export const selectRecentIdeasWithoutComments = createSelector(
 )
 
 export const selectIdeasUpToMaxCommented = createSelector(
-  [(state: TextState) => state.ideas, (state: TextState) => state.comments],
+  [(state: RootState) => state.text.ideas, (state: RootState) => state.text.comments],
   (ideas, comments) => {
     const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
     const maxIdeaIdWithComment = Math.max(...Array.from(ideaIdsWithComments));
@@ -88,6 +89,4 @@ export const selectIdeasUpToMaxCommented = createSelector(
 )
 
 export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive} = textSlice.actions;
-export const store = configureStore({
-  reducer: textSlice.reducer
-});
+export default textSlice.reducer;

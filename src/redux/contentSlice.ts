@@ -10,6 +10,7 @@ export interface Comment {
   ideaId: number;
   text: string;
   daemonName: string;
+  daemonType: string;
 }
 
 export interface TextState {
@@ -26,21 +27,7 @@ const initialState: TextState = {
   lastTimeActive: Date.now(),
   ideas: [],
   comments: []
-  /*
-  ideas: [
-    { id: 0, text: "Ooh, new writing app!" },
-    { id: 1, text: "I don't know what to write about..." },
-    { id: 2, text: "I'm feeling creative." },
-    { id: 3, text: "I don't know what to write about..." },
-    { id: 4, text: "I don't know what to write about..." },
-    { id: 5, text: "I don't know what to write about..." }],
-  comments: [
-    { id: 0, ideaId: 1, text: "Here's an idea: Write about how you're feeling in this moment.", daemonName: 'DefaultName'},
-    { id: 1, ideaId: 1, text: "You could also write about your weekend plans.", daemonName: 'DefaultName'},
-    { id: 2, ideaId: 2, text: "It sounds like you're feeling inspired!", daemonName: 'DefaultName'},
-    { id: 3, ideaId: 5, text: "Don't give up!", daemonName: 'DefaultName'}
-  ]
-  */
+
 };
 
 const textSlice = createSlice({
@@ -66,13 +53,14 @@ const textSlice = createSlice({
       };
       state.ideas.push(newIdea);
     },
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string}>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string}>) {
       const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;
       const newComment: Comment = {
         id: newId,
         ideaId: action.payload.ideaId,
         text: action.payload.text,
-        daemonName: action.payload.daemonName
+        daemonName: action.payload.daemonName,
+        daemonType: action.payload.daemonType
       };
       state.comments.push(newComment);
     }
@@ -80,8 +68,11 @@ const textSlice = createSlice({
 });
 
 export const selectCommentsByIdeaId = createSelector(
-  [(state: TextState, ideaId: number) => ideaId, (state: TextState) => state.comments],
-  (ideaId, comments) => comments.filter(comment => comment.ideaId === ideaId)
+  [
+    (state: TextState, ideaId: number, daemonType: string = 'chat') => ({ ideaId, daemonType }), 
+    (state: TextState) => state.comments
+  ],
+  ({ ideaId, daemonType }, comments) => comments.filter(comment => comment.ideaId === ideaId && comment.daemonType === daemonType)
 )
 
 export const selectRecentIdeasWithoutComments = createSelector(

@@ -78,7 +78,6 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentO
       <SidePanel />
       <CommentPanel
         position="left"
-        ref={commentPanelRef}
         style={{ top: `${offset}px` }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

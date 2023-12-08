@@ -23,12 +23,12 @@ const CenterPanel = styled.div`
   min-width: 40%;
 `;
 
-const CommentPanel = styled.div`
+const CommentPanel = styled.div<{ position: 'left' | 'right' }>`
   position: absolute;
-  right: 0;
   top: 0;
   width: 30%;
   z-index: 10;
+  ${({ position }) => position}: 0;
 `;
 
 const StyledIdeaContainer = styled.div`
@@ -45,7 +45,8 @@ interface IdeaContainerProps {
 }
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentOverflow }) => {
-  const comments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id));
+  const chatComments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id, "chat"));
+  const baseComments = useAppSelector(state => selectCommentsByIdeaId(state, idea.id, "base"));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const commentPanelRef = useRef<HTMLDivElement>(null);
@@ -75,6 +76,17 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentO
   return (
     <Container ref={containerRef}>
       <SidePanel />
+      <CommentPanel
+        position="left"
+        ref={commentPanelRef}
+        style={{ top: `${offset}px` }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {baseComments.length > 0 && baseComments.map(comment => (
+          <CommentContainer key={comment.id} comment={comment} />
+        ))}
+      </CommentPanel>
       <CenterPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
@@ -82,12 +94,13 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentO
       </CenterPanel>
       <SidePanel />
       <CommentPanel
+        position="right"
         ref={commentPanelRef}
         style={{ top: `${offset}px` }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {comments.length > 0 && comments.map(comment => (
+        {chatComments.length > 0 && chatComments.map(comment => (
           <CommentContainer key={comment.id} comment={comment} />
         ))}
       </CommentPanel>

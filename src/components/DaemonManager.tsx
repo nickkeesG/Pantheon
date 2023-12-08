@@ -50,7 +50,7 @@ const DaemonManager = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
-      if (secondsSinceLastActive > 2 && !hasBeenInactive && !isCommenting) {
+      if (secondsSinceLastActive > 5 && !hasBeenInactive && !isCommenting) {
         console.log('User inactive');
         setHasBeenInactive(true);
 
@@ -71,7 +71,7 @@ const DaemonManager = () => {
         }
       }
 
-      if (secondsSinceLastActive < 2 && hasBeenInactive) {
+      if (secondsSinceLastActive < 5 && hasBeenInactive) {
         console.log('User active');
         setHasBeenInactive(false);
       }

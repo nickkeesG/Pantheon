@@ -1,4 +1,4 @@
-mport {GenerateBaseComments} from '../LLMHandler';
+import {GenerateBaseComments} from '../LLMHandler';
 import { Comment, Idea } from '../redux/textSlice';
 
 const baseTemplate = '# Brainstorming';

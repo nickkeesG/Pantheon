@@ -14,10 +14,19 @@ const DaemonManager = () => {
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
   const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
-  const commentsForPastIdeas: Record<number, any[]> = useAppSelector(state => getCommentsForPastIdeas(pastIdeas, state));
 
   const openAIKey = useAppSelector(state => state.text.openAIKey);
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
+
+  const getCommentsForPastIdeas = (pastIdeas: any[], state: RootState) => {
+    return pastIdeas.reduce((acc, idea) => {
+      // Use the selector to get comments for each past idea
+      const comments = selectCommentsByIdeaId(state, idea.id);
+      acc[idea.id] = comments;
+      return acc;
+    }, {} as Record<number, Comment[]>);
+  };
+  const commentsForPastIdeas: Record<number, any[]> = useAppSelector(state => getCommentsForPastIdeas(pastIdeas, state));
 
   const dispatchChatComment = async (pastIdeas: any, currentIdeas: any, daemon: ChatDaemon) => {
     const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId);
@@ -31,15 +40,6 @@ const DaemonManager = () => {
     dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: name, daemonType: "chat" })); //change daemon type when left column implemented
     setIsCommenting(false);
   }
-
-  const getCommentsForPastIdeas = (pastIdeas: any[], state: RootState) => {
-    return pastIdeas.reduce((acc, idea) => {
-      // Use the selector to get comments for each past idea
-      const comments = selectCommentsByIdeaId(state, idea.id);
-      acc[idea.id] = comments;
-      return acc;
-    }, {} as Record<number, Comment[]>);
-  };
 
   useEffect(() => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));

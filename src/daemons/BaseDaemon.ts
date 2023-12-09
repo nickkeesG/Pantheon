@@ -1,33 +1,41 @@
 import {GenerateBaseComments} from '../LLMHandler';
 import { Comment, Idea } from '../redux/textSlice';
+import { BaseDaemonConfig } from '../redux/daemonSlice';
 
-const baseTemplate = '# Brainstorming\n{}';
-const ideaTemplate = '-{}';
-const commentTemplate = '  -[{}]:{}';
+class BaseDaemon { 
+  config: BaseDaemonConfig;
+  mainTemplate: string;
+  ideaTemplate: string;
+  commentTemplate: string;
 
+  constructor(config: BaseDaemonConfig) {
+    this.config = config;
+    this.mainTemplate = config.mainTemplate;
+    this.ideaTemplate = config.ideaTemplate;
+    this.commentTemplate = config.commentTemplate;
+  }
 
-class BaseDaemon {
   async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string) {
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
-      context += '\n' + ideaTemplate.replace("{}", pastIdeas[i].text);
+      context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
 
       let comments = commentsForPastIdeas[pastIdeas[i].id] || [];
       for (let j = 0; j < comments.length; j++) {
-        context += '\n' + commentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
+        context += '\n' + this.commentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
       }
     }
     
     // Pick a random current idea
     var randomIndex = Math.floor(Math.random() * currentIdeas.length);
     for (let i = 0; i < randomIndex + 1; i++) {
-      context += '\n' + ideaTemplate.replace("{}", currentIdeas[i].text);
+      context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
     }
 
-    const commentPrefix= commentTemplate.substring(0, commentTemplate.indexOf("{}"));
+    const commentPrefix= this.commentTemplate.substring(0, this.commentTemplate.indexOf("{}"));
     context += "\n" + commentPrefix;
-    context = baseTemplate.replace("{}", context);
+    context = this.mainTemplate.replace("{}", context);
     console.log(context);
 
     var response = await GenerateBaseComments(context, openaiKey, openaiOrgId);
@@ -35,7 +43,7 @@ class BaseDaemon {
 
     let commentTemplateDivider = "";
     const regex = /\{\}(.*?)\{\}/;
-    const match = commentTemplate.match(regex);
+    const match = this.commentTemplate.match(regex);
 
     if (match && match[1]) {
         commentTemplateDivider = match[1];

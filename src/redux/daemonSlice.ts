@@ -11,8 +11,15 @@ export interface ChatDaemonConfig {
   enabled: boolean;
 }
 
+export interface BaseDaemonConfig {
+  mainTemplate: string;
+  ideaTemplate: string;
+  commentTemplate: string;
+}
+
 export interface DaemonState {
   chatDaemons: ChatDaemonConfig[];
+  baseDaemon: BaseDaemonConfig;
 }
 
 const defaultStartInstruction = `Instruction 1: Jot down some bullets that come to mind about the history.
@@ -93,7 +100,12 @@ Rules:
       endInstruction: defaultEndInstruction,
       enabled: true
     }
-  ]
+  ],
+  baseDaemon: {
+    mainTemplate: '# Brainstorming\n{}',
+    ideaTemplate: '-{}',
+    commentTemplate: '  -[{}]:{}'
+  }
 };
 
 const daemonSlice = createSlice({
@@ -121,6 +133,11 @@ const daemonSlice = createSlice({
 export const selectEnabledChatDaemons = createSelector(
   [(state: RootState) => state.daemon.chatDaemons],
   (chatDaemons) => chatDaemons.filter(daemon => daemon.enabled)
+);
+
+export const selectBaseDaemon = createSelector(
+  [(state: RootState) => state.daemon.baseDaemon],
+  (baseDaemon) => baseDaemon
 );
 
 export const { addChatDaemon, removeChatDaemon, updateChatDaemon } = daemonSlice.actions;

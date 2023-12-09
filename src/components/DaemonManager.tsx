@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, Idea, Comment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { selectEnabledChatDaemons } from '../redux/daemonSlice';
+import { selectEnabledChatDaemons, selectBaseDaemon} from '../redux/daemonSlice';
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
@@ -11,6 +11,7 @@ const DaemonManager = () => {
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
+  const baseDaemonConfig = useAppSelector(selectBaseDaemon);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
@@ -22,9 +23,9 @@ const DaemonManager = () => {
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
 
   useEffect(() => {
-    const daemon = new BaseDaemon();
+    const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
     setBaseDaemon(daemon);
-  }, []);
+  }, [baseDaemonConfig]);
 
   useEffect(() => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));

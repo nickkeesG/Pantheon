@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Idea, selectCommentsForIdea } from '../redux/textSlice';
-import CommentContainer from './CommentContainer';
 import { useAppSelector } from '../hooks';
+import CommentList from './CommentList';
 
 const Container = styled.div`
   display: flex;
@@ -23,14 +23,6 @@ const CenterPanel = styled.div`
   min-width: 40%;
 `;
 
-const CommentPanel = styled.div<{ position: 'left' | 'right' }>`
-  position: absolute;
-  top: 0;
-  width: 30%;
-  z-index: 10;
-  ${({ position }) => position}: 0;
-`;
-
 const StyledIdeaContainer = styled.div`
   padding: 10px;
   margin: 10px 0px;
@@ -40,69 +32,58 @@ const StyledIdeaContainer = styled.div`
 
 interface IdeaContainerProps {
   idea: Idea;
-  offset: number;
-  setCommentOverflow: (ideaId: number, height: number) => void;
+  baseCommentOffset: number;
+  chatCommentOffset: number;
+  setCommentOverflow: (isChatComment: boolean, ideaId: number, height: number) => void;
 }
 
-const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, offset, setCommentOverflow }) => {
-  const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
+const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
-
+  const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
-  const commentPanelRef = useRef<HTMLDivElement>(null);
+  const baseCommentPanelRef = useRef<HTMLDivElement>(null);
+  const chatCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
 
-  const handleMouseEnter = () => {
-    setIsHighlighted(true);
+  const commentListHeightChanged = (isChat: boolean, newHeight: number, offset: number) => {
+    // Get the height of the idea object
+    const containerHeight = containerRef.current?.getBoundingClientRect().height || 0;
+    // Calculate how far past the idea object the comments go
+    const commentOverflow = (offset || 0) + newHeight - containerHeight;
+    setCommentOverflow(isChat, idea.id, Math.max(0, commentOverflow));
   };
-  const handleMouseLeave = () => {
-    setIsHighlighted(false)
-  };
-
-  useLayoutEffect(() => {
-    const commentPanelResizeObserver = new ResizeObserver(entries => {
-      const commentPanelHeight = entries[0].contentRect.height;
-      const containerHeight = containerRef.current?.getBoundingClientRect().height || 0;
-      const commentOverflow = (offset || 0) + commentPanelHeight - containerHeight;
-      setCommentOverflow(idea.id, Math.max(0, commentOverflow));
-    });
-
-    if (commentPanelRef.current) { commentPanelResizeObserver.observe(commentPanelRef.current); }
-    return () => { commentPanelResizeObserver.disconnect(); };
-  }, [commentPanelRef, idea.id, offset, setCommentOverflow]);
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
 
   return (
     <Container ref={containerRef}>
-      <SidePanel />
-      <CommentPanel
-        position="left"
-        style={{ top: `${offset}px` }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {baseComments.length > 0 && baseComments.map(comment => (
-          <CommentContainer key={comment.id} comment={comment} />
-        ))}
-      </CommentPanel>
+      <SidePanel>
+        <div
+          ref={baseCommentPanelRef}
+          onMouseEnter={() => setIsHighlighted(true)}
+          onMouseLeave={() => setIsHighlighted(false)}>
+          <CommentList
+            offset={baseCommentOffset}
+            comments={baseComments}
+            onHeightChanged={(newHeight) => commentListHeightChanged(false, newHeight, baseCommentOffset)} />
+        </div>
+      </SidePanel>
       <CenterPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
         </StyledIdeaContainer>
       </CenterPanel>
-      <SidePanel />
-      <CommentPanel
-        position="right"
-        ref={commentPanelRef}
-        style={{ top: `${offset}px` }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {chatComments.length > 0 && chatComments.map(comment => (
-          <CommentContainer key={comment.id} comment={comment} />
-        ))}
-      </CommentPanel>
+      <SidePanel>
+        <div
+          ref={chatCommentPanelRef}
+          onMouseEnter={() => setIsHighlighted(true)}
+          onMouseLeave={() => setIsHighlighted(false)}>
+          <CommentList
+            offset={chatCommentOffset}
+            comments={chatComments}
+            onHeightChanged={(newHeight) => commentListHeightChanged(true, newHeight, chatCommentOffset)} />
+        </div>
+      </SidePanel>
     </Container>
   );
 };

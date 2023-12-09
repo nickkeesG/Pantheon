@@ -101,5 +101,24 @@ export const selectIdeasUpToMaxCommented = createSelector(
   }
 )
 
+export const selectIdeaTrunkFromCurrentIdea = createSelector(
+  [(state: RootState) => state.text.currentIdea, (state: RootState) => state.text.ideas],
+  (currentIdea, ideas) => {
+    let ideaTrunk = [];
+    let currentId: number | null = currentIdea?.id ?? null;
+    while (currentId) {
+      const current = ideas.find(idea => idea.id === currentId);
+      if (!current) {
+        console.error("Error finding idea list! IdeaId: " + currentId)
+        return ideaTrunk
+      }
+      ideaTrunk.unshift(current);
+      currentId = current.parentIdeaId;
+    }
+
+    return ideaTrunk
+  }
+)
+
 export const { addIdea, addComment, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

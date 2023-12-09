@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import IdeaContainer from './IdeaContainer';
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../hooks';
+import { selectIdeaTrunkFromCurrentIdea } from '../redux/textSlice';
 
 const StyledHistoryContainer = styled.div`
   padding: 10px 0px;
 `;
 
 const HistoryContainer = () => {
-  const ideas = useAppSelector(state => state.text.ideas)
+  const ideas = useAppSelector(selectIdeaTrunkFromCurrentIdea);
   // Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
   const [baseCommentOverflows, setBaseCommentOverflows] = useState<{ [key: number]: number }>({});
   const [chatCommentOverflows, setChatCommentOverflows] = useState<{ [key: number]: number }>({});

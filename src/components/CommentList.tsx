@@ -26,7 +26,7 @@ const CommentList: React.FC<CommentListProps> = ({ offset, comments, onHeightCha
 
     if (listRef.current) { resizeObserver.observe(listRef.current); }
     return () => { resizeObserver.disconnect(); };
-  }, [listRef, offset, comments]);
+  }, [listRef, offset, comments, onHeightChanged]);
 
   return (
     <StyledCommentList

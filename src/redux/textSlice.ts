@@ -3,6 +3,7 @@ import { RootState } from './store';
 
 export interface Idea {
   id: number;
+  parentIdeaId: number | null;
   text: string;
 }
 
@@ -17,12 +18,14 @@ export interface Comment {
 export interface TextState {
   lastTimeActive: number;
   ideas: Idea[];
+  currentIdea: Idea | null;
   comments: Comment[];
 }
 
 const initialState: TextState = {
   lastTimeActive: Date.now(),
   ideas: [],
+  currentIdea: null,
   comments: []
 };
 
@@ -33,13 +36,15 @@ const textSlice = createSlice({
     setLastTimeActive(state) {
       state.lastTimeActive = Date.now();
     },
-    addIdea(state, action: PayloadAction<string>) {
-      const newId = state.ideas.length > 0 ? state.ideas[state.ideas.length - 1].id + 1 : 0;
+    addIdea(state, action: PayloadAction<{ parentIdeaId: number | null, text: string }>) {
+      const newId = Date.now();
       const newIdea: Idea = {
         id: newId,
-        text: action.payload
+        parentIdeaId: action.payload.parentIdeaId,
+        text: action.payload.text
       };
       state.ideas.push(newIdea);
+      state.currentIdea = newIdea;
     },
     addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
       const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;

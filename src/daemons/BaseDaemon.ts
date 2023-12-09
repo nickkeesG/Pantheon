@@ -12,18 +12,18 @@ class BaseDaemon {
   async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string) {
     var context = baseTemplate;
 
-    for (var i = 0; i < pastIdeas.length; i++) {
+    for (let i = 0; i < pastIdeas.length; i++) {
       context += '\n' + ideaTemplate + ' ' + pastIdeas[i].text;
       
       var comments = commentsForPastIdeas[pastIdeas[i].id] || [];
-      for (var j = 0; j < comments.length; j++) {
+      for (let j = 0; j < comments.length; j++) {
         context += '\n' + commentTemplate + ' [' + comments[j].daemonName + "]: " + comments[j].text;
       }
     }
     
     // Pick a random current idea
     var randomIndex = Math.floor(Math.random() * currentIdeas.length);
-    for (var i = 0; i < randomIndex + 1; i++) {
+    for (let i = 0; i < randomIndex + 1; i++) {
       context += '\n' + ideaTemplate + ' ' + currentIdeas[i].text;
     }
 
@@ -42,7 +42,7 @@ class BaseDaemon {
     // Remove the brackets from the daemon name
     const daemonName = daemonNameWithBrackets.replace('[', '').replace(']', '').trim();
 
-    if(daemonName == "" || content == "") {
+    if(daemonName === "" || content === "") {
       return null;
     }
 

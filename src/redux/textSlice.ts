@@ -36,6 +36,9 @@ const textSlice = createSlice({
     setLastTimeActive(state) {
       state.lastTimeActive = Date.now();
     },
+    setCurrentIdea(state, action: PayloadAction<Idea | null>) {
+      state.currentIdea = action.payload;
+    },
     addIdea(state, action: PayloadAction<{ parentIdeaId: number | null, text: string }>) {
       const newId = Date.now();
       const newIdea: Idea = {
@@ -120,5 +123,5 @@ export const selectIdeaTrunkFromCurrentIdea = createSelector(
   }
 )
 
-export const { addIdea, addComment, setLastTimeActive } = textSlice.actions;
+export const { setCurrentIdea, addIdea, addComment, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

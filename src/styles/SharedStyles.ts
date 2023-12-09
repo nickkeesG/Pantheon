@@ -26,6 +26,33 @@ export const TextButton = styled.button`
   }
 `;
 
+export const IconButton = styled.button`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: var(--highlight);
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 1px var(--line-color);
+  }
+
+  img {
+    max-width: 16px;
+    max-height: 16px;
+  }
+`;
+
 export const TextArea = styled.textarea`
   width: 100%;
   padding: 10px;

@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef } from 'react';
 const StyledCommentList = styled.div`
   position: absolute;
   top: 0;
-  width: 30%;
+  width: 27%;
   z-index: 10;
 `;
 

@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea, selectCommentsForIdea } from '../redux/textSlice';
-import { useAppSelector } from '../hooks';
+import { Idea, selectCommentsForIdea, setCurrentIdea } from '../redux/textSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
+import { IconButton } from '../styles/SharedStyles';
+import leafIcon from '../assets/leaf.webp';
 
 const Container = styled.div`
   display: flex;
@@ -12,18 +14,24 @@ const Container = styled.div`
 `;
 
 const SidePanel = styled.div`
-  flex: 1 1 30%;
-  min-width: 30%;
+  flex: 0 0 27%;
 `;
 
-const CenterPanel = styled.div`
+const ActionPanel = styled.div`
+  flex: 0 0 24px; // Fixed width
   display: flex;
-  flex-direction: column;
-  flex: 1 1 40%;
-  min-width: 40%;
+  align-items: center;
+  justify-content: center;
+`
+
+const CenterPanel = styled.div`
+  flex: 0 0 46%;
+  display: flex;
+  flex-direction: row;
 `;
 
 const StyledIdeaContainer = styled.div`
+  flex: 1;
   padding: 10px;
   margin: 10px 0px;
   border: 0.1px solid var(--line-color-dark);
@@ -38,12 +46,14 @@ interface IdeaContainerProps {
 }
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
+  const dispatch = useAppDispatch();
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
   const baseCommentPanelRef = useRef<HTMLDivElement>(null);
   const chatCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
+  const [showIconButtons, setShowIconButtons] = useState(false);
 
   const commentListHeightChanged = (isChat: boolean, newHeight: number, offset: number) => {
     // Get the height of the idea object
@@ -53,10 +63,18 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
     setCommentOverflow(isChat, idea.id, Math.max(0, commentOverflow));
   };
 
+  const createNewBranch = () => {
+    dispatch(setCurrentIdea(idea))
+  }
+
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
 
   return (
-    <Container ref={containerRef}>
+    <Container
+      ref={containerRef}
+      onMouseEnter={() => setShowIconButtons(true)}
+      onMouseLeave={() => setShowIconButtons(false)}
+    >
       <SidePanel>
         <div
           ref={baseCommentPanelRef}
@@ -69,9 +87,16 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
         </div>
       </SidePanel>
       <CenterPanel>
+        <ActionPanel style={{ visibility: showIconButtons ? 'visible' : 'hidden' }}>
+        </ActionPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
         </StyledIdeaContainer>
+        <ActionPanel style={{ visibility: showIconButtons ? 'visible' : 'hidden' }}>
+          <IconButton onClick={createNewBranch}>
+            <img src={leafIcon} alt="Leaf icon" />
+          </IconButton>
+        </ActionPanel>
       </CenterPanel>
       <SidePanel>
         <div

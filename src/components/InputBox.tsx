@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { TextArea } from '../styles/SharedStyles';
 
 const Centered = styled.div`
-  width: 40%;
+  width: 46%;
   margin: auto;
 `
 

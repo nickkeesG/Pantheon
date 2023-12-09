@@ -19,8 +19,10 @@ const DaemonManager = () => {
   const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
   const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
 
-  const openAIKey = useAppSelector(state => state.text.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
+  const openAIKey = useAppSelector(state => state.llm.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
+  const chatModel = useAppSelector(state => state.llm.chatModel);
+  const baseModel = useAppSelector(state => state.llm.baseModel);
 
   useEffect(() => {
     const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
@@ -34,17 +36,27 @@ const DaemonManager = () => {
 
   useEffect(() => {
     const dispatchChatComment = async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
-      const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId);
-      dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
-      setIsCommenting(false);
+      try {
+        const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
+        dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
+      } catch (error) {
+        console.error('Failed to dispatch chat comment:', error);
+      } finally {
+        setIsCommenting(false);
+      }
     }
   
     const dispatchBaseComment = async (pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, daemon: BaseDaemon) => {
-      const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId);
-      if (result) {
-        dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
+      try {
+        const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId, baseModel);
+        if (result) {
+          dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
+        }
+      } catch (error) {
+        console.error('Failed to dispatch base comment:', error);
+      } finally {
+        setIsCommenting(false);
       }
-      setIsCommenting(false);
     }
 
     const interval = setInterval(() => {
@@ -88,6 +100,8 @@ const DaemonManager = () => {
       isCommenting,
       openAIKey,
       openAIOrgId,
+      chatModel,
+      baseModel,
       dispatch]);
 
   return null;

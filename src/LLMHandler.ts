@@ -20,10 +20,9 @@ async function CallBaseAPI(data: any, config: any) {
     }
 }
 
-export async function GenerateChatComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string) {
-
+export async function GenerateChatComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string, chatModel: string) {
     var data = {
-        model: "gpt-4-1106-preview",
+        model: chatModel,
         messages: [
             {role: "system", content: systemPrompt},
             {role: "user", content: userPrompts[0]}
@@ -49,7 +48,7 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
     }
 
     var finalData = {
-        model: "gpt-4-1106-preview",
+        model: chatModel,
         response_format: {
             type: "json_object",
         },
@@ -60,9 +59,9 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
     return finalResponse;
 }
 
-export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string) {
+export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string) {
     var data = {
-        model: "davinci-002",
+        model: baseModel,
         prompt: prompt,
         max_tokens: 128,
         stop: "\n"

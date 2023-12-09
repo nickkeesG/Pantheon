@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiSettings, FiX } from 'react-icons/fi';
 import styled from 'styled-components';
-import { setOpenaiKey, setOpenaiOrgId } from '../redux/textSlice';
+import { updateChatModel, updateBaseModel, setOpenaiKey, setOpenaiOrgId } from '../redux/llmSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
@@ -73,8 +73,10 @@ function createEmptyChatDaemonConfig(): ChatDaemonConfig {
 const Settings = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const openAIKey = useAppSelector(state => state.text.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
+  const openAIKey = useAppSelector(state => state.llm.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
+  const chatModel = useAppSelector(state => state.llm.chatModel);
+  const baseModel = useAppSelector(state => state.llm.baseModel);
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [addingNewDaemon, setAddingNewDaemon] = useState(false);
@@ -89,6 +91,14 @@ const Settings = () => {
 
   const handleOrgIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setOpenaiOrgId(event.target.value));
+  }
+
+  const handleChatModelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateChatModel(event.target.value));
+  }
+
+  const handleBaseModelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateBaseModel(event.target.value));
   }
 
   useEffect(() => {
@@ -128,6 +138,22 @@ const Settings = () => {
               placeholder="org-..."
               value={openAIOrgId}
               onChange={handleOrgIdChange}
+            />
+          </TextSettingContainer>
+          <TextSettingContainer>
+            <SettingLabel>Chat Model</SettingLabel>
+            <TextInput
+              placeholder={chatModel}
+              value={chatModel}
+              onChange={handleChatModelChange}
+            />
+          </TextSettingContainer>
+          <TextSettingContainer>
+            <SettingLabel>Base Model</SettingLabel>
+            <TextInput
+              placeholder={baseModel}
+              value={baseModel}
+              onChange={handleBaseModelChange}
             />
           </TextSettingContainer>
           <h4>Chat daemons</h4>

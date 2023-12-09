@@ -15,16 +15,12 @@ export interface Comment {
 }
 
 export interface TextState {
-  openAIKey: string;
-  openAIOrgId: string;
   lastTimeActive: number;
   ideas: Idea[];
   comments: Comment[];
 }
 
 const initialState: TextState = {
-  openAIKey: localStorage.getItem('openAIKey') || '',
-  openAIOrgId: localStorage.getItem('openAIOrgId') || '',
   lastTimeActive: Date.now(),
   ideas: [],
   comments: []
@@ -34,14 +30,6 @@ const textSlice = createSlice({
   name: 'text',
   initialState,
   reducers: {
-    setOpenaiKey(state, action: PayloadAction<string>) {
-      localStorage.setItem('openAIKey', action.payload);
-      state.openAIKey = action.payload;
-    },
-    setOpenaiOrgId(state, action: PayloadAction<string>) {
-      localStorage.setItem('openAIOrgId', action.payload);
-      state.openAIOrgId = action.payload;
-    },
     setLastTimeActive(state) {
       state.lastTimeActive = Date.now();
     },
@@ -108,5 +96,5 @@ export const selectIdeasUpToMaxCommented = createSelector(
   }
 )
 
-export const { setOpenaiKey, setOpenaiOrgId, addIdea, addComment, setLastTimeActive } = textSlice.actions;
+export const { addIdea, addComment, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

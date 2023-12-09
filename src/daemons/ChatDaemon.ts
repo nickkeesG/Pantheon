@@ -33,7 +33,7 @@ class ChatDaemon {
     this.contextTemplate = contextTemplate;
   }
 
-  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string) {
+  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, chatModel: string) {
     var history = "";
     for (let i = 0; i < pastIdeas.length; i++) {
       history += this.historyTemplate.replace("{}", pastIdeas[i].text);
@@ -57,7 +57,7 @@ class ChatDaemon {
     }
     userPrompts.push(this.config.endInstruction);
 
-    var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId);
+    var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
 
     // Parse the JSON string to a JavaScript object
     var commentsObj = JSON.parse(comments);

@@ -32,7 +32,7 @@ class BaseDaemon {
     return context;
   }
 
-  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string) {
+  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string, baseModel: string) {
     let context = this.getContext(pastIdeas, commentsForPastIdeas);
     
     // Pick a random current idea
@@ -45,7 +45,7 @@ class BaseDaemon {
     context += "\n" + commentPrefix;
     console.log(context);
 
-    var response = await GenerateBaseComments(context, openaiKey, openaiOrgId);
+    var response = await GenerateBaseComments(context, openaiKey, openaiOrgId, baseModel);
     console.log(context + response[0]);
 
     let commentTemplateDivider = "";

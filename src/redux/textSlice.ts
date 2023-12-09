@@ -68,19 +68,23 @@ const textSlice = createSlice({
 });
 
 export const selectCommentsForIdea = createSelector(
-  [(state: RootState, ideaId: number, daemonType: string = '') => ({ ideaId, daemonType }), (state: RootState) => state.text.comments],
-  ({ ideaId, daemonType }, comments) => comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
+  [
+    (state: RootState) => state.text.comments,
+    (_: RootState, ideaId: number) => ideaId,
+    (_: RootState, __: number, daemonType: string = '') => daemonType
+  ],
+  (comments, ideaId, daemonType) => comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
 );
 
-export const selectCommentsGroupedByIdea = createSelector(
-  [(state: RootState) => state.text.comments],
-  (comments) => {
-    return comments.reduce((acc, comment) => {
-      const { ideaId } = comment;
-      if (!acc[ideaId]) {
-        acc[ideaId] = [];
-      }
-      acc[ideaId].push(comment);
+export const selectCommentsGroupedByIdeaIds = createSelector(
+  [
+    (state: RootState) => state.text.comments,
+    (_: RootState, ideaIds: number[]) => ideaIds,
+    (_: RootState, __: number[], daemonType: string = '') => daemonType
+  ],
+  (comments, ideaIds, daemonType) => {
+    return ideaIds.reduce((acc, ideaId) => {
+      acc[ideaId] = comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType));
       return acc;
     }, {} as Record<number, Comment[]>);
   }

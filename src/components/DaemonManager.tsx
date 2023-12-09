@@ -1,9 +1,8 @@
 import BaseDaemon from '../daemons/BaseDaemon';
-import { useEffect, useState } from 'react';
-import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsForIdea, Idea, Comment } from '../redux/textSlice';
+import { useEffect, useMemo, useState } from 'react';
+import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, Idea, Comment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useSelector } from 'react-redux';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 
 const DaemonManager = () => {
@@ -11,16 +10,12 @@ const DaemonManager = () => {
   const lastTimeActive = useAppSelector(state => state.text.lastTimeActive);
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
-  const chatDaemonConfigs = useSelector(selectEnabledChatDaemons);
+  const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
   const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
-  const commentsForPastIdeas = useAppSelector(state =>
-    pastIdeas.reduce((acc, idea) => {
-      acc[idea.id] = selectCommentsForIdea(state, idea.id, "chat");
-      return acc;
-    }, {} as Record<number, Comment[]>)
-  );
+  const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
+  const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
 
   const openAIKey = useAppSelector(state => state.text.openAIKey);
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);

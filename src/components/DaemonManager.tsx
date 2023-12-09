@@ -66,7 +66,7 @@ const DaemonManager = () => {
         setHasBeenInactive(true);
 
         // Make new comments
-        if (currentIdeas.length > 0 && openAIKey && openAIOrgId) {
+        if (currentIdeas.length > 0 && openAIKey) {
           setIsCommenting(true);
 
           // Chat Daemons

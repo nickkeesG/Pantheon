@@ -12,6 +12,7 @@ const DaemonManager = () => {
   const [isCommenting, setIsCommenting] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
+  const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
   const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
   const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
@@ -20,7 +21,10 @@ const DaemonManager = () => {
   const openAIKey = useAppSelector(state => state.text.openAIKey);
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
 
-  
+  useEffect(() => {
+    const daemon = new BaseDaemon();
+    setBaseDaemon(daemon);
+  }, []);
 
   useEffect(() => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));
@@ -57,10 +61,11 @@ const DaemonManager = () => {
           dispatchChatComment(pastIdeas, currentIdeas, randomDaemon);
 
           // Base Daemons
-          const baseDaemon = new BaseDaemon();
-          const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
-          if (hasComments) {
-            dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
+          if(baseDaemon) {
+            const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
+            if (hasComments) {
+              dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
+            }
           }
         }
       }
@@ -75,7 +80,8 @@ const DaemonManager = () => {
   }, [lastTimeActive, 
       hasBeenInactive, 
       currentIdeas, 
-      chatDaemons, 
+      chatDaemons,
+      baseDaemon,
       pastIdeas,
       commentsForPastIdeas,
       isCommenting,

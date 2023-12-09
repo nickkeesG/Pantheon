@@ -15,7 +15,7 @@ class BaseDaemon {
     this.commentTemplate = config.commentTemplate;
   }
 
-  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string) {
+  getContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
@@ -26,6 +26,14 @@ class BaseDaemon {
         context += '\n' + this.commentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
       }
     }
+
+    context = this.mainTemplate.replace("{}", context);
+
+    return context;
+  }
+
+  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, openaiKey: string, openaiOrgId: string) {
+    let context = this.getContext(pastIdeas, commentsForPastIdeas);
     
     // Pick a random current idea
     var randomIndex = Math.floor(Math.random() * currentIdeas.length);
@@ -35,7 +43,6 @@ class BaseDaemon {
 
     const commentPrefix= this.commentTemplate.substring(0, this.commentTemplate.indexOf("{}"));
     context += "\n" + commentPrefix;
-    context = this.mainTemplate.replace("{}", context);
     console.log(context);
 
     var response = await GenerateBaseComments(context, openaiKey, openaiOrgId);

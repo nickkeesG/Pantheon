@@ -127,6 +127,12 @@ const daemonSlice = createSlice({
         };
       }
     },
+    updateBaseDaemon(state, action: PayloadAction<BaseDaemonConfig>) {
+      state.baseDaemon = {
+        ...state.baseDaemon,
+        ...action.payload
+      };
+    }
   },
 });
 
@@ -140,5 +146,5 @@ export const selectBaseDaemon = createSelector(
   (baseDaemon) => baseDaemon
 );
 
-export const { addChatDaemon, removeChatDaemon, updateChatDaemon } = daemonSlice.actions;
+export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon} = daemonSlice.actions;
 export default daemonSlice.reducer;

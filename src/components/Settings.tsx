@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { setOpenaiKey, setOpenaiOrgId } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
+import BaseDaemonSettings from './BaseDaemonSettings';
 import { TextButton, TextInput } from '../styles/SharedStyles';
 import { ChatDaemonConfig } from '../redux/daemonSlice';
 
@@ -75,6 +76,7 @@ const Settings = () => {
   const openAIKey = useAppSelector(state => state.text.openAIKey);
   const openAIOrgId = useAppSelector(state => state.text.openAIOrgId);
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
+  const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [addingNewDaemon, setAddingNewDaemon] = useState(false);
 
   const toggleSettings = () => {
@@ -141,7 +143,10 @@ const Settings = () => {
                 Add new daemon
               </TextButton>
             )}
-
+          </div>
+          <h4>Base Daemons</h4>
+          <div>
+            <BaseDaemonSettings config={baseDaemonConfig} />
           </div>
         </SettingsPanel>
       )}

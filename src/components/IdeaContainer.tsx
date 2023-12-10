@@ -1,12 +1,11 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea, selectBranchesFromIdea, selectCommentsForIdea, setCurrentIdea } from '../redux/textSlice';
+import { Idea, switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfIdea } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
-import { Icon, IconButton } from '../styles/SharedStyles';
-import leafIcon from '../assets/leaf.webp';
+import { IconButton } from '../styles/SharedStyles';
 import plusIcon from '../assets/plus.webp';
-import ChangeBranchPopup from './ChangeBranchPopup';
+import arrowIcon from '../assets/arrow-thin.webp';
 
 const Container = styled.div`
   display: flex;
@@ -51,7 +50,8 @@ interface IdeaContainerProps {
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
   const dispatch = useAppDispatch();
-  const branchingChildIdeas = useAppSelector(state => selectBranchesFromIdea(state, idea.id))
+  const childIdeas = useAppSelector(state => selectChildrenOfIdea(state, idea.id));
+  const hasBranches = childIdeas.length > 1;
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,7 +59,6 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
   const chatCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [showIconButtons, setShowIconButtons] = useState(false);
-  const [showChangeBranchPopup, setShowChangeBranchPopup] = useState(false);
 
   const commentListHeightChanged = (isChat: boolean, newHeight: number, offset: number) => {
     // Get the height of the idea object
@@ -71,6 +70,10 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
 
   const createNewBranch = () => {
     dispatch(setCurrentIdea(idea))
+  }
+
+  const switchBranches = (moveForward: boolean) => {
+    dispatch(switchBranch({ parentIdea: idea, moveForward }))
   }
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
@@ -93,28 +96,38 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
         </div>
       </SidePanel>
       <CenterPanel>
-        <ActionPanel style={{ visibility: showIconButtons ? 'visible' : 'hidden' }}>
+        <ActionPanel style={{ visibility: hasBranches ? 'visible' : 'hidden' }}>
+          <IconButton
+            onClick={() => switchBranches(false)}
+            style={{
+              transform: 'rotate(90deg)',
+              width: '28px'
+            }}
+          >
+            <img src={arrowIcon} />
+          </IconButton>
         </ActionPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
-        </StyledIdeaContainer>
-        <ActionPanel>
-          <IconButton style={{ visibility: showIconButtons ? 'visible' : 'hidden' }} onClick={createNewBranch}>
+          <IconButton
+            style={{
+              visibility: showIconButtons ? 'visible' : 'hidden',
+              float: 'right'
+            }}
+            onClick={createNewBranch}>
             <img src={plusIcon} alt="Plus icon" />
           </IconButton>
-          <Icon
-            onMouseEnter={() => setShowChangeBranchPopup(true)}
-            onMouseLeave={() => setShowChangeBranchPopup(false)}
+        </StyledIdeaContainer>
+        <ActionPanel style={{ visibility: hasBranches ? 'visible' : 'hidden' }}>
+          <IconButton
+            onClick={() => switchBranches(true)}
             style={{
-              position: 'relative',
-              visibility: branchingChildIdeas.length > 0 ? 'visible' : 'hidden'
+              transform: 'rotate(-90deg)',
+              width: '28px'
             }}
           >
-            <img src={leafIcon} alt="Leaf icon" />
-            {showChangeBranchPopup &&
-              <ChangeBranchPopup ideas={branchingChildIdeas} />
-            }
-          </Icon>
+            <img src={arrowIcon} />
+          </IconButton>
         </ActionPanel>
       </CenterPanel>
       <SidePanel>

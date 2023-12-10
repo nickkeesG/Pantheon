@@ -48,6 +48,7 @@ export const IconButton = styled.button`
   height: 20px;
   cursor: pointer;
   background: none;
+  opacity: 70%;
   border: none;
   padding: 8px;
   display: inline-flex;
@@ -59,9 +60,9 @@ export const IconButton = styled.button`
   &:hover {
     background-color: var(--highlight);
   }
-  
-  &:focus {
-    box-shadow: 0 0 0 1px var(--line-color);
+
+  &:active {
+    opacity: 50%;
   }
 
   img {

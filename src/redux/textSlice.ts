@@ -36,6 +36,10 @@ const getAllAncestors = (ideas: Idea[], lastIdeaId: number) => {
   return ancestors;
 };
 
+const getChildren = (ideas: Idea[], parentId: number) => {
+  return ideas.filter(idea => idea.parentIdeaId == parentId);
+}
+
 const getIdeasSinceLastComment = (ideas: Idea[], comments: Comment[]) => {
   // Returns all ideas since the most recent idea that has received comments
   const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
@@ -87,6 +91,24 @@ const textSlice = createSlice({
       const newBranch = getAllAncestors(state.ideas, newCurrentIdea.id)
       state.currentBranch = newBranch;
     },
+    switchBranch(state, action: PayloadAction<{ parentIdea: Idea, moveForward: boolean }>) {
+      const parentIdea = action.payload.parentIdea;
+      const childIdeas = getChildren(state.ideas, parentIdea.id);
+      const currentChild = state.currentBranch.find(idea => idea.parentIdeaId === parentIdea.id);
+      let newCurrentIdea : Idea;
+      if (currentChild) {
+        const currentIndex = childIdeas.findIndex(idea => idea.id === currentChild.id);
+        const newChild = action.payload.moveForward
+          ? childIdeas[(currentIndex + 1) % childIdeas.length]
+          : childIdeas[(currentIndex - 1 + childIdeas.length) % childIdeas.length]
+        newCurrentIdea = getMostRecentDescendent(state.ideas, newChild)
+      } else {
+        // User was likely adding a new branch but changed their mind
+        newCurrentIdea = getMostRecentDescendent(state.ideas, parentIdea);
+      }
+      const newBranch = getAllAncestors(state.ideas, newCurrentIdea.id)
+      state.currentBranch = newBranch;
+    },
     addIdea(state, action: PayloadAction<{ text: string }>) {
       const parent = state.currentBranch.length > 0 ? state.currentBranch[state.currentBranch.length - 1] : null;
       const newId = Date.now();
@@ -111,6 +133,15 @@ const textSlice = createSlice({
     }
   },
 });
+
+export const selectChildrenOfIdea = createSelector(
+  [
+    (state: RootState) => state.text.ideas,
+    (_: RootState, ideaId: number) => ideaId
+  ], (ideas, ideaId) => {
+    return getChildren(ideas, ideaId);
+  }
+)
 
 export const selectCommentsForIdea = createSelector(
   [
@@ -224,5 +255,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, addIdea, addComment, setLastTimeActive} = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addIdea, addComment, setLastTimeActive} = textSlice.actions;
 export default textSlice.reducer;

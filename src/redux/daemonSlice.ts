@@ -102,7 +102,28 @@ Rules:
     }
   ],
   baseDaemon: {
-    mainTemplate: '# Brainstorming\n{}',
+    mainTemplate: 
+`# Tool Instructions
+- The name of the tool is Pantheon
+- The purpose is to help you brainstorm and organize your thoughts
+
+## Daemons
+- Daemons are AI assistants that help you brainstorm, and are reflections of your own thoughts
+    - Daemons offer comments on your current ideas, which appear in the left and right columns
+- Chat Daemons: The right hand column is populated with chat daemons (their behavior is hardcoded)
+  - Chat daemons only see the text that you write yourself (they can't see each other)
+- Base Daemons: The left hand column contains base daemons, who are reflections of the chat daemons produced by a base model
+  - Base daemons can see the text you write, as well as the text written by the chat daemons, but not other base daemons
+- You can implement new chat models in settings, as well as toggle which are currently active.
+- Chat and base daemon behavior is determined by config files you can edit in the settings
+- You can also switch the base model/chat model being used in settings
+
+## Idea Tree
+- You can branch your current stream of thoughts by pressing the "plus" icon to the right of an idea
+- You can then navigate branches by pressing the "leaf" icons to the left and right of the idea
+
+# Brainstorming Session (Active)
+{}`,
     ideaTemplate: '-{}',
     commentTemplate: '  -[{}]:{}'
   }

@@ -21,6 +21,7 @@ export const TextButton = styled.button`
   margin: 4px;
   cursor: pointer;
   font-family: inherit;
+  font-size: inherit;
   &:hover {
     background-color: var(--highlight);
   }

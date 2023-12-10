@@ -8,6 +8,8 @@ html, body, #root, .App {
   --bg-color: #1c2028;
   --bg-color-light: #232830;
   --bg-color-lighter: #3c4048;
+  --bg-color-dark: #0e1014;
+  --bg-color-dark-transparent: #0e101499;
   --text-color: rgb(215, 216, 219);
   --text-color-dark: rgb(145, 150, 162);
   --line-color: #707070;

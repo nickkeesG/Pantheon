@@ -1,10 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea, selectCommentsForIdea, setCurrentIdea } from '../redux/textSlice';
+import { Idea, selectBranchesFromIdea, selectCommentsForIdea, setCurrentIdea } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
 import { IconButton } from '../styles/SharedStyles';
 import leafIcon from '../assets/leaf.webp';
+import plusIcon from '../assets/plus.webp';
+import ChangeBranchPopup from './ChangeBranchPopup';
 
 const Container = styled.div`
   display: flex;
@@ -18,8 +20,9 @@ const SidePanel = styled.div`
 `;
 
 const ActionPanel = styled.div`
-  flex: 0 0 24px; // Fixed width
+  flex: 0 0 24px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `
@@ -48,6 +51,7 @@ interface IdeaContainerProps {
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
   const dispatch = useAppDispatch();
+  const branchingChildIdeas = useAppSelector(state => selectBranchesFromIdea(state, idea.id))
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,6 +59,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
   const chatCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [showIconButtons, setShowIconButtons] = useState(false);
+  const [showChangeBranchPopup, setShowChangeBranchPopup] = useState(false);
 
   const commentListHeightChanged = (isChat: boolean, newHeight: number, offset: number) => {
     // Get the height of the idea object
@@ -93,9 +98,23 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
         <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
         </StyledIdeaContainer>
-        <ActionPanel style={{ visibility: showIconButtons ? 'visible' : 'hidden' }}>
-          <IconButton onClick={createNewBranch}>
+        <ActionPanel>
+          <IconButton style={{ visibility: showIconButtons ? 'visible' : 'hidden' }} onClick={createNewBranch}>
+            <img src={plusIcon} alt="Plus icon" />
+          </IconButton>
+          <IconButton
+            onMouseEnter={() => setShowChangeBranchPopup(true)}
+            onMouseLeave={() => setShowChangeBranchPopup(false)}
+            style={{
+              cursor: 'default',
+              position: 'relative',
+              visibility: branchingChildIdeas.length > 0 ? 'visible' : 'hidden'
+            }}
+          >
             <img src={leafIcon} alt="Leaf icon" />
+            {showChangeBranchPopup &&
+              <ChangeBranchPopup ideas={branchingChildIdeas} />
+            }
           </IconButton>
         </ActionPanel>
       </CenterPanel>

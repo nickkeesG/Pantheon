@@ -39,6 +39,23 @@ const textSlice = createSlice({
     setCurrentIdea(state, action: PayloadAction<Idea | null>) {
       state.currentIdea = action.payload;
     },
+    changeBranch(state, action: PayloadAction<Idea>) {
+      // TODO Functions like this would be faster if ideas also kept track of their child ideas
+      // Find the most recent descendent of the given ancestor idea through the whole tree
+      const ideas = state.ideas
+      let mostRecentDescendent: Idea | null = action.payload;
+      let queue = [mostRecentDescendent];
+      while (queue.length > 0) {
+        const currentIdea = queue.shift()!;
+        const children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
+        queue.push(...children);
+        if (currentIdea.id > mostRecentDescendent.id) {
+          mostRecentDescendent = currentIdea;
+        }
+      }
+
+      state.currentIdea = mostRecentDescendent;
+    },
     addIdea(state, action: PayloadAction<{ parentIdeaId: number | null, text: string }>) {
       const newId = Date.now();
       const newIdea: Idea = {
@@ -123,5 +140,17 @@ export const selectIdeaTrunkFromCurrentIdea = createSelector(
   }
 )
 
-export const { setCurrentIdea, addIdea, addComment, setLastTimeActive } = textSlice.actions;
+export const selectBranchesFromIdea = createSelector(
+  [
+    (state: RootState) => state.text.ideas,
+    (state: RootState) => selectIdeaTrunkFromCurrentIdea(state),
+    (_: RootState, parentId: number) => parentId
+  ],
+  (ideas, currentIdeaTrunk, parentId) => {
+    const currentIdeaTrunkIds = new Set(currentIdeaTrunk.map(idea => idea.id));
+    return ideas.filter(idea => idea.parentIdeaId === parentId && !currentIdeaTrunkIds.has(idea.id));
+  }
+)
+
+export const { setCurrentIdea, changeBranch, addIdea, addComment, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

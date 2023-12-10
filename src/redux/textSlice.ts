@@ -165,5 +165,64 @@ export const selectBranchesFromIdea = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, addIdea, addComment, setLastTimeActive } = textSlice.actions;
+export const selectFullContext = createSelector(
+  [
+    (state: RootState) => state.text.ideas
+  ],
+  (ideas) => {
+    interface IdeaExport {
+      text: string;
+      incoming: boolean;
+      outgoing: boolean;
+    }
+
+    function exploreBranch(ideas : Idea[], selectedIdea : Idea): IdeaExport[] {
+      let ideaExports: IdeaExport[] = [];
+      let openIdeas: Idea[] = []; // Ideas that have multiple children (that need to be followed up on)
+      while(selectedIdea) {
+        let newExport = {
+          text: selectedIdea.text,
+          incoming: false,
+          outgoing: false
+        }
+        let children = ideas.filter(idea => idea.parentIdeaId === selectedIdea.id);
+        if (children.length > 1) {
+          newExport.outgoing = true;
+          openIdeas.push(selectedIdea); //save the idea to follow up on later
+        }
+        ideaExports.push(newExport);
+
+        if(children.length === 0) {
+          break;
+        } else {
+          selectedIdea = children[0];
+        }
+      }
+
+      // Now follow up on the open ideas
+      for (let i = 0; i < openIdeas.length; i++) {
+        let currentIdea = openIdeas[i];
+        let newExport = {
+          text: currentIdea.text,
+          incoming: true,
+          outgoing: false
+        }
+        ideaExports.push(newExport);
+        let children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
+        for (let j = 1; j < children.length; j++) { //skip the first child, since we already explored it
+          let newBranch = exploreBranch(ideas, children[j]); //
+          ideaExports.push(...newBranch);
+        }
+      }
+
+      return ideaExports;
+    }
+
+    let rootIdea = ideas.find(idea => idea.parentIdeaId === null);
+    let ideaExports = exploreBranch(ideas, rootIdea!);
+    return ideaExports;
+  }
+)
+
+export const { setCurrentIdea, changeBranch, addIdea, addComment, setLastTimeActive} = textSlice.actions;
 export default textSlice.reducer;

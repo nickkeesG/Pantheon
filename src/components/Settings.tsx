@@ -119,7 +119,7 @@ const Settings = () => {
 
   return (
     <div>
-      <SettingsButton onClick={toggleSettings} />
+      <SettingsButton title="Settings" onClick={toggleSettings} />
       {isSettingsOpen && (
         <SettingsPanel>
           <SettingsHeader>SETTINGS</SettingsHeader>

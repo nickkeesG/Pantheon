@@ -104,7 +104,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
               width: '28px'
             }}
           >
-            <img src={arrowIcon} />
+            <img src={arrowIcon} alt={'Back arrow'} />
           </IconButton>
         </ActionPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
@@ -126,7 +126,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
               width: '28px'
             }}
           >
-            <img src={arrowIcon} />
+            <img src={arrowIcon} alt={'Forward arrow'} />
           </IconButton>
         </ActionPanel>
       </CenterPanel>

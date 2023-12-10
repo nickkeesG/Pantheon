@@ -1,6 +1,7 @@
 import {GenerateBaseComments} from '../LLMHandler';
 import { Comment, Idea } from '../redux/textSlice';
 import { BaseDaemonConfig } from '../redux/daemonSlice';
+import ErrorHandler from '../ErrorHandler';
 
 class BaseDaemon { 
   config: BaseDaemonConfig;
@@ -37,16 +38,23 @@ class BaseDaemon {
     
     // Pick a random current idea
     var randomIndex = Math.floor(Math.random() * currentIdeas.length);
+
+    // Add all ideas up to and including the random idea
     for (let i = 0; i < randomIndex + 1; i++) {
       context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
     }
 
     const commentPrefix= this.commentTemplate.substring(0, this.commentTemplate.indexOf("{}"));
     context += "\n" + commentPrefix;
-    console.log(context);
 
-    var response = await GenerateBaseComments(context, openaiKey, openaiOrgId, baseModel);
-    console.log(context + response[0]);
+    try {
+      var response = await GenerateBaseComments(context, openaiKey, openaiOrgId, baseModel);
+      console.log(context + response[0]);
+    } catch (error) {
+      ErrorHandler.handleError("Error generating base comment");
+      console.error(error);
+      return null;
+    }
 
     let commentTemplateDivider = "";
     const regex = /\{\}(.*?)\{\}/;
@@ -56,22 +64,22 @@ class BaseDaemon {
         commentTemplateDivider = match[1];
     }
     else {  
-        console.log("Error: Regex failed to match");
+        ErrorHandler.handleError("Regex failed to match");
         return null;
     }
 
     var splitResponse = response[0].split(commentTemplateDivider);
 
     if (splitResponse.length < 2) {
-      console.log("Error: Response did not contain divider");
+      ErrorHandler.handleError("Error: Response did not contain divider");
       return null;
     }
 
     var daemonName = splitResponse[0].trim();
     var content = splitResponse[1].trim();
 
-    console.log(daemonName);
-    console.log(content);
+    console.log("Daemon name: " + daemonName);
+    console.log("Content: " + content);
 
     return {
       id: currentIdeas[randomIndex].id,

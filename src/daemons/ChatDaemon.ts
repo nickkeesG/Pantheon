@@ -1,6 +1,7 @@
 import { GenerateChatComments } from '../LLMHandler';
 import { ChatDaemonConfig } from '../redux/daemonSlice';
 import { Idea } from '../redux/textSlice';
+import ErrorHandler from '../ErrorHandler';
 
 const historyTemplate = `    {"content": "{}"}`;
 const ideaTemplate = `    {"id": {}, "content": "{}"}`;
@@ -34,46 +35,60 @@ class ChatDaemon {
   }
 
   async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, chatModel: string) {
-    var history = "";
-    for (let i = 0; i < pastIdeas.length; i++) {
-      history += this.historyTemplate.replace("{}", pastIdeas[i].text);
-      if (i !== pastIdeas.length - 1) {
-        history += ",\n";
+
+    try {
+      var history = "";
+      for (let i = 0; i < pastIdeas.length; i++) {
+        history += this.historyTemplate.replace("{}", pastIdeas[i].text);
+        if (i !== pastIdeas.length - 1) {
+          history += ",\n";
+        }
       }
-    }
-    var currentContext = "";
-    for (let i = 0; i < currentIdeas.length; i++) {
-      let tempId: number = i + 1;
-      currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
-      if (i !== currentIdeas.length - 1) {
-        currentContext += ",\n";
+      var currentContext = "";
+      for (let i = 0; i < currentIdeas.length; i++) {
+        let tempId: number = i + 1;
+        currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
+        if (i !== currentIdeas.length - 1) {
+          currentContext += ",\n";
+        }
       }
+      var context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
+      var userPrompts = [];
+      userPrompts.push(context + "\n\n" + this.config.startInstruction);
+      for (let i = 0; i < this.config.chainOfThoughtInstructions.length; i++) {
+        userPrompts.push(this.config.chainOfThoughtInstructions[i]);
+      }
+      userPrompts.push(this.config.endInstruction);
+    } catch (error) {
+      ErrorHandler.handleError("Error forming chat model context");
+      console.error(error);
+      return [];
     }
-    var context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
-    var userPrompts = [];
-    userPrompts.push(context + "\n\n" + this.config.startInstruction);
-    for (let i = 0; i < this.config.chainOfThoughtInstructions.length; i++) {
-      userPrompts.push(this.config.chainOfThoughtInstructions[i]);
+
+    try {
+      var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+    } catch (error) {
+      ErrorHandler.handleError("Error generating chat comment");
+      console.error(error);
+      return [];
     }
-    userPrompts.push(this.config.endInstruction);
 
-    var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+    // Parse the JSON string to a JavaScript objec
+    try {
+      var commentsObj = JSON.parse(comments);
+      var ranking = commentsObj.ranking;
 
-    // Parse the JSON string to a JavaScript object
-    var commentsObj = JSON.parse(comments);
-    var ranking = commentsObj.ranking;
-
-    var results = [];
-    for (let i = 0; i < ranking.length; i++) {
-      console.log(`id: ${ranking[i].id}, content: ${ranking[i].content}`);
-      // Add the id and content to the results array
-      let tempId: number = ranking[i].id - 1;
-      try {
+      var results = [];
+      for (let i = 0; i < ranking.length; i++) {
+        console.log(`id: ${ranking[i].id}, content: ${ranking[i].content}`);
+        // Add the id and content to the results array
+        let tempId: number = ranking[i].id - 1;
         results.push({ id: currentIdeas[tempId].id, content: ranking[i].content });
       }
-      catch {
-        console.log("Something went wrong while generating comments.")
-      }
+    } catch (error) {
+      ErrorHandler.handleError("Error parsing chat comment");
+      console.error(error);
+      return [];
     }
 
     return results;

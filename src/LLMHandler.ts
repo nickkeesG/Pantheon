@@ -1,11 +1,16 @@
 import axios from 'axios';
+import ErrorHandler from './ErrorHandler';
 
 async function CallChatAPI(data: any, config: any) {
   try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', data, config);
       return response.data.choices.map((choice: { message: { content: string } }) => choice.message.content.trim());
-  } catch (error) {
-      console.error(error);
+  } catch (error: any) {
+      if (error.response) {
+        ErrorHandler.handleError(error.response.data.error.message);
+      }
+      console.error("Error calling chat API")
+      console.error(error)
       return [];
   }
 }
@@ -14,8 +19,12 @@ async function CallBaseAPI(data: any, config: any) {
     try {
         const response = await axios.post('https://api.openai.com/v1/completions', data, config);
         return response.data.choices.map((choice: { text: string }) => choice.text.trim());
-    } catch (error) {
-        console.error(error);
+    } catch (error: any) {
+        if (error.response) {
+            ErrorHandler.handleError(error.response.data.error.message);
+        }
+        console.error("Error calling base API")
+        console.error(error)
         return [];
     }
 }

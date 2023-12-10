@@ -4,6 +4,7 @@ import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComme
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
+import ErrorHandler from '../ErrorHandler';
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
@@ -40,7 +41,8 @@ const DaemonManager = () => {
         const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
         dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
       } catch (error) {
-        console.error('Failed to dispatch chat comment:', error);
+        ErrorHandler.handleError('Failed to dispatch chat comment');
+        console.error(error);
       } finally {
         setIsCommenting(false);
       }
@@ -53,7 +55,8 @@ const DaemonManager = () => {
           dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
         }
       } catch (error) {
-        console.error('Failed to dispatch base comment:', error);
+        ErrorHandler.handleError('Failed to dispatch base comment');
+        console.error(error);
       } finally {
         setIsCommenting(false);
       }

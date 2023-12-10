@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { addIdea, setLastTimeActive } from '../redux/textSlice';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch } from '../hooks';
 import { TextArea } from '../styles/SharedStyles';
 
 const Centered = styled.div`
@@ -16,7 +16,6 @@ const TextAreaField = styled(TextArea)`
 `;
 
 const InputBox = () => {
-  const currentParentIdeaId = useAppSelector(state => state.text.currentIdea?.id ?? null)
   const dispatch = useAppDispatch();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 

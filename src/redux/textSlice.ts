@@ -1,4 +1,4 @@
-import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createSelector, PayloadAction, current } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
 const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea) => {
@@ -49,7 +49,6 @@ export interface Comment {
 export interface TextState {
   lastTimeActive: number;
   ideas: Idea[];
-  currentIdea: Idea | null;
   currentBranch: Idea[];
   comments: Comment[];
 }
@@ -57,7 +56,6 @@ export interface TextState {
 const initialState: TextState = {
   lastTimeActive: Date.now(),
   ideas: [],
-  currentIdea: null,
   currentBranch: [],
   comments: []
 };
@@ -70,26 +68,24 @@ const textSlice = createSlice({
       state.lastTimeActive = Date.now();
     },
     setCurrentIdea(state, action: PayloadAction<Idea | null>) {
-      state.currentIdea = action.payload;
       if (action.payload) state.currentBranch = getAllAncestors(state.ideas, action.payload.id)
       else state.currentBranch = []
     },
     changeBranch(state, action: PayloadAction<Idea>) {
       const newCurrentIdea = getMostRecentDescendent(state.ideas, action.payload)
       const newBranch = getAllAncestors(state.ideas, newCurrentIdea.id)
-      state.currentIdea = newCurrentIdea;
       state.currentBranch = newBranch;
     },
     addIdea(state, action: PayloadAction<{ text: string }>) {
+      const parent = state.currentBranch.length > 0 ? state.currentBranch[state.currentBranch.length - 1] : null;
       const newId = Date.now();
       const newIdea: Idea = {
         id: newId,
-        parentIdeaId: state.currentIdea?.id ?? null,
+        parentIdeaId: parent?.id ?? null,
         text: action.payload.text
       };
       state.ideas.push(newIdea);
       state.currentBranch.push(newIdea);
-      state.currentIdea = newIdea;
     },
     addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
       const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;
@@ -146,23 +142,15 @@ export const selectIdeasUpToMaxCommented = createSelector(
   }
 )
 
-export const selectIdeaTrunkFromCurrentIdea = createSelector(
-  [(state: RootState) => state.text.currentIdea, (state: RootState) => state.text.ideas],
-  (currentIdea, ideas) => {
-    if (currentIdea) return getAllAncestors(ideas, currentIdea.id)
-    else return []
-  }
-)
-
 export const selectBranchesFromIdea = createSelector(
   [
     (state: RootState) => state.text.ideas,
-    (state: RootState) => selectIdeaTrunkFromCurrentIdea(state),
+    (state: RootState) => state.text.currentBranch,
     (_: RootState, parentId: number) => parentId
   ],
-  (ideas, currentIdeaTrunk, parentId) => {
-    const currentIdeaTrunkIds = new Set(currentIdeaTrunk.map(idea => idea.id));
-    return ideas.filter(idea => idea.parentIdeaId === parentId && !currentIdeaTrunkIds.has(idea.id));
+  (ideas, currentBranch, parentId) => {
+    const currentBranchIds = currentBranch.map(branchIdea => branchIdea.id);
+    return ideas.filter(idea => idea.parentIdeaId === parentId && !currentBranchIds.includes(idea.id));
   }
 )
 

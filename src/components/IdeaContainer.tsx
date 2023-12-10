@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Idea, selectBranchesFromIdea, selectCommentsForIdea, setCurrentIdea } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
-import { IconButton } from '../styles/SharedStyles';
+import { Icon, IconButton } from '../styles/SharedStyles';
 import leafIcon from '../assets/leaf.webp';
 import plusIcon from '../assets/plus.webp';
 import ChangeBranchPopup from './ChangeBranchPopup';
@@ -102,11 +102,10 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
           <IconButton style={{ visibility: showIconButtons ? 'visible' : 'hidden' }} onClick={createNewBranch}>
             <img src={plusIcon} alt="Plus icon" />
           </IconButton>
-          <IconButton
+          <Icon
             onMouseEnter={() => setShowChangeBranchPopup(true)}
             onMouseLeave={() => setShowChangeBranchPopup(false)}
             style={{
-              cursor: 'default',
               position: 'relative',
               visibility: branchingChildIdeas.length > 0 ? 'visible' : 'hidden'
             }}
@@ -115,7 +114,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
             {showChangeBranchPopup &&
               <ChangeBranchPopup ideas={branchingChildIdeas} />
             }
-          </IconButton>
+          </Icon>
         </ActionPanel>
       </CenterPanel>
       <SidePanel>

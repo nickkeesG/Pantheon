@@ -27,6 +27,22 @@ export const TextButton = styled.button`
   }
 `;
 
+export const Icon = styled.div`
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+
+  img {
+    max-width: 16px;
+    max-height: 16px;
+  }
+`;
+
 export const IconButton = styled.button`
   width: 20px;
   height: 20px;

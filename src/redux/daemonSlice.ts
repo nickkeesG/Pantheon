@@ -102,8 +102,8 @@ Rules:
     }
   ],
   baseDaemon: {
-    mainTemplate: 
-`# Tool Instructions
+    mainTemplate:
+      `# Tool Instructions
 - The name of the tool is Pantheon
 - The purpose is to help you brainstorm and organize your thoughts
 
@@ -162,10 +162,5 @@ export const selectEnabledChatDaemons = createSelector(
   (chatDaemons) => chatDaemons.filter(daemon => daemon.enabled)
 );
 
-export const selectBaseDaemon = createSelector(
-  [(state: RootState) => state.daemon.baseDaemon],
-  (baseDaemon) => baseDaemon
-);
-
-export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon} = daemonSlice.actions;
+export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon } = daemonSlice.actions;
 export default daemonSlice.reducer;

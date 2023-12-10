@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, Idea, Comment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { selectEnabledChatDaemons, selectBaseDaemon} from '../redux/daemonSlice';
+import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
@@ -11,7 +11,7 @@ const DaemonManager = () => {
   const [hasBeenInactive, setHasBeenInactive] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
-  const baseDaemonConfig = useAppSelector(selectBaseDaemon);
+  const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
@@ -45,7 +45,7 @@ const DaemonManager = () => {
         setIsCommenting(false);
       }
     }
-  
+
     const dispatchBaseComment = async (pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, daemon: BaseDaemon) => {
       try {
         const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId, baseModel);
@@ -74,7 +74,7 @@ const DaemonManager = () => {
           dispatchChatComment(pastIdeas, currentIdeas, randomDaemon);
 
           // Base Daemons
-          if(baseDaemon) {
+          if (baseDaemon) {
             const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
             if (hasComments) {
               dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
@@ -90,19 +90,19 @@ const DaemonManager = () => {
     }, 200);
 
     return () => clearInterval(interval);
-  }, [lastTimeActive, 
-      hasBeenInactive, 
-      currentIdeas, 
-      chatDaemons,
-      baseDaemon,
-      pastIdeas,
-      commentsForPastIdeas,
-      isCommenting,
-      openAIKey,
-      openAIOrgId,
-      chatModel,
-      baseModel,
-      dispatch]);
+  }, [lastTimeActive,
+    hasBeenInactive,
+    currentIdeas,
+    chatDaemons,
+    baseDaemon,
+    pastIdeas,
+    commentsForPastIdeas,
+    isCommenting,
+    openAIKey,
+    openAIOrgId,
+    chatModel,
+    baseModel,
+    dispatch]);
 
   return null;
 }

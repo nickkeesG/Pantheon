@@ -5,6 +5,7 @@ import { useAppSelector } from '../hooks';
 
 const StyledHistoryContainer = styled.div`
   padding: 10px 0px;
+  margin-top: 24px;
 `;
 
 const HistoryContainer = () => {

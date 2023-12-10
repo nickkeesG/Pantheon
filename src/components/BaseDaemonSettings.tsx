@@ -4,7 +4,7 @@ import BaseDaemon from '../daemons/BaseDaemon';
 import styled from 'styled-components';
 import { Button, TextArea, TextButton } from '../styles/SharedStyles';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { selectCommentsGroupedByIdeaIds, selectIdeasUpToMaxCommented } from '../redux/textSlice';
+import { selectCommentsGroupedByIdeaIds, selectRecentIdeasWithoutComments } from '../redux/textSlice';
 
 
 const BaseDaemonSettingsContainer = styled.div`
@@ -23,7 +23,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     return JSON.stringify(editableFields, null, 2);
   })
   const [rawContext, setRawContext] = useState('');
-  const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
+  const pastIdeas = useAppSelector(selectRecentIdeasWithoutComments);
   const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
   const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
   const dispatch = useAppDispatch();

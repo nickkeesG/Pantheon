@@ -17,6 +17,7 @@ const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea) => {
 }
 
 const getAllAncestors = (ideas: Idea[], lastIdeaId: number) => {
+  // Finds all the ancestors of a given idea
   let ancestors = [];
   let currentId: number | null = lastIdeaId;
   while (currentId) {
@@ -30,6 +31,13 @@ const getAllAncestors = (ideas: Idea[], lastIdeaId: number) => {
   }
 
   return ancestors
+}
+
+const getIdeasSinceLastComment = (ideas: Idea[], comments: Comment[]) => {
+  // Returns all ideas since the most recent idea that has received comments
+  const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
+  const newestIdeaIdWithComments = Math.max(...Array.from(ideaIdsWithComments));
+  return ideas.filter(idea => idea.id > newestIdeaIdWithComments);
 }
 
 export interface Idea {
@@ -125,20 +133,20 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
 );
 
 export const selectRecentIdeasWithoutComments = createSelector(
-  [(state: RootState) => state.text.ideas, (state: RootState) => state.text.comments],
-  (ideas, comments) => {
-    const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
-    const maxIdeaIdWithComment = Math.max(...Array.from(ideaIdsWithComments));
-    return ideas.filter(idea => !ideaIdsWithComments.has(idea.id) && idea.id > maxIdeaIdWithComment);
+  [(state: RootState) => state.text.currentBranch,
+  (state: RootState) => state.text.comments],
+  (currentBranch, comments) => {
+    return getIdeasSinceLastComment(currentBranch, comments);
   }
 )
 
 export const selectIdeasUpToMaxCommented = createSelector(
-  [(state: RootState) => state.text.ideas, (state: RootState) => state.text.comments],
-  (ideas, comments) => {
-    const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
-    const maxIdeaIdWithComment = Math.max(...Array.from(ideaIdsWithComments));
-    return ideas.filter(idea => idea.id <= maxIdeaIdWithComment);
+  [(state: RootState) => state.text.currentBranch,
+  (state: RootState) => state.text.comments],
+  (currentBranch, comments) => {
+    const ideasSinceLastComment = getIdeasSinceLastComment(currentBranch, comments);
+    const ideasSinceLastCommentIds = new Set(ideasSinceLastComment.map(idea => idea.id));
+    return currentBranch.filter(idea => !ideasSinceLastCommentIds.has(idea.id));
   }
 )
 

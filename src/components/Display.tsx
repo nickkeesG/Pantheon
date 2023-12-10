@@ -9,11 +9,23 @@ const DisplayContainer = styled.div`
   width: 100%;
 `;
 
+const TopBar = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bg-color-lighter);
+  padding: 18px 0;
+  z-index: 1000; // ensure it's above other elements
+`;
+
 function Display() {
 
   return (
     <DisplayContainer>
-      <Settings />
+      <TopBar>
+        <Settings />
+      </TopBar>
       <HistoryContainer />
       <InputBox />
     </DisplayContainer>

@@ -38,7 +38,7 @@ const InputBox = () => {
 
       //Save the text to the history
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
-        dispatch(addIdea({ parentIdeaId: currentParentIdeaId, text: textAreaRef.current.value }));
+        dispatch(addIdea({ text: textAreaRef.current.value }));
         textAreaRef.current.scrollIntoView();
       }
 

@@ -1,6 +1,37 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
+const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea) => {
+  // Find the most recent descendent of the given ancestor idea through the whole tree
+  let mostRecentDescendent = ancestorIdea;
+  let queue = [mostRecentDescendent];
+  while (queue.length > 0) {
+    const currentIdea = queue.shift()!;
+    const children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
+    queue.push(...children);
+    if (currentIdea.id > mostRecentDescendent.id) {
+      mostRecentDescendent = currentIdea;
+    }
+  }
+  return mostRecentDescendent
+}
+
+const getAllAncestors = (ideas: Idea[], lastIdeaId: number) => {
+  let ancestors = [];
+  let currentId: number | null = lastIdeaId;
+  while (currentId) {
+    const current = ideas.find(idea => idea.id === currentId);
+    if (!current) {
+      console.error("Error finding idea list! IdeaId: " + currentId)
+      return ancestors
+    }
+    ancestors.unshift(current);
+    currentId = current.parentIdeaId;
+  }
+
+  return ancestors
+}
+
 export interface Idea {
   id: number;
   parentIdeaId: number | null;
@@ -19,6 +50,7 @@ export interface TextState {
   lastTimeActive: number;
   ideas: Idea[];
   currentIdea: Idea | null;
+  currentBranch: Idea[];
   comments: Comment[];
 }
 
@@ -26,6 +58,7 @@ const initialState: TextState = {
   lastTimeActive: Date.now(),
   ideas: [],
   currentIdea: null,
+  currentBranch: [],
   comments: []
 };
 
@@ -38,32 +71,24 @@ const textSlice = createSlice({
     },
     setCurrentIdea(state, action: PayloadAction<Idea | null>) {
       state.currentIdea = action.payload;
+      if (action.payload) state.currentBranch = getAllAncestors(state.ideas, action.payload.id)
+      else state.currentBranch = []
     },
     changeBranch(state, action: PayloadAction<Idea>) {
-      // TODO Functions like this would be faster if ideas also kept track of their child ideas
-      // Find the most recent descendent of the given ancestor idea through the whole tree
-      const ideas = state.ideas
-      let mostRecentDescendent: Idea | null = action.payload;
-      let queue = [mostRecentDescendent];
-      while (queue.length > 0) {
-        const currentIdea = queue.shift()!;
-        const children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
-        queue.push(...children);
-        if (currentIdea.id > mostRecentDescendent.id) {
-          mostRecentDescendent = currentIdea;
-        }
-      }
-
-      state.currentIdea = mostRecentDescendent;
+      const newCurrentIdea = getMostRecentDescendent(state.ideas, action.payload)
+      const newBranch = getAllAncestors(state.ideas, newCurrentIdea.id)
+      state.currentIdea = newCurrentIdea;
+      state.currentBranch = newBranch;
     },
-    addIdea(state, action: PayloadAction<{ parentIdeaId: number | null, text: string }>) {
+    addIdea(state, action: PayloadAction<{ text: string }>) {
       const newId = Date.now();
       const newIdea: Idea = {
         id: newId,
-        parentIdeaId: action.payload.parentIdeaId,
+        parentIdeaId: state.currentIdea?.id ?? null,
         text: action.payload.text
       };
       state.ideas.push(newIdea);
+      state.currentBranch.push(newIdea);
       state.currentIdea = newIdea;
     },
     addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
@@ -124,19 +149,8 @@ export const selectIdeasUpToMaxCommented = createSelector(
 export const selectIdeaTrunkFromCurrentIdea = createSelector(
   [(state: RootState) => state.text.currentIdea, (state: RootState) => state.text.ideas],
   (currentIdea, ideas) => {
-    let ideaTrunk = [];
-    let currentId: number | null = currentIdea?.id ?? null;
-    while (currentId) {
-      const current = ideas.find(idea => idea.id === currentId);
-      if (!current) {
-        console.error("Error finding idea list! IdeaId: " + currentId)
-        return ideaTrunk
-      }
-      ideaTrunk.unshift(current);
-      currentId = current.parentIdeaId;
-    }
-
-    return ideaTrunk
+    if (currentIdea) return getAllAncestors(ideas, currentIdea.id)
+    else return []
   }
 )
 

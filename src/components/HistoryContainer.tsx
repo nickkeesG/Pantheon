@@ -9,7 +9,7 @@ const StyledHistoryContainer = styled.div`
 `;
 
 const HistoryContainer = () => {
-  const ideas = useAppSelector(selectIdeaTrunkFromCurrentIdea);
+  const ideas = useAppSelector(state => state.text.currentBranch);
   // Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
   const [baseCommentOverflows, setBaseCommentOverflows] = useState<{ [key: number]: number }>({});
   const [chatCommentOverflows, setChatCommentOverflows] = useState<{ [key: number]: number }>({});

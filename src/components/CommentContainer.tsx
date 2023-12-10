@@ -1,11 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Comment } from '../redux/textSlice';
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
 
 const StyledCommentContainer = styled.div`
   padding: 6px 12px;
   // position: absolute;
   color: var(--text-color-dark);
+  animation: ${fadeIn} 0.3s ease-out forwards;
 `;
 
 const CommentName = styled.div`

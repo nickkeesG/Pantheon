@@ -5,23 +5,25 @@ import { updateChatModel, updateBaseModel, setOpenaiKey, setOpenaiOrgId } from '
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
-import { TextButton, TextInput } from '../styles/SharedStyles';
+import { IconButton, TextButton, TextInput } from '../styles/SharedStyles';
 import { ChatDaemonConfig } from '../redux/daemonSlice';
 
-const SettingsButton = styled(FiSettings)`
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: 12px;
-  cursor: pointer;
-  z-index: 50;
+const SettingsButton = styled(IconButton).attrs({
+  as: FiSettings
+})`
+  width: 16px;
+  height: 16px;
+  padding: 6px;
+  display: flex;
 `;
 
-const ExitButton = styled(FiX)`
+const ExitButton = styled(IconButton).attrs({
+  as: FiX
+})`
   position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: 12px;
+  top: 4px;
+  right: 4px;
+  padding: 4px;
   cursor: pointer;
 `;
 

@@ -3,24 +3,31 @@ import Settings from './Settings';
 import { FiCopy } from 'react-icons/fi';
 import { selectFullContext } from '../redux/textSlice';
 import { useAppSelector } from '../hooks';
+import { IconButton } from '../styles/SharedStyles';
 
 const StyledTopBar = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--bg-color-lighter);
-  padding: 18px 0;
-  z-index: 1000; // ensure it's above other elements
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 4px;
+  background: var(--bg-color-light);
+  padding: 4px;
+  z-index: 1000;
+  border-bottom: 0.5px solid var(--line-color-dark);
 `;
 
-const CopyButton = styled(FiCopy)`
-  position: absolute;
-  top: 0px;
-  right: 24px;
-  padding: 12px;
-  cursor: pointer;
-  z-index: 50;
+const CopyButton = styled(IconButton).attrs({
+  as: FiCopy
+})`
+  width: 16px;
+  height: 16px;
+  padding: 6px;
+  display: flex;
 `;
 
 const TopBar = () => {

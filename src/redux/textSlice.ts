@@ -1,4 +1,4 @@
-import { createSlice, createSelector, PayloadAction, current } from '@reduxjs/toolkit';
+import { createSlice, createSelector, PayloadAction} from '@reduxjs/toolkit';
 import { RootState } from './store';
 
 const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea) => {
@@ -21,7 +21,7 @@ const getAllAncestors = (ideas: Idea[], lastIdeaId: number) => {
   let ancestors = [];
   let currentId: number | null = lastIdeaId;
   while (currentId) {
-    const current = ideas.find(idea => idea.id === currentId);
+    let current = ideas.find(idea => idea.id === currentId);
     if (!current) {
       console.error("Error finding idea list! IdeaId: " + currentId)
       return ancestors

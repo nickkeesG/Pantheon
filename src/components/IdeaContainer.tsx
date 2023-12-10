@@ -36,6 +36,7 @@ const StyledIdeaContainer = styled.div`
   margin: 10px 0px;
   border: 0.1px solid var(--line-color-dark);
   border-radius: 4px;
+  transition: background-color 0.3s, border-color 0.3s;
 `;
 
 interface IdeaContainerProps {

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import Settings from './Settings';
-import { FiCopy } from 'react-icons/fi';
+import { FiCheckCircle, FiCopy } from 'react-icons/fi';
 import { selectFullContext } from '../redux/textSlice';
 import { useAppSelector } from '../hooks';
 import { IconButton } from '../styles/SharedStyles';
+import { useEffect, useState } from 'react';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -21,19 +22,11 @@ const StyledTopBar = styled.div`
   border-bottom: 0.5px solid var(--line-color-dark);
 `;
 
-const CopyButton = styled(IconButton).attrs({
-  as: FiCopy
-})`
-  width: 16px;
-  height: 16px;
-  padding: 6px;
-  display: flex;
-`;
-
 const TopBar = () => {
   const ideaExports = useAppSelector(selectFullContext);
+  const [isCopied, setIsCopied] = useState(false);
 
-  const copyContextToMarkdown =  async() => {
+  const copyContextToMarkdown = async () => {
     let context = '# Pantheon Context\n';
     for (let i = 0; i < ideaExports.length; i++) {
       const ideaExport = ideaExports[i];
@@ -50,15 +43,36 @@ const TopBar = () => {
     }
     try {
       await navigator.clipboard.writeText(context);
-      console.log('Context copied to clipboard');
+      setIsCopied(true);
     } catch (err) {
       console.error('Failed to copy context to clipboard', err);
     }
   }
 
+  useEffect(() => {
+    if (isCopied) {
+      const timer = setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isCopied]);
+
   return (
     <StyledTopBar>
-      <CopyButton title="Copy Context" onClick={copyContextToMarkdown}/>
+      <IconButton
+        title="Copy context"
+        onClick={copyContextToMarkdown}
+        style={{
+          width: '16px',
+          height: '16px',
+          padding: '6px',
+          boxSizing: 'content-box',
+          color: 'var(--main-text-color)'
+        }}
+      >
+        {isCopied ? <FiCheckCircle /> : <FiCopy />}
+      </IconButton>
       <Settings />
     </StyledTopBar>
   )

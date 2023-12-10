@@ -55,10 +55,10 @@ const PlusButton = styled(IconButton).attrs({
   as: HiPlus
 })`
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 6px;
+  right: 6px;
   margin: 0px;
-  padding: 4px;
+  padding: 2px;
 `;
 
 interface IdeaContainerProps {
@@ -118,12 +118,14 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
       <CenterPanel>
         <ActionPanel>
           <ArrowButton
+            title='Previous branch'
             onClick={() => switchBranches(false)}
             style={{ visibility: hasBranches ? 'visible' : 'hidden' }} />
         </ActionPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
           {idea.text}
           <PlusButton
+            title='New branch'
             onClick={createNewBranch}
             style={{
               visibility: showPlusButton ? 'visible' : 'hidden',
@@ -133,6 +135,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
         </StyledIdeaContainer>
         <ActionPanel style={{ visibility: hasBranches ? 'visible' : 'hidden' }}>
           <ArrowButton
+            title='Next branch'
             onClick={() => switchBranches(true)}
             style={{
               visibility: hasBranches ? 'visible' : 'hidden',

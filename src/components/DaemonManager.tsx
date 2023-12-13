@@ -1,6 +1,7 @@
 import BaseDaemon from '../daemons/BaseDaemon';
 import { useEffect, useMemo, useState } from 'react';
-import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, Idea, Comment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
+import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
+import { Idea, Comment } from '../redux/models';
 import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';

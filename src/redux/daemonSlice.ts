@@ -1,21 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-
-export interface ChatDaemonConfig {
-  id: number;
-  name: string;
-  systemPrompt: string;
-  startInstruction: string;
-  chainOfThoughtInstructions: string[];
-  endInstruction: string;
-  enabled: boolean;
-}
-
-export interface BaseDaemonConfig {
-  mainTemplate: string;
-  ideaTemplate: string;
-  commentTemplate: string;
-}
+import { BaseDaemonConfig, ChatDaemonConfig } from './models';
 
 export interface DaemonState {
   chatDaemons: ChatDaemonConfig[];

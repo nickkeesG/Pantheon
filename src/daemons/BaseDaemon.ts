@@ -1,6 +1,6 @@
 import {GenerateBaseComments} from '../LLMHandler';
-import { Comment, Idea } from '../redux/textSlice';
-import { BaseDaemonConfig } from '../redux/daemonSlice';
+import { Comment, Idea } from '../redux/models';
+import { BaseDaemonConfig } from '../redux/models';
 import ErrorHandler from '../ErrorHandler';
 
 class BaseDaemon { 

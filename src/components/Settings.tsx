@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
 import { IconButton, TextButton, TextInput } from '../styles/SharedStyles';
-import { ChatDaemonConfig } from '../redux/daemonSlice';
+import { ChatDaemonConfig } from '../redux/models';
 import Modal from './Modal';
 
 const SettingsButton = styled(IconButton).attrs({

@@ -1,5 +1,6 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
+import { Idea, IdeaExport, Comment } from './models';
 
 /**
  * Finds the most recent descendent of a given ancestor idea within the entire tree.
@@ -115,26 +116,6 @@ function exploreBranch(ideas: Idea[], selectedIdea: Idea): IdeaExport[] {
   }
 
   return ideaExports;
-}
-
-export interface Idea {
-  id: number;
-  parentIdeaId: number | null;
-  text: string;
-}
-
-interface IdeaExport {
-  text: string;
-  incoming: boolean;
-  outgoing: boolean;
-}
-
-export interface Comment {
-  id: number;
-  ideaId: number;
-  text: string;
-  daemonName: string;
-  daemonType: string;
 }
 
 export interface TextState {

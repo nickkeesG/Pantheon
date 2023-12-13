@@ -1,5 +1,6 @@
 import styled from "styled-components"
-import { Idea, changeBranch } from "../redux/textSlice";
+import { changeBranch } from "../redux/textSlice";
+import { Idea } from "../redux/models";
 import { TextButton } from "../styles/SharedStyles";
 import { useAppDispatch } from "../hooks";
 

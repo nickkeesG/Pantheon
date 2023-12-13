@@ -2,13 +2,16 @@ import styled from 'styled-components';
 
 export const Button = styled.button`
   cursor: pointer;
+  color: inherit;
   font-family: inherit;
-  background-color: var(--accent-color);
-  border: 1px solid var(--accent-color-dark);
-  border-radius: 8px;
+  font-size: 0.9em;
+  background: none;
+  border: 0.5px solid var(--line-color-light);
+  border-radius: 50px;
   padding: 4px 8px;
+  margin: 4px;
   &:hover {
-    background-color: var(--accent-color-dark);
+    background-color: var(--highlight);
   }
 `;
 
@@ -75,7 +78,7 @@ export const TextArea = styled.textarea`
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
-  border: 1px solid var(--line-color);
+  border: 0.5px solid var(--line-color);
   border-radius: 4px;
   width: 100%;
   height: 100%;
@@ -95,7 +98,7 @@ export const TextInput = styled.input`
   box-sizing: border-box;
   color: var(--text-color);
   background-color: var(--bg-color-light);
-  border: 1px solid var(--line-color);
+  border: 0.5px solid var(--line-color);
   border-radius: 4px;
   font-family: monospace;
   &:focus {

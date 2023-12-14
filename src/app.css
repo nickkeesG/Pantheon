@@ -1,4 +1,7 @@
-html, body, #root, .App {
+html,
+body,
+#root,
+.App {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -15,7 +18,9 @@ html, body, #root, .App {
   --line-color: #707070;
   --line-color-light: #b7b7b7;
   --line-color-dark: #4e4e4e;
-  --highlight: #ffffff11;
+  --highlight: #ffffff20;
+  --highlight-weak: #ffffff10;
+  --highlight-strong: #ffffff30;
   --accent-color: #abc5df;
   --accent-color-dark: #809bb6;
 }

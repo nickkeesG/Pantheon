@@ -123,7 +123,27 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
             style={{ visibility: hasBranches ? 'visible' : 'hidden' }} />
         </ActionPanel>
         <StyledIdeaContainer style={ideaContainerStyle}>
-          {idea.text}
+          {idea.textTokens && idea.tokenSurprisals && idea.textTokens.length > 0 && idea.textTokens.length === idea.tokenSurprisals.length ? (
+            idea.textTokens.map((token, index) => (
+              <span
+                key={index}
+                style={{
+                  backgroundColor:
+                    idea.tokenSurprisals[index] > 2 ? 'var(--highlight-strong)' :
+                      idea.tokenSurprisals[index] > 1 ? 'var(--highlight)' :
+                        idea.tokenSurprisals[index] > 0 ? 'var(--highlight-weak)' :
+                          'transparent'
+                }}
+                title={`Surprisal: ${idea.tokenSurprisals[index].toFixed(2)}`}
+              >
+                {token}
+              </span>
+            ))
+          ) : (
+            idea.text
+          )}
+
+
           <PlusButton
             title='New branch'
             onClick={createNewBranch}

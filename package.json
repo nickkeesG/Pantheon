@@ -12,6 +12,7 @@
     "@types/react": "^18.2.42",
     "@types/react-dom": "^18.2.17",
     "axios": "^1.6.2",
+    "js-tiktoken": "^1.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
@@ -46,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/axios": "^0.14.0"
   }
 }

@@ -124,8 +124,8 @@ Rules:
 
 # Brainstorming Session (Active)
 {}`,
-    ideaTemplate: '-{}',
-    commentTemplate: '  -[{}]:{}'
+    ideaTemplate: '-[User]: {}',
+    commentTemplate: '  -[{}]: {}'
   }
 };
 

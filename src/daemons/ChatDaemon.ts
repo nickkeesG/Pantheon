@@ -1,6 +1,6 @@
 import { GenerateChatComments } from '../LLMHandler';
-import { ChatDaemonConfig } from '../redux/daemonSlice';
-import { Idea } from '../redux/textSlice';
+import { ChatDaemonConfig } from '../redux/models';
+import { Idea } from '../redux/models';
 import ErrorHandler from '../ErrorHandler';
 
 const historyTemplate = `    {"content": "{}"}`;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Comment } from '../redux/textSlice';
+import { Comment } from '../redux/models';
 
 const fadeIn = keyframes`
   from {

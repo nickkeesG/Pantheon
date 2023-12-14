@@ -17,7 +17,7 @@ const StyledTopBar = styled.div`
   justify-content: flex-end;
   gap: 4px;
   background: var(--bg-color-light);
-  padding: 4px;
+  padding: 4px 12px 4px 4px;
   z-index: 1000;
   border-bottom: 0.5px solid var(--line-color-dark);
 `;

@@ -1,8 +1,15 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
+import { Idea, IdeaExport, Comment } from './models';
 
-const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea) => {
-  // Find the most recent descendent of the given ancestor idea through the whole tree
+/**
+ * Finds the most recent descendent of a given ancestor idea within the entire tree.
+ * 
+ * @param ideas - The array of all ideas.
+ * @param ancestorIdea - The ancestor idea for which to find the descendent.
+ * @returns The most recent descendent of the given ancestor idea.
+ */
+const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea): Idea => {
   let mostRecentDescendent = ancestorIdea;
   let queue = [mostRecentDescendent];
   while (queue.length > 0) {
@@ -13,9 +20,16 @@ const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea) => {
       mostRecentDescendent = currentIdea;
     }
   }
-  return mostRecentDescendent
+  return mostRecentDescendent;
 }
 
+/**
+ * Retrieves all ancestors of a given idea in the ideas array.
+ * 
+ * @param ideas - The array of all ideas.
+ * @param lastIdeaId - The ID of the last idea in the chain of ancestors.
+ * @returns An array of idea ids representing all the ancestors of the given idea.
+ */
 const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] => {
   // Finds all the ancestor IDs of a given idea
   let ancestorIds: number[] = [];
@@ -36,12 +50,26 @@ const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] => {
   return ancestorIds;
 };
 
-const getChildren = (ideas: Idea[], parentId: number) => {
+
+/**
+ * Retrieves all direct descendants of a given idea in the ideas array.
+ * 
+ * @param ideas - The array of all ideas.
+ * @param parentId - The ID of the parent idea.
+ * @returns An array of ideas representing all the children of the given idea.
+ */
+const getChildren = (ideas: Idea[], parentId: number): Idea[] => {
   return ideas.filter(idea => idea.parentIdeaId === parentId);
 }
 
+/**
+ * Retrieves all ideas since the most recent idea that has received comments.
+ * 
+ * @param ideas 
+ * @param comments 
+ * @returns 
+ */
 const getIdeasSinceLastComment = (ideas: Idea[], ideaIds: number[], comments: Comment[]): Idea[] => {
-  // Returns all ideas since the most recent idea that has received comments
   const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
   const newestIdeaIdWithComments = Math.max(...Array.from(ideaIdsWithComments));
   return ideas.filter(idea => ideaIds.includes(idea.id) && idea.id > newestIdeaIdWithComments);
@@ -88,28 +116,6 @@ function exploreBranch(ideas: Idea[], selectedIdea: Idea): IdeaExport[] {
   }
 
   return ideaExports;
-}
-
-export interface Idea {
-  id: number;
-  parentIdeaId: number | null;
-  text: string;
-  textTokens: string[];
-  tokenSurprisals: number[];
-}
-
-interface IdeaExport {
-  text: string;
-  incoming: boolean;
-  outgoing: boolean;
-}
-
-export interface Comment {
-  id: number;
-  ideaId: number;
-  text: string;
-  daemonName: string;
-  daemonType: string;
 }
 
 export interface TextState {

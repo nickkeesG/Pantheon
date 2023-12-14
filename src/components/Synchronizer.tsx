@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Idea, setSurprisalToIdea, selectCurrentBranchIdeas } from '../redux/textSlice';
+import { setSurprisalToIdea, selectCurrentBranchIdeas } from '../redux/textSlice';
+import { Idea } from '../redux/models';
 import { GetSurprisal } from '../LLMHandler';
 import BaseDaemon from '../daemons/BaseDaemon';
 

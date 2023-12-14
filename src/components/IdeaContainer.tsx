@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea, switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfIdea } from '../redux/textSlice';
+import { switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfIdea } from '../redux/textSlice';
+import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
 import { IconButton } from '../styles/SharedStyles';

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { BaseDaemonConfig, updateBaseDaemon} from "../redux/daemonSlice"
+import { updateBaseDaemon } from "../redux/daemonSlice"
+import { BaseDaemonConfig } from '../redux/models';
 import BaseDaemon from '../daemons/BaseDaemon';
 import styled from 'styled-components';
 import { Button, TextArea, TextButton } from '../styles/SharedStyles';

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FiSettings, FiX } from 'react-icons/fi';
+import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { updateChatModel, updateBaseModel, setOpenaiKey, setOpenaiOrgId } from '../redux/llmSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
 import { IconButton, TextButton, TextInput } from '../styles/SharedStyles';
-import { ChatDaemonConfig } from '../redux/daemonSlice';
+import { ChatDaemonConfig } from '../redux/models';
+import Modal from './Modal';
 
 const SettingsButton = styled(IconButton).attrs({
   as: FiSettings
@@ -17,31 +18,16 @@ const SettingsButton = styled(IconButton).attrs({
   display: flex;
 `;
 
-const ExitButton = styled(IconButton).attrs({
-  as: FiX
-})`
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  padding: 4px;
-  cursor: pointer;
-`;
-
 const SettingsPanel = styled.div`
-  position: fixed;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--bg-color-lighter);
-  color: var(--main-color);
-  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 20px 44px 20px 20px;
   border-radius: 10px;
-  border: 1px solid var(--line-color-dark);
-  width: 50%;
+  border: 0.5px solid var(--line-color);
+  width: 50vw;
   max-width: 500px;
   max-height: 80vh;
   overflow-y: auto;
-  z-index: 100;
 `;
 
 const SettingsHeader = styled.h3`
@@ -51,6 +37,7 @@ const SettingsHeader = styled.h3`
 const SettingLabel = styled.p`
   font-size: 0.8em;
   margin-bottom: 5px;
+  color: var(--text-color-dark);
 `;
 
 const TextSettingContainer = styled.div`
@@ -123,60 +110,59 @@ const Settings = () => {
     <div>
       <SettingsButton title="Settings" onClick={toggleSettings} />
       {isSettingsOpen && (
-        <SettingsPanel>
-          <SettingsHeader>SETTINGS</SettingsHeader>
-          <ExitButton onClick={toggleSettings} />
-          <TextSettingContainer>
-            <SettingLabel>OpenAI API key</SettingLabel>
-            <TextInput
-              placeholder="sk-..."
-              value={openAIKey}
-              onChange={handleApiKeyChange}
-            />
-          </TextSettingContainer>
-          <TextSettingContainer>
-            <SettingLabel>OpenAI organization ID</SettingLabel>
-            <TextInput
-              placeholder="org-..."
-              value={openAIOrgId}
-              onChange={handleOrgIdChange}
-            />
-          </TextSettingContainer>
-          <TextSettingContainer>
-            <SettingLabel>Chat Model</SettingLabel>
-            <TextInput
-              placeholder={chatModel}
-              value={chatModel}
-              onChange={handleChatModelChange}
-            />
-          </TextSettingContainer>
-          <TextSettingContainer>
-            <SettingLabel>Base Model</SettingLabel>
-            <TextInput
-              placeholder={baseModel}
-              value={baseModel}
-              onChange={handleBaseModelChange}
-            />
-          </TextSettingContainer>
-          <h4>Chat daemons</h4>
-          <div>
-            {chatDaemonConfigs.map((config) => (
-              <ChatDaemonSettings key={config.id} config={config} isNewDaemon={false} />
-            ))}
-            {addingNewDaemon && (
-              <ChatDaemonSettings key={"new"} config={createEmptyChatDaemonConfig()} isNewDaemon={true} />
-            )}
-            {!addingNewDaemon && (
-              <TextButton onClick={() => setAddingNewDaemon(true)}>
-                Add new daemon
-              </TextButton>
-            )}
-          </div>
-          <h4>Base Daemons</h4>
-          <div>
+        <Modal toggleVisibility={toggleSettings}>
+          <SettingsPanel>
+            <SettingsHeader>SETTINGS</SettingsHeader>
+            <TextSettingContainer>
+              <SettingLabel>OpenAI API key</SettingLabel>
+              <TextInput
+                placeholder="sk-..."
+                value={openAIKey}
+                onChange={handleApiKeyChange}
+              />
+            </TextSettingContainer>
+            <TextSettingContainer>
+              <SettingLabel>OpenAI organization ID</SettingLabel>
+              <TextInput
+                placeholder="org-..."
+                value={openAIOrgId}
+                onChange={handleOrgIdChange}
+              />
+            </TextSettingContainer>
+            <TextSettingContainer>
+              <SettingLabel>Chat Model</SettingLabel>
+              <TextInput
+                placeholder={chatModel}
+                value={chatModel}
+                onChange={handleChatModelChange}
+              />
+            </TextSettingContainer>
+            <TextSettingContainer>
+              <SettingLabel>Base Model</SettingLabel>
+              <TextInput
+                placeholder={baseModel}
+                value={baseModel}
+                onChange={handleBaseModelChange}
+              />
+            </TextSettingContainer>
+            <h4>Chat daemons</h4>
+            <div>
+              {chatDaemonConfigs.map((config) => (
+                <ChatDaemonSettings key={config.id} config={config} isNewDaemon={false} />
+              ))}
+              {addingNewDaemon && (
+                <ChatDaemonSettings key={"new"} config={createEmptyChatDaemonConfig()} isNewDaemon={true} />
+              )}
+              {!addingNewDaemon && (
+                <TextButton onClick={() => setAddingNewDaemon(true)}>
+                  Add new daemon
+                </TextButton>
+              )}
+            </div>
+            <h4>Base Daemons</h4>
             <BaseDaemonSettings config={baseDaemonConfig} />
-          </div>
-        </SettingsPanel>
+          </SettingsPanel>
+        </Modal>
       )}
     </div>
   );

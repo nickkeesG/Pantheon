@@ -1,3 +1,10 @@
+export interface Node {
+  id: number;
+  parentNodeId: number | null;
+  parentIdeaId: number | null;
+  ideas: Idea[];
+}
+
 export interface Idea {
   id: number;
   parentIdeaId: number | null;

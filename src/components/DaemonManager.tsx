@@ -1,17 +1,21 @@
-import BaseDaemon from '../daemons/BaseDaemon';
 import { useEffect, useMemo, useState } from 'react';
-import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
-import { Idea, Comment } from '../redux/models';
-import ChatDaemon from '../daemons/ChatDaemon';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { Idea, Comment } from '../redux/models';
+import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
+import BaseDaemon from '../daemons/BaseDaemon';
+import ChatDaemon from '../daemons/ChatDaemon';
 import ErrorHandler from '../ErrorHandler';
 
+/*
+Central controller for the deployment of daemons.
+*/
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
   const lastTimeActive = useAppSelector(state => state.text.lastTimeActive);
-  const [hasBeenInactive, setHasBeenInactive] = useState(false);
-  const [isCommenting, setIsCommenting] = useState(false);
+  const [alreadyWasInactive, setAlreadyWasInactive] = useState(false);
+  const [chatDaemonActive, setChatDaemonActive] = useState(false);
+  const [baseDaemonActive, setBaseDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
@@ -26,6 +30,8 @@ const DaemonManager = () => {
   const chatModel = useAppSelector(state => state.llm.chatModel);
   const baseModel = useAppSelector(state => state.llm.baseModel);
 
+  const maxTimeInactive = 5; // seconds
+
   useEffect(() => {
     const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
     setBaseDaemon(daemon);
@@ -36,72 +42,95 @@ const DaemonManager = () => {
     setChatDaemons(daemons);
   }, [chatDaemonConfigs]);
 
+  /*
+  Main daemon controller loop. Runs every 200ms.
+  Dispatches daemons if the user has been inactive for maxTimeInactive seconds.
+  */
   useEffect(() => {
     const dispatchChatComment = async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
+      setChatDaemonActive(true);
       try {
+        // Returns a list of comments
         const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
+
+        // Dispatch first comment only
         dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
       } catch (error) {
-        ErrorHandler.handleError('Failed to dispatch chat comment');
+        ErrorHandler.handleError('Failed to dispatch chat comment'); //send error to user
         console.error(error);
       } finally {
-        setIsCommenting(false);
+        setChatDaemonActive(false);
       }
     }
 
     const dispatchBaseComment = async (pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, daemon: BaseDaemon) => {
+      setBaseDaemonActive(true);
       try {
+        // Returns a single comment
         const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId, baseModel);
-        if (result) {
+        if (result) { // If result is null, result failed to parse
           dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
         }
       } catch (error) {
-        ErrorHandler.handleError('Failed to dispatch base comment');
+        ErrorHandler.handleError('Failed to dispatch base comment'); //send error to user
         console.error(error);
       } finally {
-        setIsCommenting(false);
+        setBaseDaemonActive(false);
       }
     }
 
+    /*
+    Dispatch daemons if the user has been inactive for maxTimeInactive seconds.
+    Don't dispatch if a daemon of the same type is already active.
+    */
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
-      if (secondsSinceLastActive > 5 && !hasBeenInactive && !isCommenting) {
-        console.log('User inactive');
-        setHasBeenInactive(true);
+      if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
+        console.log('User became inactive');
+        setAlreadyWasInactive(true);
 
-        // Make new comments
+        // Generate new comments
         if (currentIdeas.length > 0 && openAIKey) {
-          setIsCommenting(true);
 
-          // Chat Daemons
-          const randomDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-          dispatchChatComment(pastIdeas, currentIdeas, randomDaemon);
+          if (chatDaemonActive) {
+            console.log('Chat daemon already active');
+          }
+          else {
+            const randomDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+            dispatchChatComment(pastIdeas, currentIdeas, randomDaemon);
+          }
 
-          // Base Daemons
-          if (baseDaemon) {
+          if (baseDaemonActive) {
+            console.log('Base daemon already active');
+          }
+          else if (baseDaemon) {
             const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
             if (hasComments) {
               dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
+            }
+            else {
+              console.log('No comments for base daemon to emulate');
             }
           }
         }
       }
 
-      if (secondsSinceLastActive < 5 && hasBeenInactive) {
-        console.log('User active');
-        setHasBeenInactive(false);
+      if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
+        console.log('User became active');
+        setAlreadyWasInactive(false);
       }
     }, 200);
 
     return () => clearInterval(interval);
   }, [lastTimeActive,
-    hasBeenInactive,
+    alreadyWasInactive,
     currentIdeas,
     chatDaemons,
     baseDaemon,
     pastIdeas,
     commentsForPastIdeas,
-    isCommenting,
+    chatDaemonActive,
+    baseDaemonActive,
     openAIKey,
     openAIOrgId,
     chatModel,

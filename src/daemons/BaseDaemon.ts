@@ -2,6 +2,9 @@ import { Comment, Idea, BaseDaemonConfig } from '../redux/models';
 import { GenerateBaseComments } from '../LLMHandler';
 import ErrorHandler from '../ErrorHandler';
 
+// TODO - make this configurable
+const hardcodedEvaluationTemplate = ` {Comment accepted (y/n):{}}`;
+
 /*
   Behavior mirroring existing comments. Using base model for higher variance behavior
 */
@@ -10,25 +13,35 @@ class BaseDaemon {
   mainTemplate: string;
   ideaTemplate: string;
   commentTemplate: string;
+  evalutationTemplate: string;
 
   constructor(config: BaseDaemonConfig) {
     this.config = config;
     this.mainTemplate = config.mainTemplate;
     this.ideaTemplate = config.ideaTemplate;
     this.commentTemplate = config.commentTemplate;
+    this.evalutationTemplate = hardcodedEvaluationTemplate;
   }
 
   getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
+    console.log("Getting past context");
+    console.log("number of past ideas: " + pastIdeas.length);
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
       context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
 
       let comments = commentsForPastIdeas[pastIdeas[i].id] || [];
+      console.log("number of comments for idea " + pastIdeas[i].id + ": " + comments.length);
       for (let j = 0; j < comments.length; j++) {
         context += '\n' + this.commentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
+
+        let approvalString = comments[j].userApproved ? " y" : " n";
+        context += this.evalutationTemplate.replace("{}", approvalString);
       }
     }
+
+    context = this.mainTemplate.replace("{}", context);
 
     return context;
   }

@@ -88,7 +88,7 @@ export async function GenerateBaseComments(prompt: string, openAIKey: string, op
         model: baseModel,
         prompt: prompt,
         max_tokens: 128,
-        stop: ["\n", " {"],
+        stop: ["\n", " {", "{"],
         n: 6,
     };
 

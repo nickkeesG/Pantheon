@@ -188,9 +188,15 @@ const textSlice = createSlice({
         ideaId: action.payload.ideaId,
         text: action.payload.text,
         daemonName: action.payload.daemonName,
-        daemonType: action.payload.daemonType
+        daemonType: action.payload.daemonType,
+        userApproved: false
       };
       state.comments.push(newComment);
+    },
+    approveComment(state, action: PayloadAction<{ commentId: number }>) {
+      const comment = state.comments.find(comment => comment.id === action.payload.commentId);
+      if (!comment) console.error("Error fetching comment " + action.payload.commentId);
+      else comment.userApproved = true;
     },
     setSurprisalToIdea(state, action: PayloadAction<{ ideaId: number, textTokens: string[], tokenSurprisals: number[] }>) {
       const idea = state.ideas.find(idea => idea.id === action.payload.ideaId);
@@ -297,5 +303,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addIdea, addComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

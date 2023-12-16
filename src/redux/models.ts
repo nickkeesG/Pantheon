@@ -18,6 +18,7 @@ export interface Comment {
   text: string;
   daemonName: string;
   daemonType: string;
+  userApproved: boolean;
 }
 
 export interface ChatDaemonConfig {

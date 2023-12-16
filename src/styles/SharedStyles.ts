@@ -58,7 +58,7 @@ export const IconButton = styled.button`
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
   
   &:hover {
     background-color: var(--highlight);
@@ -72,6 +72,12 @@ export const IconButton = styled.button`
     max-width: 16px;
     max-height: 16px;
   }
+`;
+
+export const IconButtonSmall = styled(IconButton)`
+  width: 12px;
+  height: 12px;
+  padding: 4px;
 `;
 
 export const TextArea = styled.textarea`

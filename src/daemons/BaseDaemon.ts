@@ -13,14 +13,14 @@ class BaseDaemon {
   mainTemplate: string;
   ideaTemplate: string;
   commentTemplate: string;
-  evalutationTemplate: string;
+  evaluationTemplate: string;
 
   constructor(config: BaseDaemonConfig) {
     this.config = config;
     this.mainTemplate = config.mainTemplate;
     this.ideaTemplate = config.ideaTemplate;
     this.commentTemplate = config.commentTemplate;
-    this.evalutationTemplate = hardcodedEvaluationTemplate;
+    this.evaluationTemplate = hardcodedEvaluationTemplate;
   }
 
   getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
@@ -37,7 +37,7 @@ class BaseDaemon {
         context += '\n' + this.commentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
 
         let approvalString = comments[j].userApproved ? " y" : " n";
-        context += this.evalutationTemplate.replace("{}", approvalString);
+        context += this.evaluationTemplate.replace("{}", approvalString);
       }
     }
 
@@ -66,15 +66,16 @@ class BaseDaemon {
     context += "\n" + commentPrefix;
 
     try {
-      // currently only returns a single comment
-      var response = await GenerateBaseComments(context, openaiKey, openaiOrgId, baseModel);
-      console.log(context + response[0]);
+      // Call LLM handler to generate comments
+      var responses = await GenerateBaseComments(context, openaiKey, openaiOrgId, baseModel, this.evaluationTemplate);
     } catch (error) {
       ErrorHandler.handleError("Error generating base comment"); // send error to user
       console.error(error);
       return null;
     }
 
+    // pick response with highest score
+    let bestResponse = responses.reduce((prev, current) => (prev.score > current.score) ? prev : current);
 
     let commentTemplateDivider = "";
     const regex = /\{\}(.*?)\{\}/;
@@ -88,7 +89,7 @@ class BaseDaemon {
       return null;
     }
 
-    var splitResponse = response[0].split(commentTemplateDivider);
+    var splitResponse = bestResponse.content.split(commentTemplateDivider);
 
     if (splitResponse.length < 2) {
       ErrorHandler.handleError("Error: Response did not contain divider");

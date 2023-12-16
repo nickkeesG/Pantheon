@@ -61,14 +61,14 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
         }
     };
 
-    console.log(userPrompts[0])
+    //console.log(userPrompts[0])
 
     for (let userPrompt of userPrompts.slice(1)) {
         var response = await CallChatAPI(data, config);
-        console.log(response);
+        //console.log(response);
         data.messages.push({ role: "assistant", content: response[0] });
         data.messages.push({ role: "user", content: userPrompt });
-        console.log(userPrompt)
+        //console.log(userPrompt)
     }
 
     var finalData = {
@@ -83,12 +83,13 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
     return finalResponse;
 }
 
-export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string) {
+export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, evaluationTemplate: string) {
     var data = {
         model: baseModel,
         prompt: prompt,
         max_tokens: 128,
-        stop: ["\n", " {"]
+        stop: ["\n", " {"],
+        n: 6,
     };
 
     const config = {
@@ -100,7 +101,41 @@ export async function GenerateBaseComments(prompt: string, openAIKey: string, op
     };
 
     var response = await CallBaseAPI(data, config);
-    return response;
+    console.log(response.length + " responses generated");
+
+    var responsesWithScores = [];
+    var evaluationString = evaluationTemplate.split("{}")[0] + " y";
+
+    var evaluationData = {
+        model: baseModel,
+        prompt: "",
+        max_tokens: 0,
+        logprobs: 0,
+        echo: true,
+    };
+
+    for (let i = 0; i < response.length; i++) {
+        let evaluationPrompt = response[i] + evaluationString;
+        evaluationData.prompt = evaluationPrompt;
+        try {
+            var responseWithLogprobs = await CallBaseAPIForLogprobs(evaluationData, config);
+        } catch (error) {
+            console.error("Error calling base API for logprobs")
+            console.error(error)
+            return [];
+        }
+        let logprobList = responseWithLogprobs.token_logprobs;
+        let finalLogprob = logprobList[logprobList.length - 1];
+
+        //Score is the likelihood of the response being a "yes"
+        responsesWithScores.push({ content: response[i], score: finalLogprob });
+    }
+
+    for (let responseWithScore of responsesWithScores) {
+        console.log(responseWithScore.content + ": " + responseWithScore.score);
+    }
+
+    return responsesWithScores;
 }
 
 export async function GetSurprisal(fullContext: string,

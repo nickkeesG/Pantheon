@@ -13,6 +13,7 @@ const TextAreaField = styled(TextArea)`
   font-size: 16px;
   overflow: hidden;
   resize: none;
+  margin-bottom: 20px;
 `;
 
 const InputBox = () => {

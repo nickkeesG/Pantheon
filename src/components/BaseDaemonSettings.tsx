@@ -20,7 +20,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEdited, setIsEdited] = useState(false);
   const [json, setJson] = useState(() => {
-    const {...editableFields } = config;
+    const { ...editableFields } = config;
     return JSON.stringify(editableFields, null, 2);
   })
   const [rawContext, setRawContext] = useState('');
@@ -33,7 +33,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     console.log('Getting raw context');
     try {
       const daemon = new BaseDaemon(config);
-      setRawContext(daemon.getContext(pastIdeas, commentsForPastIdeas));
+      setRawContext(daemon.getPastContext(pastIdeas, commentsForPastIdeas));
       console.log('Raw context:', rawContext)
     }
     catch (error) {
@@ -67,9 +67,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
       {!isCollapsed && (
         <TextArea
           value={json}
-          onChange={(e) => { 
-            setJson(e.target.value); 
-            setIsEdited(true); 
+          onChange={(e) => {
+            setJson(e.target.value);
+            setIsEdited(true);
           }}
           style={{ width: '100%', minHeight: '100px' }}
         />
@@ -84,7 +84,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
           )}
         </div>
       )}
-      
+
     </BaseDaemonSettingsContainer>
   );
 };

@@ -53,7 +53,7 @@ const DaemonManager = () => {
         // Returns a list of comments
         const results = await daemon.generateComments(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
 
-        if (results.length == 0) {
+        if (results.length === 0) {
           console.log('No chat comments generated');
         }
         else {

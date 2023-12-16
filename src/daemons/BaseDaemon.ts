@@ -18,7 +18,7 @@ class BaseDaemon {
     this.commentTemplate = config.commentTemplate;
   }
 
-  getContext(pastIdeas: Idea[], currentIdeas: Idea[], selectedIdeaIdx: number, commentsForPastIdeas: Record<number, Comment[]>): string {
+  getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
@@ -30,9 +30,12 @@ class BaseDaemon {
       }
     }
 
-    context = this.mainTemplate.replace("{}", context);
+    return context;
+  }
 
-    // Add all ideas up to and including the random idea
+  getFullContext(pastIdeas: Idea[], currentIdeas: Idea[], selectedIdeaIdx: number, commentsForPastIdeas: Record<number, Comment[]>): string {
+    let context = this.getPastContext(pastIdeas, commentsForPastIdeas);
+
     for (let i = 0; i < selectedIdeaIdx + 1; i++) {
       context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
     }
@@ -44,7 +47,7 @@ class BaseDaemon {
     // Pick a random current idea
     var selectedIdeaIndex = Math.floor(Math.random() * currentIdeas.length);
 
-    let context = this.getContext(pastIdeas, currentIdeas, selectedIdeaIndex, commentsForPastIdeas);
+    let context = this.getFullContext(pastIdeas, currentIdeas, selectedIdeaIndex, commentsForPastIdeas);
 
     const commentPrefix = this.commentTemplate.substring(0, this.commentTemplate.indexOf("{}"));
     context += "\n" + commentPrefix;

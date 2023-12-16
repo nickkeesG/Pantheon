@@ -51,10 +51,16 @@ const DaemonManager = () => {
       setChatDaemonActive(true);
       try {
         // Returns a list of comments
-        const results = await daemon.generateComment(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
+        const results = await daemon.generateComments(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
 
-        // Dispatch first comment only
-        dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
+        if (results.length == 0) {
+          console.log('No chat comments generated');
+        }
+        else {
+          // Dispatch first comment only
+          dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
+        }
+
       } catch (error) {
         ErrorHandler.handleError('Failed to dispatch chat comment'); //send error to user
         console.error(error);
@@ -70,6 +76,9 @@ const DaemonManager = () => {
         const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId, baseModel);
         if (result) { // If result is null, result failed to parse
           dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
+        }
+        else {
+          console.log('No base comment generated');
         }
       } catch (error) {
         ErrorHandler.handleError('Failed to dispatch base comment'); //send error to user

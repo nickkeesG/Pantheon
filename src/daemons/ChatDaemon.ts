@@ -1,11 +1,13 @@
+import { Idea, ChatDaemonConfig } from '../redux/models';
 import { GenerateChatComments } from '../LLMHandler';
-import { ChatDaemonConfig } from '../redux/models';
-import { Idea } from '../redux/models';
 import ErrorHandler from '../ErrorHandler';
 
-const historyTemplate = `    {"content": "{}"}`;
-const ideaTemplate = `    {"id": {}, "content": "{}"}`;
-const contextTemplate = `First, read this history of thoughts from the user:
+/*
+  Hardcoded templates for the chat daemon
+*/
+const hardcodedHistoryTemplate = `    {"content": "{}"}`;
+const hardcodedIdeaTemplate = `    {"id": {}, "content": "{}"}`;
+const hardcodedContextTemplate = `First, read this history of thoughts from the user:
 {
   "history": [
 {}
@@ -21,6 +23,9 @@ Next, read these ideas which make up their current context:
 }`;
 
 
+/*
+  Behavior hardcoded from config. Using instruct model for predictable behavior
+*/
 class ChatDaemon {
   config: ChatDaemonConfig;
   ideaTemplate: string;
@@ -29,51 +34,59 @@ class ChatDaemon {
 
   constructor(config: ChatDaemonConfig) {
     this.config = config;
-    this.ideaTemplate = ideaTemplate;
-    this.historyTemplate = historyTemplate;
-    this.contextTemplate = contextTemplate;
+    this.ideaTemplate = hardcodedIdeaTemplate;
+    this.historyTemplate = hardcodedHistoryTemplate;
+    this.contextTemplate = hardcodedContextTemplate;
   }
 
-  async generateComment(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, chatModel: string) {
+  private getContext = (pastIdeas: Idea[], currentIdeas: Idea[]): string => {
+    let history = "";
+    for (let i = 0; i < pastIdeas.length; i++) {
+      history += this.historyTemplate.replace("{}", pastIdeas[i].text);
+      if (i !== pastIdeas.length - 1) {
+        history += ",\n";
+      }
+    }
+    let currentContext = "";
+    for (let i = 0; i < currentIdeas.length; i++) {
+      let tempId: number = i + 1;
+      currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
+      if (i !== currentIdeas.length - 1) {
+        currentContext += ",\n";
+      }
+    }
+    let context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
+    return context;
+  }
 
+  /*
+    Function called from DaemonManager to generate a list of comments for the current ideas
+  */
+  async generateComments(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, chatModel: string) {
     try {
-      var history = "";
-      for (let i = 0; i < pastIdeas.length; i++) {
-        history += this.historyTemplate.replace("{}", pastIdeas[i].text);
-        if (i !== pastIdeas.length - 1) {
-          history += ",\n";
-        }
-      }
-      var currentContext = "";
-      for (let i = 0; i < currentIdeas.length; i++) {
-        let tempId: number = i + 1;
-        currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
-        if (i !== currentIdeas.length - 1) {
-          currentContext += ",\n";
-        }
-      }
-      var context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
-      var userPrompts = [];
+      var userPrompts = []; // List of prompts to send, one by one, to the chat model
+      var context = this.getContext(pastIdeas, currentIdeas);
       userPrompts.push(context + "\n\n" + this.config.startInstruction);
       for (let i = 0; i < this.config.chainOfThoughtInstructions.length; i++) {
         userPrompts.push(this.config.chainOfThoughtInstructions[i]);
       }
       userPrompts.push(this.config.endInstruction);
     } catch (error) {
-      ErrorHandler.handleError("Error forming chat model context");
+      ErrorHandler.handleError("Error generating user prompts for chat model"); // send error to user
       console.error(error);
       return [];
     }
 
     try {
+      // Call LLMHandler to generate comments
       var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
     } catch (error) {
-      ErrorHandler.handleError("Error generating chat comment");
+      ErrorHandler.handleError("Error calling chat model"); // send error to user
       console.error(error);
       return [];
     }
 
-    // Parse the JSON string to a JavaScript objec
+    // Parse the JSON string to a JavaScript object
     try {
       var commentsObj = JSON.parse(comments);
       var ranking = commentsObj.ranking;

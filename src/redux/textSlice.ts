@@ -204,6 +204,20 @@ const textSlice = createSlice({
       state.currentBranchIds = getAllAncestorIds(node.ideas, newCurrentIdea.id)
       state.currentNodeId = node.id;
     },
+    addNode(state) {
+      const parentNodeId = state.currentNodeId;
+      const parentIdeaId = state.currentBranchIds[state.currentBranchIds.length - 1];
+      const newNodeId = state.nodes[state.nodes.length - 1].id + 1;
+      const newNode: Node = {
+        id: newNodeId,
+        parentNodeId,
+        parentIdeaId,
+        ideas: []
+      };
+      state.nodes.push(newNode);
+      state.currentNodeId = newNodeId;
+      state.currentBranchIds = [];
+    },
     addIdea(state, action: PayloadAction<{ text: string }>) {
       const parentId = state.currentBranchIds.length > 0 ? state.currentBranchIds[state.currentBranchIds.length - 1] : null;
       const node = state.nodes.find(node => node.id === state.currentNodeId)!;
@@ -351,5 +365,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

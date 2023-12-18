@@ -13,6 +13,16 @@ export const Button = styled.button`
   &:hover {
     background-color: var(--highlight);
   }
+
+  &:disabled {
+    color: var(--text-color-darkest);
+    border-color: var(--line-color-darker);
+    cursor: default;
+  }
+
+  &:disabled:hover {
+    background-color: transparent;
+  }
 `;
 
 export const TextButton = styled.button`

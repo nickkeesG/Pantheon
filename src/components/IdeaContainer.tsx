@@ -14,7 +14,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   word-break: break-word;
-  margin: 8px 0px;
+  padding: 8px 0px;
 `;
 
 const SidePanel = styled.div`

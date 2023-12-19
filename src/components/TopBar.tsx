@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Settings from './Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
-import { goBackNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
+import { goUpNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButton } from '../styles/SharedStyles';
 import { useEffect, useState } from 'react';
@@ -80,7 +80,7 @@ const TopBar = () => {
       {currentNode.parentNodeId !== null && (
         <UpButton
           title="Back to previous tree"
-          onClick={() => dispatch(goBackNode())}
+          onClick={() => dispatch(goUpNode())}
         />
       )}
       <IconButton

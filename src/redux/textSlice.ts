@@ -221,12 +221,26 @@ const textSlice = createSlice({
       state.currentNodeId = newNodeId;
       state.currentBranchIds = [];
     },
-    goBackNode(state) {
+    goUpNode(state) {
       const node = state.nodes.find(node => node.id === state.currentNodeId)!;
       const parentIdeaId = node.parentIdeaId!;
       const newNode = getNodeForIdea(state.nodes, parentIdeaId)!;
       const newCurrentIdea = getMostRecentDescendent(newNode.ideas, parentIdeaId);
       state.currentBranchIds = getAllAncestorIds(newNode.ideas, newCurrentIdea.id);
+      state.currentNodeId = newNode.id;
+      // If the current node has no ideas, delete it (user cancelled the creation)
+      if (node.ideas.length === 0) {
+        const index = state.nodes.findIndex(n => n.id === node.id);
+        if (index !== -1) {
+          state.nodes.splice(index, 1);
+        }
+      }
+    },
+    goDownNode(state, action: PayloadAction<{ newRootIdea: Idea }>) {
+      const newRootIdea = action.payload.newRootIdea;
+      const newNode = getNodeForIdea(state.nodes, newRootIdea.id)!;
+      const newCurrentIdea = getMostRecentDescendent(newNode.ideas, newRootIdea.id);
+      state.currentBranchIds = getAllAncestorIds(newNode.ideas, newCurrentIdea.id)
       state.currentNodeId = newNode.id;
     },
     addIdea(state, action: PayloadAction<{ text: string }>) {
@@ -372,6 +386,18 @@ export const selectBranchesFromIdea = createSelector(
   }
 )
 
+export const selectChildNodeIdeas = createSelector(
+  [
+    (state: RootState) => state.text.nodes,
+    (_: RootState, parentIdeaId: number) => parentIdeaId
+  ],
+  (nodes, parentIdeaId) => {
+    return nodes
+      .filter(node => node.parentIdeaId === parentIdeaId)
+      .map(node => node.ideas[0]);
+  }
+)
+
 export const selectFullContext = createSelector(
   [
     (state: RootState) => state.text.nodes,
@@ -385,5 +411,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addNode, goBackNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addNode, goUpNode, goDownNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

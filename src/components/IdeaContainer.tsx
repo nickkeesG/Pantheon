@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfIdea } from '../redux/textSlice';
+import { switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfIdea, selectChildNodeIdeas, goDownNode } from '../redux/textSlice';
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
-import { IconButton } from '../styles/SharedStyles';
+import { IconButton, TextButton } from '../styles/SharedStyles';
 import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';
@@ -14,6 +14,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   word-break: break-word;
+  margin: 8px 0px;
 `;
 
 const SidePanel = styled.div`
@@ -37,8 +38,22 @@ const ArrowButton = styled(IconButton).attrs({
   margin: 4px;
 `;
 
+const NodeButton = styled(TextButton)`
+  white-space: nowrap;
+  margin: 0px 28px;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const CenterPanel = styled.div`
+  max-width: 46%;
   flex: 0 0 46%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Row = styled.div`
   display: flex;
   flex-direction: row;
 `;
@@ -47,7 +62,7 @@ const StyledIdeaContainer = styled.div`
   position: relative;
   flex: 1;
   padding: 10px 28px 10px 10px;
-  margin: 10px 0px;
+  margin: 2px 0px;
   border: 0.5px solid var(--line-color-dark);
   border-radius: 4px;
   transition: background-color 0.3s, border-color 0.3s;
@@ -74,6 +89,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
   const dispatch = useAppDispatch();
   const childIdeas = useAppSelector(state => selectChildrenOfIdea(state, idea.id));
   const hasBranches = childIdeas.length > 1;
+  const childNodeIdeas = useAppSelector(state => selectChildNodeIdeas(state, idea.id));
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -118,33 +134,44 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
         </div>
       </SidePanel>
       <CenterPanel>
-        <ActionPanel>
-          <ArrowButton
-            title='Previous branch'
-            onClick={() => switchBranches(false)}
-            style={{ visibility: hasBranches ? 'visible' : 'hidden' }} />
-        </ActionPanel>
-        <StyledIdeaContainer style={ideaContainerStyle}>
-          <IdeaText idea={idea} />
-          <PlusButton
-            title='New branch'
-            onClick={createNewBranch}
-            style={{
-              visibility: showPlusButton ? 'visible' : 'hidden',
-              float: 'right'
-            }}
-          />
-        </StyledIdeaContainer>
-        <ActionPanel style={{ visibility: hasBranches ? 'visible' : 'hidden' }}>
-          <ArrowButton
-            title='Next branch'
-            onClick={() => switchBranches(true)}
-            style={{
-              visibility: hasBranches ? 'visible' : 'hidden',
-              transform: 'rotate(180deg)'
-            }}
-          />
-        </ActionPanel>
+        <Row>
+          <ActionPanel>
+            <ArrowButton
+              title='Previous branch'
+              onClick={() => switchBranches(false)}
+              style={{ visibility: hasBranches ? 'visible' : 'hidden' }} />
+          </ActionPanel>
+          <StyledIdeaContainer style={ideaContainerStyle}>
+            <IdeaText idea={idea} />
+            <PlusButton
+              title='New branch'
+              onClick={createNewBranch}
+              style={{
+                visibility: showPlusButton ? 'visible' : 'hidden',
+                float: 'right'
+              }}
+            />
+          </StyledIdeaContainer>
+          <ActionPanel style={{ visibility: hasBranches ? 'visible' : 'hidden' }}>
+            <ArrowButton
+              title='Next branch'
+              onClick={() => switchBranches(true)}
+              style={{
+                visibility: hasBranches ? 'visible' : 'hidden',
+                transform: 'rotate(180deg)'
+              }}
+            />
+          </ActionPanel>
+        </Row>
+        {childNodeIdeas.map((idea, index) => (
+          <Row key={index}>
+            <NodeButton
+              title="Go to child page"
+              onClick={() => dispatch(goDownNode({ newRootIdea: idea }))}
+            >
+              Child page: {idea.text}</NodeButton>
+          </Row>
+        ))}
       </CenterPanel>
       <SidePanel>
         <div

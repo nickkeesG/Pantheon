@@ -42,11 +42,14 @@ const getChildren = (ideas: Idea[], parentId: number): Idea[] => {
  * Finds the most recent descendent of a given ancestor idea within the entire tree.
  * 
  * @param ideas - The array of all ideas.
- * @param ancestorIdea - The ancestor idea for which to find the descendent.
+ * @param ancestorIdeaId - The ID of the ancestor idea for which to find the descendent.
  * @returns The most recent descendent of the given ancestor idea.
  */
-const getMostRecentDescendent = (ideas: Idea[], ancestorIdea: Idea): Idea => {
-  let mostRecentDescendent = ancestorIdea;
+const getMostRecentDescendent = (ideas: Idea[], ancestorIdeaId: number): Idea => {
+  let mostRecentDescendent = ideas.find(idea => idea.id === ancestorIdeaId);
+  if (!mostRecentDescendent) {
+    throw new Error(`Ancestor idea with id ${ancestorIdeaId} not found`);
+  }
   let queue = [mostRecentDescendent];
   while (queue.length > 0) {
     const currentIdea = queue.shift()!;
@@ -181,7 +184,7 @@ const textSlice = createSlice({
     },
     changeBranch(state, action: PayloadAction<Idea>) {
       const newCurrentNode = getNodeForIdea(state.nodes, action.payload.id)!;
-      const newCurrentIdea = getMostRecentDescendent(newCurrentNode.ideas, action.payload);
+      const newCurrentIdea = getMostRecentDescendent(newCurrentNode.ideas, action.payload.id);
       state.currentBranchIds = getAllAncestorIds(newCurrentNode.ideas, newCurrentIdea.id);
       state.currentNodeId = newCurrentNode.id;
     },
@@ -196,10 +199,10 @@ const textSlice = createSlice({
         const newChild = action.payload.moveForward
           ? childIdeas[(currentIndex + 1) % childIdeas.length]
           : childIdeas[(currentIndex - 1 + childIdeas.length) % childIdeas.length]
-        newCurrentIdea = getMostRecentDescendent(node.ideas, newChild)
+        newCurrentIdea = getMostRecentDescendent(node.ideas, newChild.id)
       } else {
         // User was likely adding a new branch but changed their mind
-        newCurrentIdea = getMostRecentDescendent(node.ideas, parentIdea);
+        newCurrentIdea = getMostRecentDescendent(node.ideas, parentIdea.id);
       }
       state.currentBranchIds = getAllAncestorIds(node.ideas, newCurrentIdea.id)
       state.currentNodeId = node.id;
@@ -217,6 +220,14 @@ const textSlice = createSlice({
       state.nodes.push(newNode);
       state.currentNodeId = newNodeId;
       state.currentBranchIds = [];
+    },
+    goBackNode(state) {
+      const node = state.nodes.find(node => node.id === state.currentNodeId)!;
+      const parentIdeaId = node.parentIdeaId!;
+      const newNode = getNodeForIdea(state.nodes, parentIdeaId)!;
+      const newCurrentIdea = getMostRecentDescendent(newNode.ideas, parentIdeaId);
+      state.currentBranchIds = getAllAncestorIds(newNode.ideas, newCurrentIdea.id);
+      state.currentNodeId = newNode.id;
     },
     addIdea(state, action: PayloadAction<{ text: string }>) {
       const parentId = state.currentBranchIds.length > 0 ? state.currentBranchIds[state.currentBranchIds.length - 1] : null;
@@ -303,6 +314,15 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
   }
 );
 
+export const selectCurrentNode = createSelector(
+  [
+    (state: RootState) => state.text.nodes,
+    (staet: RootState) => staet.text.currentNodeId
+  ], (nodes, currentNodeId) => {
+    return nodes.find(node => node.id === currentNodeId)!;
+  }
+);
+
 export const selectCurrentBranchIdeas = createSelector(
   [
     (state: RootState) => state.text.nodes,
@@ -365,5 +385,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addNode, goBackNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
 export default textSlice.reducer;

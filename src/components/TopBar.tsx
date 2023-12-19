@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import Settings from './Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
-import { selectFullContext } from '../redux/textSlice';
-import { useAppSelector } from '../hooks';
+import { goBackNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButton } from '../styles/SharedStyles';
 import { useEffect, useState } from 'react';
+import { SlArrowUp } from 'react-icons/sl';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -22,9 +23,25 @@ const StyledTopBar = styled.div`
   border-bottom: 0.5px solid var(--line-color-dark);
 `;
 
+const UpButton = styled(IconButton).attrs({
+  as: SlArrowUp
+})`
+  width: 39%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 0px;
+  border-left: 0.5px solid var(--line-color-dark);
+  border-right: 0.5px solid var(--line-color-dark);
+  border-radius: 0px;
+`;
+
 const TopBar = () => {
+  const dispatch = useAppDispatch();
   const ideaExports = useAppSelector(selectFullContext);
   const [isCopied, setIsCopied] = useState(false);
+  const currentNode = useAppSelector(selectCurrentNode);
 
   const copyContextToMarkdown = async () => {
     let context = '# Pantheon Context\n';
@@ -60,6 +77,12 @@ const TopBar = () => {
 
   return (
     <StyledTopBar>
+      {currentNode.parentNodeId !== null && (
+        <UpButton
+          title="Back to previous tree"
+          onClick={() => dispatch(goBackNode())}
+        />
+      )}
       <IconButton
         title="Copy context"
         onClick={copyContextToMarkdown}

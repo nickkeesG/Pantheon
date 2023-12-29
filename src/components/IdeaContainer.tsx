@@ -4,7 +4,7 @@ import { switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfId
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
-import { IconButton, TextButton } from '../styles/SharedStyles';
+import { IconButtonLarge, TextButton } from '../styles/SharedStyles';
 import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';
@@ -29,7 +29,7 @@ const ActionPanel = styled.div`
   justify-content: center;
 `
 
-const ArrowButton = styled(IconButton).attrs({
+const ArrowButton = styled(IconButtonLarge).attrs({
   as: SlArrowLeft
 })`
   height: 24px;
@@ -68,7 +68,7 @@ const StyledIdeaContainer = styled.div`
   transition: background-color 0.3s, border-color 0.3s;
 `;
 
-const PlusButton = styled(IconButton).attrs({
+const PlusButton = styled(IconButtonLarge).attrs({
   as: HiPlus
 })`
   position: absolute;

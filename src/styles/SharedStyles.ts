@@ -2,16 +2,22 @@ import styled from 'styled-components';
 
 export const Button = styled.button`
   cursor: pointer;
-  color: inherit;
   font-family: inherit;
   font-size: 0.9em;
   background: none;
-  border: 0.5px solid var(--line-color-light);
+  color: var(--text-color-dark);
+  border: 0.5px solid var(--line-color-dark);
   border-radius: 50px;
   padding: 4px 8px;
   margin: 4px;
+  transition: background-color 0.2s, color 0.2s;
+
   &:hover {
-    background-color: var(--highlight);
+    background-color: var(--highlight-weak);
+  }
+
+  &:active {
+    opacity: 70%;
   }
 
   &:disabled {
@@ -25,19 +31,12 @@ export const Button = styled.button`
   }
 `;
 
-export const TextButton = styled.button`
+export const TextButton = styled(Button)`
   background: none;
   border: none;
   border-radius: 8px;
   color: var(--text-color-dark);
-  padding: 4px;
-  margin: 4px;
-  cursor: pointer;
-  font-family: inherit;
   font-size: inherit;
-  &:hover {
-    background-color: var(--highlight);
-  }
 `;
 
 export const Icon = styled.div`
@@ -56,27 +55,19 @@ export const Icon = styled.div`
   }
 `;
 
-export const IconButton = styled.button`
+export const IconButtonLarge = styled(Button)`
   width: 20px;
   height: 20px;
-  cursor: pointer;
+  box-sizing: content-box;
+  font-size: 1em;
   background: none;
-  opacity: 70%;
   border: none;
   padding: 8px;
+  margin: 0px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
-  
-  &:hover {
-    background-color: var(--highlight);
-  }
-
-  &:active {
-    opacity: 50%;
-  }
 
   img {
     max-width: 16px;
@@ -84,7 +75,13 @@ export const IconButton = styled.button`
   }
 `;
 
-export const IconButtonSmall = styled(IconButton)`
+export const IconButtonMedium = styled(IconButtonLarge)`
+  width: 16px;
+  height: 16px;
+  padding: 6px;
+`;
+
+export const IconButtonSmall = styled(IconButtonLarge)`
   width: 12px;
   height: 12px;
   padding: 4px;

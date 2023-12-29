@@ -3,7 +3,7 @@ import Settings from './Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
 import { goUpNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { IconButton } from '../styles/SharedStyles';
+import { IconButtonMedium } from '../styles/SharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 
@@ -23,10 +23,12 @@ const StyledTopBar = styled.div`
   border-bottom: 0.5px solid var(--line-color-dark);
 `;
 
-const UpButton = styled(IconButton).attrs({
+const UpButton = styled(IconButtonMedium).attrs({
   as: SlArrowUp
 })`
   width: 39%;
+  height: 100%;
+  box-sizing: border-box;
   position: absolute;
   top: 0;
   left: 50%;
@@ -83,19 +85,12 @@ const TopBar = () => {
           onClick={() => dispatch(goUpNode())}
         />
       )}
-      <IconButton
+      <IconButtonMedium
         title="Copy context"
         onClick={copyContextToMarkdown}
-        style={{
-          width: '16px',
-          height: '16px',
-          padding: '6px',
-          boxSizing: 'content-box',
-          color: 'var(--main-text-color)'
-        }}
       >
         {isCopied ? <FiCheckCircle /> : <FiCopy />}
-      </IconButton>
+      </IconButtonMedium>
       <Settings />
     </StyledTopBar>
   )

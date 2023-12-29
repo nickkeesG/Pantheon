@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IconButton } from "../styles/SharedStyles";
+import { IconButtonLarge } from "../styles/SharedStyles";
 import { FiX } from "react-icons/fi";
 import { useEffect } from "react";
 
@@ -21,7 +21,7 @@ const StyledModal = styled.div`
  z-index: 100;
 `;
 
-const ExitButton = styled(IconButton).attrs({
+const ExitButton = styled(IconButtonLarge).attrs({
   as: FiX
 })`
   position: fixed;

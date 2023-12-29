@@ -5,16 +5,13 @@ import { updateChatModel, updateBaseModel, setOpenaiKey, setOpenaiOrgId } from '
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
-import { IconButton, TextButton, TextInput } from '../styles/SharedStyles';
+import { IconButtonMedium, TextButton, TextInput } from '../styles/SharedStyles';
 import { ChatDaemonConfig } from '../redux/models';
 import Modal from './Modal';
 
-const SettingsButton = styled(IconButton).attrs({
+const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
 })`
-  width: 16px;
-  height: 16px;
-  padding: 6px;
   display: flex;
 `;
 

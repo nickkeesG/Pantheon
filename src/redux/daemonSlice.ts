@@ -1,6 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { BaseDaemonConfig, ChatDaemonConfig } from './models';
+import { saveToLocalStorage, loadFromLocalStorage } from '../utils/localStorageUtils';
+
+
+const DAEMON_STATE_KEY = 'daemonState';
 
 export interface DaemonState {
   chatDaemons: ChatDaemonConfig[];
@@ -30,7 +34,7 @@ const defaultEndInstruction = `Please rank your responses from most to least use
 }
 Do not write any other text, just give the json.`;
 
-const initialDaemonState: DaemonState = {
+const initialDaemonState: DaemonState = loadFromLocalStorage(DAEMON_STATE_KEY, {
   chatDaemons: [
     {
       id: 0,
@@ -169,7 +173,7 @@ Your job is to help the user become the best version of themselves and to get th
     ideaTemplate: '-[User]: {}',
     commentTemplate: '  -[{}]: {}'
   }
-};
+});
 
 const daemonSlice = createSlice({
   name: 'daemon',
@@ -177,9 +181,11 @@ const daemonSlice = createSlice({
   reducers: {
     addChatDaemon(state, action: PayloadAction<ChatDaemonConfig>) {
       state.chatDaemons.push(action.payload);
+      saveToLocalStorage(DAEMON_STATE_KEY, state);
     },
     removeChatDaemon(state, action: PayloadAction<number>) {
       state.chatDaemons = state.chatDaemons.filter(daemon => daemon.id !== action.payload);
+      saveToLocalStorage(DAEMON_STATE_KEY, state);
     },
     updateChatDaemon(state, action: PayloadAction<ChatDaemonConfig>) {
       const index = state.chatDaemons.findIndex(daemon => daemon.id === action.payload.id);
@@ -188,6 +194,7 @@ const daemonSlice = createSlice({
           ...state.chatDaemons[index],
           ...action.payload
         };
+        saveToLocalStorage(DAEMON_STATE_KEY, state);
       }
     },
     updateBaseDaemon(state, action: PayloadAction<BaseDaemonConfig>) {
@@ -195,6 +202,7 @@ const daemonSlice = createSlice({
         ...state.baseDaemon,
         ...action.payload
       };
+      saveToLocalStorage(DAEMON_STATE_KEY, state);
     }
   },
 });

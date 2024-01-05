@@ -1,6 +1,6 @@
 import { Idea, ChatDaemonConfig } from '../redux/models';
-import { GenerateChatComments } from '../LLMHandler';
-import ErrorHandler from '../ErrorHandler';
+import { GenerateChatComments } from '../llmHandler';
+import ErrorHandler from '../errorHandler';
 
 /*
   Hardcoded templates for the chat daemon

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea } from '../redux/models';
 import { setSurprisalToIdea, selectCurrentBranchIdeas } from '../redux/textSlice';
-import { GetSurprisal } from '../LLMHandler';
-import BaseDaemon from '../daemons/BaseDaemon';
+import { GetSurprisal } from '../llmHandler';
+import BaseDaemon from '../daemons/baseDaemon';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();

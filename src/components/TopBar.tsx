@@ -3,7 +3,7 @@ import Settings from './Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
 import { goUpNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { IconButtonMedium } from '../styles/SharedStyles';
+import { IconButtonMedium } from '../styles/sharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 

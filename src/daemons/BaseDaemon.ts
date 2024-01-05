@@ -1,6 +1,6 @@
 import { Comment, Idea, BaseDaemonConfig } from '../redux/models';
-import { GenerateBaseComments } from '../LLMHandler';
-import ErrorHandler from '../ErrorHandler';
+import { GenerateBaseComments } from '../llmHandler';
+import ErrorHandler from '../errorHandler';
 
 // TODO - make this configurable
 const hardcodedEvaluationTemplate = ` {Comment accepted (y/n):{}}`;

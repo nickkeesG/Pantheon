@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getEncoding } from 'js-tiktoken';
-import ErrorHandler from './ErrorHandler';
+import ErrorHandler from './errorHandler';
 
 async function CallChatAPI(data: any, config: any) {
     try {

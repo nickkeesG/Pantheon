@@ -4,7 +4,7 @@ import { switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfId
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
-import { IconButtonLarge, TextButton } from '../styles/SharedStyles';
+import { IconButtonLarge, TextButton } from '../styles/sharedStyles';
 import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';

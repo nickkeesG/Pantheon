@@ -34,7 +34,7 @@ const defaultEndInstruction = `Please rank your responses from most to least use
 }
 Do not write any other text, just give the json.`;
 
-const initialDaemonState: DaemonState = loadFromLocalStorage(DAEMON_STATE_KEY, {
+const defaultDaemonState: DaemonState = {
   chatDaemons: [
     {
       id: 0,
@@ -173,11 +173,11 @@ Your job is to help the user become the best version of themselves and to get th
     ideaTemplate: '-[User]: {}',
     commentTemplate: '  -[{}]: {}'
   }
-});
+};
 
 const daemonSlice = createSlice({
   name: 'daemon',
-  initialState: initialDaemonState,
+  initialState: loadFromLocalStorage(DAEMON_STATE_KEY, defaultDaemonState) as DaemonState,
   reducers: {
     addChatDaemon(state, action: PayloadAction<ChatDaemonConfig>) {
       state.chatDaemons.push(action.payload);
@@ -203,6 +203,10 @@ const daemonSlice = createSlice({
         ...action.payload
       };
       saveToLocalStorage(DAEMON_STATE_KEY, state);
+    },
+    resetDaemonState(state) {
+      Object.assign(state, defaultDaemonState);
+      saveToLocalStorage(DAEMON_STATE_KEY, state);
     }
   },
 });
@@ -212,5 +216,5 @@ export const selectEnabledChatDaemons = createSelector(
   (chatDaemons) => chatDaemons.filter(daemon => daemon.enabled)
 );
 
-export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon } = daemonSlice.actions;
+export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon, resetDaemonState } = daemonSlice.actions;
 export default daemonSlice.reducer;

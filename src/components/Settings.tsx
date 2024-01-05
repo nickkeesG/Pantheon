@@ -5,9 +5,11 @@ import { updateChatModel, updateBaseModel, setOpenaiKey, setOpenaiOrgId } from '
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
-import { IconButtonMedium, TextButton, TextInput } from '../styles/SharedStyles';
+import { ButtonDangerous, IconButtonMedium, TextButton, TextInput } from '../styles/SharedStyles';
 import { ChatDaemonConfig } from '../redux/models';
 import Modal from './Modal';
+import ConfirmationModal from './ConfirmationModal';
+import { resetDaemonState } from '../redux/daemonSlice';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -66,10 +68,23 @@ const Settings = () => {
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [addingNewDaemon, setAddingNewDaemon] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [key, setKey] = useState(Date.now()) // Key modifier for UI reset
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
+
+  const toggleConfirmationModal = () => {
+    setShowConfirmationModal(!showConfirmationModal);
+  }
+
+  const resetDaemonSettings = () => {
+    dispatch(resetDaemonState());
+    setKey(Date.now());
+    setShowConfirmationModal(false);
+    setAddingNewDaemon(false);
+  }
 
   const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setOpenaiKey(event.target.value));
@@ -107,7 +122,7 @@ const Settings = () => {
     <div>
       <SettingsButton title="Settings" onClick={toggleSettings} />
       {isSettingsOpen && (
-        <Modal toggleVisibility={toggleSettings}>
+        <Modal toggleVisibility={toggleSettings} zIndex={100}>
           <SettingsPanel>
             <SettingsHeader>SETTINGS</SettingsHeader>
             <TextSettingContainer>
@@ -142,13 +157,14 @@ const Settings = () => {
                 onChange={handleBaseModelChange}
               />
             </TextSettingContainer>
+            <hr style={{ marginTop: '15px' }} />
             <h4>Chat daemons</h4>
             <div>
               {chatDaemonConfigs.map((config) => (
-                <ChatDaemonSettings key={config.id} config={config} isNewDaemon={false} />
+                <ChatDaemonSettings key={config.id + key} config={config} isNewDaemon={false} />
               ))}
               {addingNewDaemon && (
-                <ChatDaemonSettings key={"new"} config={createEmptyChatDaemonConfig()} isNewDaemon={true} />
+                <ChatDaemonSettings key={"new" + key} config={createEmptyChatDaemonConfig()} isNewDaemon={true} />
               )}
               {!addingNewDaemon && (
                 <TextButton onClick={() => setAddingNewDaemon(true)}>
@@ -157,9 +173,21 @@ const Settings = () => {
               )}
             </div>
             <h4>Base Daemons</h4>
-            <BaseDaemonSettings config={baseDaemonConfig} />
+            <BaseDaemonSettings key={"base" + key} config={baseDaemonConfig} />
+            <hr style={{ marginBottom: '10px' }} />
+            <ButtonDangerous onClick={toggleConfirmationModal}>
+              Reset daemon settings
+            </ButtonDangerous>
           </SettingsPanel>
         </Modal>
+      )}
+      {showConfirmationModal && (
+        <ConfirmationModal
+          onConfirm={resetDaemonSettings}
+          onCancel={toggleConfirmationModal}
+          message="Are you sure you want to reset all daemon settings? This cannot be undone."
+          zIndex={120}
+        />
       )}
     </div>
   );

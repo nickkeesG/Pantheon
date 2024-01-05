@@ -31,6 +31,20 @@ export const Button = styled.button`
   }
 `;
 
+export const ButtonHighlighted = styled(Button)`
+  background-color: var(--accent-color-dark);
+  color: var(--bg-color);
+
+  &:hover {
+    background-color: var(--accent-color-darker);
+  }
+`;
+
+export const ButtonDangerous = styled(Button)`
+  color: var(--accent-color-red);
+  padding: 8px 16px;
+`;
+
 export const TextButton = styled(Button)`
   background: none;
   border: none;

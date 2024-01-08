@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { changeBranch } from "../redux/textSlice";
 import { Idea } from "../redux/models";
-import { TextButton } from "../styles/sharedStyles";
+import { TextButton } from "../styles/SharedStyles";
 import { useAppDispatch } from "../hooks";
 
 const StyledChangeBranchPopup = styled.div`

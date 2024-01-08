@@ -3,9 +3,9 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea, Comment } from '../redux/models';
 import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComment, selectCommentsGroupedByIdeaIds } from '../redux/textSlice';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
-import BaseDaemon from '../daemons/baseDaemon';
-import ChatDaemon from '../daemons/chatDaemon';
-import ErrorHandler from '../errorHandler';
+import BaseDaemon from '../daemons/BaseDaemon';
+import ChatDaemon from '../daemons/ChatDaemon';
+import ErrorHandler from '../ErrorHandler';
 
 /*
 Central controller for the deployment of daemons.

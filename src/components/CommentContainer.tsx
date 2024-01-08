@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Comment } from '../redux/models';
-import { IconButtonSmall } from '../styles/sharedStyles';
+import { IconButtonSmall } from '../styles/SharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../hooks';
 import { approveComment } from '../redux/textSlice';

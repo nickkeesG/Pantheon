@@ -1,4 +1,3 @@
-import React from 'react';
 import './app.css'
 import Display from './components/Display';
 import DaemonManager from './components/DaemonManager';

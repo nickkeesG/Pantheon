@@ -5,7 +5,7 @@ import { updateChatModel, updateBaseModel, setOpenaiKey, setOpenaiOrgId } from '
 import { useAppDispatch, useAppSelector } from '../hooks';
 import ChatDaemonSettings from './ChatDaemonSettings';
 import BaseDaemonSettings from './BaseDaemonSettings';
-import { ButtonDangerous, IconButtonMedium, TextButton, TextInput } from '../styles/SharedStyles';
+import { ButtonDangerous, IconButtonMedium, TextButton, TextInput } from '../styles/sharedStyles';
 import { ChatDaemonConfig } from '../redux/models';
 import Modal from './Modal';
 import ConfirmationModal from './ConfirmationModal';

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IconButtonLarge } from "../styles/SharedStyles";
+import { IconButtonLarge } from "../styles/sharedStyles";
 import { FiX } from "react-icons/fi";
 import { useEffect } from "react";
 

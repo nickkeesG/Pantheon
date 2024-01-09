@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { addIdea, addNode, setLastTimeActive } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Button, TextArea } from '../styles/SharedStyles';
+import { Button, TextArea } from '../styles/sharedStyles';
 
 const Container = styled.div`
   display: flex;

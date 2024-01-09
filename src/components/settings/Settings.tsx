@@ -74,9 +74,9 @@ const Settings = () => {
             <ImportExportButtons />
             <hr />
             <KeySettings />
-            <hr style={{ marginTop: '15px' }} />
+            <hr />
             <DaemonSettings key={key} />
-            <hr style={{ marginBottom: '10px' }} />
+            <hr />
             <ButtonDangerous onClick={toggleConfirmationModal}>
               Reset daemon settings
             </ButtonDangerous>

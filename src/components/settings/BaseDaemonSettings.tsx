@@ -3,7 +3,7 @@ import { updateBaseDaemon } from "../../redux/daemonSlice"
 import { BaseDaemonConfig } from '../../redux/models';
 import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
-import { Button, TextArea, TextButton } from '../../styles/sharedStyles';
+import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectCommentsGroupedByIdeaIds, selectIdeasUpToMaxCommented } from '../../redux/textSlice';
 
@@ -57,9 +57,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
           Base daemon config
         </TextButton>
         {isEdited && (
-          <Button onClick={updateDaemonConfig}>
+          <ButtonSmall onClick={updateDaemonConfig}>
             Save
-          </Button>
+          </ButtonSmall>
         )}
       </span>
       {!isCollapsed && (

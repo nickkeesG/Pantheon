@@ -3,7 +3,7 @@ import { addChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { Button, TextArea, TextButton } from '../../styles/sharedStyles';
+import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 
 
 const ChatDaemonSettingsContainer = styled.div`
@@ -52,9 +52,9 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
           {config.name}
         </TextButton>
         {isEdited && (
-          <Button onClick={updateDaemonConfig}>
+          <ButtonSmall onClick={updateDaemonConfig}>
             Save
-          </Button>
+          </ButtonSmall>
         )}
       </span>
       {!isCollapsed && (

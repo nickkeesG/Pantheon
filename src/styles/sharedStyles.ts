@@ -8,7 +8,7 @@ export const Button = styled.button`
   color: var(--text-color-dark);
   border: 0.5px solid var(--line-color-dark);
   border-radius: 50px;
-  padding: 4px 8px;
+  padding: 8px 16px;
   margin: 4px;
   transition: background-color 0.2s, color 0.2s;
 
@@ -38,6 +38,8 @@ export const ButtonHighlighted = styled(Button)`
   &:hover {
     background-color: var(--accent-color-darker);
   }
+export const ButtonSmall = styled(Button)`
+  padding: 4px 8px;
 `;
 
 export const ButtonDangerous = styled(Button)`
@@ -49,6 +51,7 @@ export const TextButton = styled(Button)`
   background: none;
   border: none;
   border-radius: 8px;
+  padding: 4px 8px;
   color: var(--text-color-dark);
   font-size: inherit;
 `;

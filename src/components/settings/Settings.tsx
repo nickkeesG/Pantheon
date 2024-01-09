@@ -8,6 +8,7 @@ import ConfirmationModal from '../ConfirmationModal';
 import { resetDaemonState } from '../../redux/daemonSlice';
 import KeySettings from './KeySettings';
 import DaemonSettings from './DaemonSettings';
+import ImportExportButtons from './ImportExportButtons';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -70,6 +71,8 @@ const Settings = () => {
         <Modal toggleVisibility={toggleSettings} zIndex={100}>
           <SettingsPanel>
             <SettingsHeader>SETTINGS</SettingsHeader>
+            <ImportExportButtons />
+            <hr />
             <KeySettings />
             <hr style={{ marginTop: '15px' }} />
             <DaemonSettings key={key} />

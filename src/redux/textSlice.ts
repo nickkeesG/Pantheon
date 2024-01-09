@@ -291,6 +291,9 @@ const textSlice = createSlice({
       else {
         console.error("Error finding idea to set surprisal for! IdeaId: " + action.payload.ideaId);
       }
+    },
+    replaceTree(state, action: PayloadAction<TextState>) {
+      return action.payload;
     }
   },
 });
@@ -351,7 +354,7 @@ export const selectCurrentBranchIdeas = createSelector(
 
 export const selectRecentIdeasWithoutComments = createSelector(
   [(state: RootState) => state.text.nodes,
-    (state: RootState) => state.text.currentNodeId,
+  (state: RootState) => state.text.currentNodeId,
   (state: RootState) => state.text.currentBranchIds,
   (state: RootState) => state.text.comments],
   (nodes, currentNodeId, currentBranchIds, comments) => {
@@ -362,7 +365,7 @@ export const selectRecentIdeasWithoutComments = createSelector(
 
 export const selectIdeasUpToMaxCommented = createSelector(
   [(state: RootState) => state.text.nodes,
-    (state: RootState) => state.text.currentNodeId,
+  (state: RootState) => state.text.currentNodeId,
   (state: RootState) => state.text.currentBranchIds,
   (state: RootState) => state.text.comments],
   (nodes, currentNodeId, currentBranchIds, comments) => {
@@ -411,5 +414,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addNode, goUpNode, goDownNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive } = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addNode, goUpNode, goDownNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive, replaceTree } = textSlice.actions;
 export default textSlice.reducer;

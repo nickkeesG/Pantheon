@@ -4,12 +4,11 @@ import textReducer from './textSlice';
 import daemonReducer from './daemonSlice';
 import llmReducer from './llmSlice';
 import storage from 'redux-persist/lib/storage'
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
 const persistConfig = {
   key: 'root',
-  storage,
-  whitelist: ['text']
+  storage
 };
 
 const rootReducer = combineReducers({
@@ -21,7 +20,13 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: persistedReducer
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] // TODO I think we shouldn't have to ignore these but I'm not sure
+      }
+    })
 });
 
 export const persistor = persistStore(store);

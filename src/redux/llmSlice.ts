@@ -9,8 +9,8 @@ export interface LLMState {
 
 
 const initialLLMState: LLMState = {
-  openAIKey: localStorage.getItem('openAIKey') || '',
-  openAIOrgId: localStorage.getItem('openAIOrgId') || '',
+  openAIKey: '',
+  openAIOrgId: '',
   baseModel: 'davinci-002',
   chatModel: 'gpt-4-1106-preview'
 };
@@ -19,11 +19,9 @@ const llmSlice = createSlice({
   initialState: initialLLMState,
   reducers: {
     setOpenaiKey(state, action: PayloadAction<string>) {
-      localStorage.setItem('openAIKey', action.payload);
       state.openAIKey = action.payload;
     },
     setOpenaiOrgId(state, action: PayloadAction<string>) {
-      localStorage.setItem('openAIOrgId', action.payload);
       state.openAIOrgId = action.payload;
     },
     updateBaseModel(state, action: PayloadAction<string>) {

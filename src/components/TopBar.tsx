@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Settings from './Settings';
+import Settings from './settings/Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
 import { goUpNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';

@@ -30,11 +30,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const dispatch = useAppDispatch();
 
   const getRawContext = () => {
-    console.log('Getting raw context');
     try {
       const daemon = new BaseDaemon(config);
       setRawContext(daemon.getPastContext(pastIdeas, commentsForPastIdeas));
-      console.log('Raw context:', rawContext)
     }
     catch (error) {
       console.error("Failed to get raw context:", error); // TODO show an error to the user
@@ -56,7 +54,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
       <span>
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
-          Base Daemon Config
+          Base daemon config
         </TextButton>
         {isEdited && (
           <Button onClick={updateDaemonConfig}>
@@ -76,7 +74,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
       )}
       {!isCollapsed && (
         <div>
-          <Button onClick={() => getRawContext()}>View Raw Context</Button>
+          {!rawContext && <Button onClick={() => getRawContext()}>View raw context</Button>}
           {rawContext && (
             <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
               {rawContext}
@@ -88,4 +86,5 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     </BaseDaemonSettingsContainer>
   );
 };
+
 export default BaseDaemonSettings;

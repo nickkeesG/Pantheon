@@ -17,7 +17,7 @@ const TextSettingContainer = styled.div`
   margin: 0 auto;
 `;
 
-export const KeySettings = () => {
+const KeySettings = () => {
   const dispatch = useAppDispatch();
   const openAIKey = useAppSelector(state => state.llm.openAIKey);
   const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
@@ -25,7 +25,7 @@ export const KeySettings = () => {
   const baseModel = useAppSelector(state => state.llm.baseModel);
 
   return (
-    <>
+    <div>
       <TextSettingContainer>
         <SettingLabel>OpenAI API key</SettingLabel>
         <TextInput
@@ -58,6 +58,8 @@ export const KeySettings = () => {
           onChange={(event) => dispatch(updateBaseModel(event.target.value))}
         />
       </TextSettingContainer>
-    </>
+    </div>
   )
 }
+
+export default KeySettings;

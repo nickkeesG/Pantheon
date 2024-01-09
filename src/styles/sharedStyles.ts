@@ -32,12 +32,9 @@ export const Button = styled.button`
 `;
 
 export const ButtonHighlighted = styled(Button)`
-  background-color: var(--accent-color-dark);
-  color: var(--bg-color);
+  color: var(--accent-color-coral);
+`;
 
-  &:hover {
-    background-color: var(--accent-color-darker);
-  }
 export const ButtonSmall = styled(Button)`
   padding: 4px 8px;
 `;

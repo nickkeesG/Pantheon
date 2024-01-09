@@ -35,7 +35,7 @@ const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ us
   position: absolute;
   bottom: 6px;
   right: 12px;
-  color: ${props => props.userApproved ? 'var(--accent-color)' : 'var(--line-color)'};
+  color: ${props => props.userApproved ? 'var(--accent-color-coral)' : 'var(--line-color)'};
   pointer-events: ${props => props.userApproved ? 'none' : 'auto'};
   cursor: ${props => props.userApproved ? 'default' : 'pointer'};
   opacity: ${props => props.userApproved ? '0.7' : '1'};

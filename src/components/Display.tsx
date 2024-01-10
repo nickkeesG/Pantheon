@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
 import TopBar from './TopBar';
+import ErrorDisplay from '../errorHandler';
 
 const DisplayContainer = styled.div`
   display: flex;
@@ -16,6 +17,7 @@ function Display() {
       <TopBar />
       <HistoryContainer />
       <InputBox />
+      <ErrorDisplay />
     </DisplayContainer>
   );
 }

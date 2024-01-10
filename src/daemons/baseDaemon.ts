@@ -1,6 +1,6 @@
 import { Comment, Idea, BaseDaemonConfig } from '../redux/models';
 import { GenerateBaseComments } from '../llmHandler';
-import ErrorHandler from '../errorHandler';
+import { dispatchError } from '../errorHandler';
 
 // TODO - make this configurable
 const hardcodedEvaluationTemplate = ` {Comment accepted (y/n):{}}`;
@@ -69,7 +69,7 @@ class BaseDaemon {
       // Call LLM handler to generate comments
       var responses = await GenerateBaseComments(context, openaiKey, openaiOrgId, baseModel, this.evaluationTemplate);
     } catch (error) {
-      ErrorHandler.handleError("Error generating base comment"); // send error to user
+      dispatchError("Error generating base comment"); // send error to user
       console.error(error);
       return null;
     }
@@ -85,14 +85,14 @@ class BaseDaemon {
       commentTemplateDivider = match[1];
     }
     else {
-      ErrorHandler.handleError("Regex failed to match");
+      dispatchError("Regex failed to match");
       return null;
     }
 
     var splitResponse = bestResponse.content.split(commentTemplateDivider);
 
     if (splitResponse.length < 2) {
-      ErrorHandler.handleError("Error: Response did not contain divider");
+      dispatchError("Error: Response did not contain divider");
       return null;
     }
 

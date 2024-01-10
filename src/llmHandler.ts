@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getEncoding } from 'js-tiktoken';
-import ErrorHandler from './errorHandler';
+import { dispatchError } from './errorHandler';
 
 async function CallChatAPI(data: any, config: any) {
     try {
@@ -8,7 +8,7 @@ async function CallChatAPI(data: any, config: any) {
         return response.data.choices.map((choice: { message: { content: string } }) => choice.message.content.trim());
     } catch (error: any) {
         if (error.response) {
-            ErrorHandler.handleError(error.response.data.error.message);
+            dispatchError(error.response.data.error.message);
         }
         console.error("Error calling chat API")
         console.error(error)
@@ -22,7 +22,7 @@ async function CallBaseAPI(data: any, config: any) {
         return response.data.choices.map((choice: { text: string }) => choice.text.trim());
     } catch (error: any) {
         if (error.response) {
-            ErrorHandler.handleError(error.response.data.error.message);
+            dispatchError(error.response.data.error.message);
         }
         console.error("Error calling base API")
         console.error(error)
@@ -36,7 +36,7 @@ async function CallBaseAPIForLogprobs(data: any, config: any) {
         return response.data.choices[0].logprobs;
     } catch (error: any) {
         if (error.response) {
-            ErrorHandler.handleError(error.response.data.error.message);
+            dispatchError(error.response.data.error.message);
         }
         console.error("Error calling base API for logprobs")
         console.error(error)

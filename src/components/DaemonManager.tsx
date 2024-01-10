@@ -5,7 +5,7 @@ import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented, addComme
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import BaseDaemon from '../daemons/baseDaemon';
 import ChatDaemon from '../daemons/chatDaemon';
-import ErrorHandler from '../errorHandler';
+import { dispatchError } from '../errorHandler';
 
 /*
 Central controller for the deployment of daemons.
@@ -62,7 +62,7 @@ const DaemonManager = () => {
         }
 
       } catch (error) {
-        ErrorHandler.handleError('Failed to dispatch chat comment'); //send error to user
+        dispatchError('Failed to dispatch chat comment'); //send error to user
         console.error(error);
       } finally {
         setChatDaemonActive(false);
@@ -81,7 +81,7 @@ const DaemonManager = () => {
           console.log('No base comment generated');
         }
       } catch (error) {
-        ErrorHandler.handleError('Failed to dispatch base comment'); //send error to user
+        dispatchError('Failed to dispatch base comment'); //send error to user
         console.error(error);
       } finally {
         setBaseDaemonActive(false);
@@ -98,8 +98,13 @@ const DaemonManager = () => {
         console.log('User became inactive');
         setAlreadyWasInactive(true);
 
+        if(!openAIKey) {
+          dispatchError('OpenAI API key not set');
+          return;
+        }
+
         // Generate new comments
-        if (currentIdeas.length > 0 && openAIKey) {
+        if (currentIdeas.length > 0) {
 
           if (chatDaemonActive) {
             console.log('Chat daemon already active');

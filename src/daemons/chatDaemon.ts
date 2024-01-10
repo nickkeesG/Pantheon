@@ -1,6 +1,6 @@
 import { Idea, ChatDaemonConfig } from '../redux/models';
 import { GenerateChatComments } from '../llmHandler';
-import ErrorHandler from '../errorHandler';
+import { dispatchError } from '../errorHandler';
 
 /*
   Hardcoded templates for the chat daemon
@@ -72,7 +72,7 @@ class ChatDaemon {
       }
       userPrompts.push(this.config.endInstruction);
     } catch (error) {
-      ErrorHandler.handleError("Error generating user prompts for chat model"); // send error to user
+      dispatchError("Error generating user prompts for chat model"); // send error to user
       console.error(error);
       return [];
     }
@@ -81,7 +81,7 @@ class ChatDaemon {
       // Call LLMHandler to generate comments
       var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
     } catch (error) {
-      ErrorHandler.handleError("Error calling chat model"); // send error to user
+      dispatchError("Error calling chat model"); // send error to user
       console.error(error);
       return [];
     }
@@ -99,7 +99,7 @@ class ChatDaemon {
         results.push({ id: currentIdeas[tempId].id, content: ranking[i].content });
       }
     } catch (error) {
-      ErrorHandler.handleError("Error parsing chat comment");
+      dispatchError("Error parsing chat comment");
       console.error(error);
       return [];
     }

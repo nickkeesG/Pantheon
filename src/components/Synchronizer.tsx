@@ -4,6 +4,7 @@ import { Idea } from '../redux/models';
 import { setSurprisalToIdea, selectCurrentBranchIdeas } from '../redux/textSlice';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
+import {dispatchError} from '../errorHandler';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
@@ -62,9 +63,15 @@ const Synchronizer = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!currentlyRequestingSurprisal) {
-        if (baseDaemon && pastIdeas.length > 0) {
+        if (baseDaemon && pastIdeas.length > 0) {         
           for (let i = 0; i < pastIdeas.length; i++) {
             if (pastIdeas[i].textTokens.length === 0) {
+              if(!openAIKey) {
+                dispatchError("OpenAI API key not set");
+                return;
+              }
+
+
               console.log("idea " + pastIdeas[i].id + " is missing surprisal");
               let targetString = pastIdeas[i].text;
               let fullContext = getFullContext(pastIdeas, i, baseDaemon);
@@ -77,7 +84,7 @@ const Synchronizer = () => {
           }
         }
       }
-    }, 500);
+    }, 1000);
 
     return () => {
       clearInterval(interval);

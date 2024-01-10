@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import textReducer from './textSlice';
 import daemonReducer from './daemonSlice';
 import llmReducer from './llmSlice';
+import errorReducer from './errorSlice';
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
@@ -14,7 +15,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   text: textReducer,
   daemon: daemonReducer,
-  llm: llmReducer
+  llm: llmReducer,
+  error: errorReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -3,6 +3,7 @@ import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
 import TopBar from './TopBar';
 import ErrorDisplay from '../errorHandler';
+import WelcomeMessage from './WelcomeMessage';
 
 const DisplayContainer = styled.div`
   display: flex;
@@ -18,6 +19,7 @@ function Display() {
       <HistoryContainer />
       <InputBox />
       <ErrorDisplay />
+      <WelcomeMessage />
     </DisplayContainer>
   );
 }

@@ -3,7 +3,6 @@ import { useAppSelector } from './hooks';
 import { store } from './redux/store';
 import { selectLatestError, selectNumberOfErrors} from './redux/errorSlice';
 import styled from 'styled-components';
-import { debug } from 'console';
 
 const ErrorContainer = styled.div`
   color: red;

@@ -23,7 +23,6 @@ const Synchronizer = () => {
       const surprisalData = await GetSurprisal(fullContext, partialContext, targetString, openAIKey, openAIOrgId, baseModel);
       const tokenList = surprisalData.map(s => s.token);
       const surprisalList = surprisalData.map(s => s.surprisal);
-      console.log("got surprisal for idea " + ideaId);
       dispatch(setSurprisalToIdea({ ideaId: ideaId, textTokens: tokenList, tokenSurprisals: surprisalList }));
     } catch (error) {
       console.error(error);
@@ -71,13 +70,9 @@ const Synchronizer = () => {
                 return;
               }
 
-
-              console.log("idea " + pastIdeas[i].id + " is missing surprisal");
               let targetString = pastIdeas[i].text;
               let fullContext = getFullContext(pastIdeas, i, baseDaemon);
               let partialContext = getPartialContext(pastIdeas, i, baseDaemon);
-
-              console.log("requesting surprisal for idea " + pastIdeas[i].id);
               requestSurprisal(fullContext, partialContext, targetString, pastIdeas[i].id);
               break;
             }

@@ -61,14 +61,10 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
         }
     };
 
-    //console.log(userPrompts[0])
-
     for (let userPrompt of userPrompts.slice(1)) {
         var response = await CallChatAPI(data, config);
-        //console.log(response);
         data.messages.push({ role: "assistant", content: response[0] });
         data.messages.push({ role: "user", content: userPrompt });
-        //console.log(userPrompt)
     }
 
     var finalData = {
@@ -79,7 +75,6 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
         messages: data.messages
     };
     var finalResponse = await CallChatAPI(finalData, config);
-    console.log(finalResponse);
     return finalResponse;
 }
 
@@ -101,8 +96,6 @@ export async function GenerateBaseComments(prompt: string, openAIKey: string, op
     };
 
     var response = await CallBaseAPI(data, config);
-    console.log(response.length + " responses generated");
-
     var responsesWithScores = [];
     var evaluationString = evaluationTemplate.split("{}")[0] + " y";
 
@@ -129,10 +122,6 @@ export async function GenerateBaseComments(prompt: string, openAIKey: string, op
 
         //Score is the likelihood of the response being a "yes"
         responsesWithScores.push({ content: response[i], score: finalLogprob });
-    }
-
-    for (let responseWithScore of responsesWithScores) {
-        console.log(responseWithScore.content + ": " + responseWithScore.score);
     }
 
     return responsesWithScores;
@@ -188,9 +177,6 @@ export async function GetSurprisal(fullContext: string,
         var idxPartialContext = partialContextResponseLength - targetStringEncodedLength + i;
         var logProbFullContext = fullContextResponse.token_logprobs[idxFullContext];
         var logProbPartialContext = partialContextResponse.token_logprobs[idxPartialContext];
-        console.log("Token: " + enc.decode([targetStringEncoded[i]]));
-        console.log("Log prob full context: " + logProbFullContext);
-        console.log("Log prob partial context: " + logProbPartialContext);
 
         var surprisal = logProbPartialContext - logProbFullContext;
         targetStringWithSurprisal.push({ token: enc.decode([targetStringEncoded[i]]), surprisal: surprisal });
@@ -202,10 +188,6 @@ export async function GetSurprisal(fullContext: string,
 
     if (targetStringWithSurprisal.length !== targetStringEncodedLength) {
         console.error("Error: target string surprisal length does not match target string length");
-    }
-
-    for (let i = 0; i < targetStringEncodedLength; i++) {
-        console.log(targetStringWithSurprisal[i].token + ": " + targetStringWithSurprisal[i].surprisal);
     }
 
     return targetStringWithSurprisal;

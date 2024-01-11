@@ -24,15 +24,12 @@ class BaseDaemon {
   }
 
   getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
-    console.log("Getting past context");
-    console.log("number of past ideas: " + pastIdeas.length);
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
       context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
 
       let comments = commentsForPastIdeas[pastIdeas[i].id] || [];
-      console.log("number of comments for idea " + pastIdeas[i].id + ": " + comments.length);
       for (let j = 0; j < comments.length; j++) {
         context += '\n' + this.commentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
 
@@ -98,9 +95,6 @@ class BaseDaemon {
 
     var daemonName = splitResponse[0].trim();
     var content = splitResponse[1].trim();
-
-    console.log("Daemon name: " + daemonName);
-    console.log("Content: " + content);
 
     return {
       id: currentIdeas[selectedIdeaIndex].id,

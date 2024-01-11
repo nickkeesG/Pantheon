@@ -93,7 +93,6 @@ class ChatDaemon {
 
       var results = [];
       for (let i = 0; i < ranking.length; i++) {
-        console.log(`id: ${ranking[i].id}, content: ${ranking[i].content}`);
         // Add the id and content to the results array
         let tempId: number = ranking[i].id - 1;
         results.push({ id: currentIdeas[tempId].id, content: ranking[i].content });

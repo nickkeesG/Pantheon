@@ -55,7 +55,7 @@ const DaemonManager = () => {
         const results = await daemon.generateComments(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
 
         if (results.length === 0) {
-          console.log('No chat comments generated');
+          console.error('No chat comments generated');
         }
         else {
           // Dispatch first comment only
@@ -79,7 +79,7 @@ const DaemonManager = () => {
           dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
         }
         else {
-          console.log('No base comment generated');
+          console.error('No base comment generated');
         }
       } catch (error) {
         dispatchError('Failed to dispatch base comment'); //send error to user

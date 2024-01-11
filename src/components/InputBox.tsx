@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { addIdea, addNode, setLastTimeActive } from '../redux/textSlice';
+import { addIdea, addPage, setLastTimeActive } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button, TextArea } from '../styles/sharedStyles';
 
@@ -19,7 +19,7 @@ const TextAreaField = styled(TextArea)`
   margin-bottom: 12px;
 `;
 
-const NewNodeButton = styled(Button)`
+const NewPageButton = styled(Button)`
   padding-left: 20px;
   padding-right: 20px;
   margin-bottom: 20px;
@@ -29,7 +29,7 @@ const NewNodeButton = styled(Button)`
 
 const InputBox = () => {
   const dispatch = useAppDispatch();
-  const newNodeButtonDisabled = useAppSelector(state => state.text.currentBranchIds.length === 0)
+  const newPageButtonDisabled = useAppSelector(state => state.text.currentBranchIds.length === 0)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const resizeTextArea = () => {
@@ -73,12 +73,12 @@ const InputBox = () => {
         onChange={handleTextChange}
         onKeyDown={handleKeyDown}
       />
-      <NewNodeButton 
-        onClick={() => dispatch(addNode())}
-        disabled={newNodeButtonDisabled}
+      <NewPageButton 
+        onClick={() => dispatch(addPage())}
+        disabled={newPageButtonDisabled}
         >
           + Start a new page
-          </NewNodeButton>
+          </NewPageButton>
     </Container>
   );
 };

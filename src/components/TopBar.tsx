@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Settings from './settings/Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
-import { goUpNode, selectCurrentNode, selectFullContext } from '../redux/textSlice';
+import { goUpPage, selectCurrentPage, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButtonMedium } from '../styles/sharedStyles';
 import { useEffect, useState } from 'react';
@@ -43,7 +43,7 @@ const TopBar = () => {
   const dispatch = useAppDispatch();
   const ideaExports = useAppSelector(selectFullContext);
   const [isCopied, setIsCopied] = useState(false);
-  const currentNode = useAppSelector(selectCurrentNode);
+  const currentPage = useAppSelector(selectCurrentPage);
 
   const copyContextToMarkdown = async () => {
     let context = '# Pantheon Context\n';
@@ -79,10 +79,10 @@ const TopBar = () => {
 
   return (
     <StyledTopBar>
-      {currentNode.parentNodeId !== null && (
+      {currentPage.parentPageId !== null && (
         <UpButton
           title="Back to previous tree"
-          onClick={() => dispatch(goUpNode())}
+          onClick={() => dispatch(goUpPage())}
         />
       )}
       <IconButtonMedium

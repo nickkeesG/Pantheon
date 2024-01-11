@@ -1,6 +1,6 @@
-export interface Node {
+export interface Page {
   id: number;
-  parentNodeId: number | null;
+  parentPageId: number | null;
   parentIdeaId: number | null;
   ideas: Idea[];
 }

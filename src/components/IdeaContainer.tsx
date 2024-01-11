@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { switchBranch, setCurrentIdea, selectChildrenOfIdea, selectChildNodeIdeas, goDownNode } from '../redux/textSlice';
+import { switchBranch, setCurrentIdea, selectChildrenOfIdea, selectChildPageIdeas, goDownPage } from '../redux/textSlice';
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
@@ -39,7 +39,7 @@ const ArrowButton = styled(IconButtonLarge).attrs({
   margin: 4px;
 `;
 
-const NodeButton = styled(TextButton)`
+const PageButton = styled(TextButton)`
   white-space: nowrap;
   margin: 0px 28px;
   font-size: 0.75rem;
@@ -90,7 +90,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
   const dispatch = useAppDispatch();
   const childIdeas = useAppSelector(state => selectChildrenOfIdea(state, idea.id));
   const hasBranches = childIdeas.length > 1;
-  const childNodeIdeas = useAppSelector(state => selectChildNodeIdeas(state, idea.id));
+  const childPageIdeas = useAppSelector(state => selectChildPageIdeas(state, idea.id));
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -164,13 +164,13 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
             />
           </ActionPanel>
         </Row>
-        {childNodeIdeas.map((idea, index) => (
+        {childPageIdeas.map((idea, index) => (
           <Row key={index}>
-            <NodeButton
+            <PageButton
               title="Go to child page"
-              onClick={() => dispatch(goDownNode({ newRootIdea: idea }))}
+              onClick={() => dispatch(goDownPage({ newRootIdea: idea }))}
             >
-              Child page: {idea.text}</NodeButton>
+              Child page: {idea.text}</PageButton>
           </Row>
         ))}
       </CenterPanel>

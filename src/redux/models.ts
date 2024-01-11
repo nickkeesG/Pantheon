@@ -7,6 +7,7 @@ export interface Page {
 
 export interface Idea {
   id: number;
+  pageId: number;
   parentIdeaId: number | null;
   text: string;
   textTokens: string[];

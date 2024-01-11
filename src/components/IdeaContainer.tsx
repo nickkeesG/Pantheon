@@ -88,7 +88,7 @@ interface IdeaContainerProps {
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
   const dispatch = useAppDispatch();
-  const childIdeas = useAppSelector(state => selectChildrenOfIdea(state, idea.id));
+  const childIdeas = useAppSelector(state => selectChildrenOfIdea(state, idea));
   const hasBranches = childIdeas.length > 1;
   const childPageIdeas = useAppSelector(state => selectChildPageIdeas(state, idea.id));
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));

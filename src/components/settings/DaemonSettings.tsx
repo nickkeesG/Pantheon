@@ -10,10 +10,8 @@ function createEmptyChatDaemonConfig(): ChatDaemonConfig {
   return {
     id: Date.now(),
     name: '',
-    systemPrompt: '',
-    startInstruction: '',
-    chainOfThoughtInstructions: [],
-    endInstruction: '',
+    description: '',
+    rules: '',
     enabled: false
   };
 }

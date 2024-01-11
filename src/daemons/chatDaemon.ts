@@ -5,22 +5,21 @@ import { dispatchError } from '../errorHandler';
 /*
   Hardcoded templates for the chat daemon
 */
-const hardcodedHistoryTemplate = `    {"content": "{}"}`;
-const hardcodedIdeaTemplate = `    {"id": {}, "content": "{}"}`;
-const hardcodedContextTemplate = `First, read this history of thoughts from the user:
-{
-  "history": [
+const hardcodedHistoryItemTemplate = `    - "{}"`;
+const hardcodedFirstInstructionTemplate = `First, read this history of thoughts from the user:
 {}
-  ]
-}
 
-Next, read these ideas which make up their current context:
+Next, follow these three instructions to the best of your ability.
 
-{
-  "current_context": [
-{}
-  ]
-}`;
+Instruction 1: Jot down some bullets that come to mind about the history.
+This is only for your personal use, and does not need to conform to your rules, so please write lots of thoughts and feel free to be a bit chaotic.
+
+Instruction 2: Restate your rules
+
+Instruction 3: Provide 10 unique responses to the following idea: {}`;
+
+const hardcodedLastInstruction = `Of all the responses you wrote, please select the one you think is the most original, interesting, and useful. 
+Once you have decided, please type out only the selected response, and no other text.`;
 
 
 /*
@@ -28,82 +27,55 @@ Next, read these ideas which make up their current context:
 */
 class ChatDaemon {
   config: ChatDaemonConfig;
-  ideaTemplate: string;
-  historyTemplate: string;
-  contextTemplate: string;
+  historyItemTemplate: string;
+  firstInstructionTemplate: string; // Still need to replace "{}" with history and current idea
+  lastInstruction: string;
 
   constructor(config: ChatDaemonConfig) {
     this.config = config;
-    this.ideaTemplate = hardcodedIdeaTemplate;
-    this.historyTemplate = hardcodedHistoryTemplate;
-    this.contextTemplate = hardcodedContextTemplate;
+    this.historyItemTemplate = hardcodedHistoryItemTemplate;
+    this.firstInstructionTemplate = hardcodedFirstInstructionTemplate;
+    this.lastInstruction = hardcodedLastInstruction;
   }
 
-  private getContext = (pastIdeas: Idea[], currentIdeas: Idea[]): string => {
+  private getFirstInstruction = (pastIdeas: Idea[], currentIdea: Idea): string => {
+    // Get the history of ideas
     let history = "";
     for (let i = 0; i < pastIdeas.length; i++) {
-      history += this.historyTemplate.replace("{}", pastIdeas[i].text);
+      history += this.historyItemTemplate.replace("{}", pastIdeas[i].text);
       if (i !== pastIdeas.length - 1) {
         history += ",\n";
       }
     }
-    let currentContext = "";
-    for (let i = 0; i < currentIdeas.length; i++) {
-      let tempId: number = i + 1;
-      currentContext += this.ideaTemplate.replace("{}", tempId.toString()).replace("{}", currentIdeas[i].text);
-      if (i !== currentIdeas.length - 1) {
-        currentContext += ",\n";
-      }
-    }
-    let context = this.contextTemplate.replace("{}", history).replace("{}", currentContext);
-    return context;
+
+    // Get the current idea
+    let currentIdeaText = currentIdea.text;
+
+    // Replace the "{}" in the template with the history and current idea
+    let firstInstruction = this.firstInstructionTemplate.replace("{}", history).replace("{}", currentIdeaText);
+
+    return firstInstruction;
   }
 
   /*
     Function called from DaemonManager to generate a list of comments for the current ideas
   */
-  async generateComments(pastIdeas: Idea[], currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, chatModel: string) {
-    try {
-      var userPrompts = []; // List of prompts to send, one by one, to the chat model
-      var context = this.getContext(pastIdeas, currentIdeas);
-      userPrompts.push(context + "\n\n" + this.config.startInstruction);
-      for (let i = 0; i < this.config.chainOfThoughtInstructions.length; i++) {
-        userPrompts.push(this.config.chainOfThoughtInstructions[i]);
-      }
-      userPrompts.push(this.config.endInstruction);
-    } catch (error) {
-      dispatchError("Error generating user prompts for chat model"); // send error to user
-      console.error(error);
-      return [];
-    }
+  async generateComments(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
+    // Generate prompts
+    let systemPrompt = this.config.description + "\n\n" + this.config.rules;
+    let firstInstruction = this.getFirstInstruction(pastIdeas, currentIdea);
+    let lastInstruction = this.lastInstruction;
 
     try {
       // Call LLMHandler to generate comments
-      var comments = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+      var response = await GenerateChatComments(systemPrompt, firstInstruction, lastInstruction, openAIKey, openAIOrgId, chatModel);
     } catch (error) {
       dispatchError("Error calling chat model"); // send error to user
       console.error(error);
-      return [];
+      return null;
     }
 
-    // Parse the JSON string to a JavaScript object
-    try {
-      var commentsObj = JSON.parse(comments);
-      var ranking = commentsObj.ranking;
-
-      var results = [];
-      for (let i = 0; i < ranking.length; i++) {
-        // Add the id and content to the results array
-        let tempId: number = ranking[i].id - 1;
-        results.push({ id: currentIdeas[tempId].id, content: ranking[i].content });
-      }
-    } catch (error) {
-      dispatchError("Error parsing chat comment");
-      console.error(error);
-      return [];
-    }
-
-    return results;
+    return response;
   }
 }
 

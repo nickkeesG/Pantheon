@@ -31,10 +31,8 @@ export interface Comment {
 export interface ChatDaemonConfig {
   id: number;
   name: string;
-  systemPrompt: string;
-  startInstruction: string;
-  chainOfThoughtInstructions: string[];
-  endInstruction: string;
+  description: string;
+  rules: string;
   enabled: boolean;
 }
 

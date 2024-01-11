@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea, Comment } from '../redux/models';
 import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented } from '../redux/textSlice';
@@ -43,103 +43,79 @@ const DaemonManager = () => {
     setChatDaemons(daemons);
   }, [chatDaemonConfigs]);
 
-  /*
-  Main daemon controller loop. Runs every 200ms.
-  Dispatches daemons if the user has been inactive for maxTimeInactive seconds.
-  */
-  useEffect(() => {
-    const dispatchChatComment = async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
-      setChatDaemonActive(true);
-      try {
-        // Returns a list of comments
-        const results = await daemon.generateComments(pastIdeas, currentIdeas, openAIKey, openAIOrgId, chatModel);
+  const dispatchChatComment = useCallback(async (pastIdeas: Idea[], currentIdea: Idea, daemon: ChatDaemon) => {
+    setChatDaemonActive(true);
+    try {
+      // Returns a single comment
+      const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
-        if (results.length === 0) {
-          console.error('No chat comments generated');
-        }
-        else {
-          // Dispatch first comment only
-          dispatch(addComment({ ideaId: results[0].id, text: results[0].content, daemonName: daemon.config.name, daemonType: "chat" }));
-        }
-
-      } catch (error) {
-        dispatchError('Failed to dispatch chat comment'); //send error to user
-        console.error(error);
-      } finally {
-        setChatDaemonActive(false);
+      if(response) {
+        dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: "chat" }));
       }
+      else {
+        console.error('No chat comment generated');
+      }
+
+    } catch (error) {
+      dispatchError('Failed to dispatch chat comment'); //send error to user
+      console.error(error);
+    } finally {
+      setChatDaemonActive(false);
+    }
+  }, [openAIKey, openAIOrgId, chatModel, dispatch]);
+
+
+  const dispatchBaseComment = useCallback(async (pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, daemon: BaseDaemon) => {
+    setBaseDaemonActive(true);
+    try {
+      // Returns a single comment
+      const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId, baseModel);
+      if (result) { // If result is null, result failed to parse
+        dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
+      }
+      else {
+        console.error('No base comment generated');
+      }
+    } catch (error) {
+      dispatchError('Failed to dispatch base comment'); //send error to user
+      console.error(error);
+    } finally {
+      setBaseDaemonActive(false);
+    }
+  }, [openAIKey, openAIOrgId, baseModel, dispatch]);
+
+  const handleDaemonDispatch = useCallback(() => {
+    if(!openAIKey) {
+      dispatchError('OpenAI API key not set');
+      return;
     }
 
-    const dispatchBaseComment = async (pastIdeas: Idea[], currentIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>, daemon: BaseDaemon) => {
-      setBaseDaemonActive(true);
-      try {
-        // Returns a single comment
-        const result = await daemon.generateComment(pastIdeas, currentIdeas, commentsForPastIdeas, openAIKey, openAIOrgId, baseModel);
-        if (result) { // If result is null, result failed to parse
-          dispatch(addComment({ ideaId: result.id, text: result.content, daemonName: result.daemonName, daemonType: "base" }));
+    if (currentIdeas.length > 0) {
+
+      if (chatDaemonActive) {
+        console.log('Chat daemon already active');
+      }
+      else {
+        const randomDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+
+        // Currently only generates for the oldest idea, TODO update this to generate for any idea
+        dispatchChatComment(pastIdeas, currentIdeas[0], randomDaemon);
+      }
+
+      if (baseDaemonActive) {
+        console.log('Base daemon already active');
+      }
+      else if (baseDaemon) {
+        const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
+        if (hasComments) {
+          dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
         }
         else {
-          console.error('No base comment generated');
+          console.log('No comments for base daemon to emulate');
         }
-      } catch (error) {
-        dispatchError('Failed to dispatch base comment'); //send error to user
-        console.error(error);
-      } finally {
-        setBaseDaemonActive(false);
       }
     }
-
-    /*
-    Dispatch daemons if the user has been inactive for maxTimeInactive seconds.
-    Don't dispatch if a daemon of the same type is already active.
-    */
-    const interval = setInterval(() => {
-      const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
-      if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
-        console.log('User became inactive');
-        setAlreadyWasInactive(true);
-
-        if(!openAIKey) {
-          dispatchError('OpenAI API key not set');
-          return;
-        }
-
-        // Generate new comments
-        if (currentIdeas.length > 0) {
-
-          if (chatDaemonActive) {
-            console.log('Chat daemon already active');
-          }
-          else {
-            const randomDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-            dispatchChatComment(pastIdeas, currentIdeas, randomDaemon);
-          }
-
-          if (baseDaemonActive) {
-            console.log('Base daemon already active');
-          }
-          else if (baseDaemon) {
-            const hasComments = Object.values(commentsForPastIdeas).some(commentsArray => commentsArray.length > 0);
-            if (hasComments) {
-              dispatchBaseComment(pastIdeas, currentIdeas, commentsForPastIdeas, baseDaemon);
-            }
-            else {
-              console.log('No comments for base daemon to emulate');
-            }
-          }
-        }
-      }
-
-      if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
-        console.log('User became active');
-        setAlreadyWasInactive(false);
-      }
-    }, 200);
-
-    return () => clearInterval(interval);
-  }, [lastTimeActive,
-    alreadyWasInactive,
-    currentIdeas,
+  }, [currentIdeas,
     chatDaemons,
     baseDaemon,
     pastIdeas,
@@ -151,6 +127,25 @@ const DaemonManager = () => {
     chatModel,
     baseModel,
     dispatch]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
+      if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
+        console.log('User became inactive');
+        setAlreadyWasInactive(true);
+        handleDaemonDispatch();
+      }
+      if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
+        console.log('User became active');
+        setAlreadyWasInactive(false);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [lastTimeActive,
+    alreadyWasInactive,
+    handleDaemonDispatch]);
 
   return null;
 }

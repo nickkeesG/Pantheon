@@ -5,7 +5,8 @@ import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
 import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectCommentsGroupedByIdeaIds, selectIdeasUpToMaxCommented } from '../../redux/textSlice';
+import { selectIdeasUpToMaxCommented } from '../../redux/textSlice';
+import { selectCommentsGroupedByIdeaIds } from '../../redux/commentSlice';
 
 
 const BaseDaemonSettingsContainer = styled.div`

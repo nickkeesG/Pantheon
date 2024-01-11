@@ -96,8 +96,8 @@ const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] => {
  * @param comments 
  * @returns 
  */
-const getIdeasSinceLastComment = (ideas: Idea[], ideaIds: number[], comments: Comment[]): Idea[] => {
-  const ideaIdsWithComments = new Set(comments.map(comment => comment.ideaId));
+const getIdeasSinceLastComment = (ideas: Idea[], ideaIds: number[], comments: Record<number, Comment>): Idea[] => {
+  const ideaIdsWithComments = new Set(Object.values(comments).map(comment => comment.ideaId));
   const newestIdeaIdWithComments = Math.max(...Array.from(ideaIdsWithComments));
   return ideas.filter(idea => ideaIds.includes(idea.id) && idea.id > newestIdeaIdWithComments);
 }
@@ -150,7 +150,6 @@ export interface TextState {
   nodes: Node[];
   currentNodeId: number;
   currentBranchIds: number[];
-  comments: Comment[];
 }
 
 const initialState: TextState = {
@@ -163,7 +162,6 @@ const initialState: TextState = {
   }],
   currentNodeId: 0,
   currentBranchIds: [],
-  comments: []
 };
 
 const textSlice = createSlice({
@@ -257,23 +255,6 @@ const textSlice = createSlice({
       node.ideas.push(newIdea);
       state.currentBranchIds.push(newIdea.id);
     },
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
-      const newId = state.comments.length > 0 ? state.comments[state.comments.length - 1].id + 1 : 0;
-      const newComment: Comment = {
-        id: newId,
-        ideaId: action.payload.ideaId,
-        text: action.payload.text,
-        daemonName: action.payload.daemonName,
-        daemonType: action.payload.daemonType,
-        userApproved: false
-      };
-      state.comments.push(newComment);
-    },
-    approveComment(state, action: PayloadAction<{ commentId: number }>) {
-      const comment = state.comments.find(comment => comment.id === action.payload.commentId);
-      if (!comment) console.error("Error fetching comment " + action.payload.commentId);
-      else comment.userApproved = true;
-    },
     setSurprisalToIdea(state, action: PayloadAction<{ ideaId: number, textTokens: string[], tokenSurprisals: number[] }>) {
       const idea = getIdea(state.nodes, action.payload.ideaId);
       if (idea) {
@@ -281,11 +262,6 @@ const textSlice = createSlice({
         idea.tokenSurprisals = action.payload.tokenSurprisals;
         if (idea.textTokens.length === 0) {
           console.error("Error setting surprisal for idea! length still zero IdeaId: " + idea.id);
-        }
-        else {
-          console.log("IdeaId: " + idea.id);
-          console.log("textTokens: " + idea.textTokens);
-          console.log("tokenSurprisals: " + idea.tokenSurprisals);
         }
       }
       else {
@@ -308,29 +284,6 @@ export const selectChildrenOfIdea = createSelector(
   }
 )
 
-export const selectCommentsForIdea = createSelector(
-  [
-    (state: RootState) => state.text.comments,
-    (_: RootState, ideaId: number) => ideaId,
-    (_: RootState, __: number, daemonType: string = '') => daemonType
-  ],
-  (comments, ideaId, daemonType) => comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
-);
-
-export const selectCommentsGroupedByIdeaIds = createSelector(
-  [
-    (state: RootState) => state.text.comments,
-    (_: RootState, ideaIds: number[]) => ideaIds,
-    (_: RootState, __: number[], daemonType: string = '') => daemonType
-  ],
-  (comments, ideaIds, daemonType) => {
-    return ideaIds.reduce((acc, ideaId) => {
-      acc[ideaId] = comments.filter(comment => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType));
-      return acc;
-    }, {} as Record<number, Comment[]>);
-  }
-);
-
 export const selectCurrentNode = createSelector(
   [
     (state: RootState) => state.text.nodes,
@@ -352,11 +305,12 @@ export const selectCurrentBranchIdeas = createSelector(
   }
 );
 
+// TODO Probably ideas should also have references to their comments
 export const selectRecentIdeasWithoutComments = createSelector(
   [(state: RootState) => state.text.nodes,
   (state: RootState) => state.text.currentNodeId,
   (state: RootState) => state.text.currentBranchIds,
-  (state: RootState) => state.text.comments],
+  (state: RootState) => state.comment.comments],
   (nodes, currentNodeId, currentBranchIds, comments) => {
     const node = nodes.find(node => node.id === currentNodeId)!;
     return getIdeasSinceLastComment(node.ideas, currentBranchIds, comments);
@@ -367,7 +321,7 @@ export const selectIdeasUpToMaxCommented = createSelector(
   [(state: RootState) => state.text.nodes,
   (state: RootState) => state.text.currentNodeId,
   (state: RootState) => state.text.currentBranchIds,
-  (state: RootState) => state.text.comments],
+  (state: RootState) => state.comment.comments],
   (nodes, currentNodeId, currentBranchIds, comments) => {
     const node = nodes.find(node => node.id === currentNodeId)!;
     const ideasSinceLastCommentIds = getIdeasSinceLastComment(node.ideas, currentBranchIds, comments);
@@ -414,5 +368,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addNode, goUpNode, goDownNode, addIdea, addComment, approveComment, setSurprisalToIdea, setLastTimeActive, replaceTree } = textSlice.actions;
+export const { setCurrentIdea, changeBranch, switchBranch, addNode, goUpNode, goDownNode, addIdea, setSurprisalToIdea, setLastTimeActive, replaceTree } = textSlice.actions;
 export default textSlice.reducer;

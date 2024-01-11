@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { switchBranch, selectCommentsForIdea, setCurrentIdea, selectChildrenOfIdea, selectChildNodeIdeas, goDownNode } from '../redux/textSlice';
+import { switchBranch, setCurrentIdea, selectChildrenOfIdea, selectChildNodeIdeas, goDownNode } from '../redux/textSlice';
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
@@ -8,6 +8,7 @@ import { IconButtonLarge, TextButton } from '../styles/sharedStyles';
 import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';
+import { selectCommentsForIdea } from '../redux/commentSlice';
 
 const Container = styled.div`
   display: flex;

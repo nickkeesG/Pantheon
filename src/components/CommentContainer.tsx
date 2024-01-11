@@ -4,7 +4,7 @@ import { Comment } from '../redux/models';
 import { IconButtonSmall } from '../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../hooks';
-import { approveComment } from '../redux/textSlice';
+import { approveComment } from '../redux/commentSlice';
 
 const fadeIn = keyframes`
   from {
@@ -69,7 +69,7 @@ const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
       <CommentText>{comment.text}</CommentText>
       <ThumbsUpButton
         userApproved={comment.userApproved}
-        onClick={() => dispatch(approveComment({ commentId: comment.id }))}
+        onClick={() => dispatch(approveComment(comment.id))}
       />
     </StyledCommentContainer>
   );

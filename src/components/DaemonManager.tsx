@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea, Comment } from '../redux/models';
-import { selectRecentIdeasWithoutComments, selectIdeasUpToMaxCommented } from '../redux/textSlice';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import BaseDaemon from '../daemons/baseDaemon';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectCommentsGroupedByIdeaIds } from '../redux/commentSlice';
+import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
 
 /*
 Central controller for the deployment of daemons.
@@ -21,8 +21,8 @@ const DaemonManager = () => {
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
-  const currentIdeas = useAppSelector(selectRecentIdeasWithoutComments);
-  const pastIdeas = useAppSelector(selectIdeasUpToMaxCommented);
+  const currentIdeas = useAppSelector(selectActiveIdeasEligibleForComments);
+  const pastIdeas = useAppSelector(selectActivePastIdeas);
   const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
   const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
 

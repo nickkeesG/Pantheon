@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { selectChildrenOfIdea, selectChildPageIdeas } from '../redux/textSlice';
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
@@ -11,6 +10,7 @@ import IdeaText from './IdeaText';
 import { selectCommentsForIdea } from '../redux/commentSlice';
 import { createBranch } from '../redux/uiSlice';
 import { navigateToChildPage, switchBranch } from '../redux/thunks';
+import { selectIdeaBranches, selectPageBranchRootIdeas } from '../redux/ideaSlice';
 
 const Container = styled.div`
   display: flex;
@@ -90,9 +90,9 @@ interface IdeaContainerProps {
 
 const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
   const dispatch = useAppDispatch();
-  const childIdeas = useAppSelector(state => selectChildrenOfIdea(state, idea));
-  const hasBranches = childIdeas.length > 1;
-  const childPageIdeas = useAppSelector(state => selectChildPageIdeas(state, idea.id));
+  const branchingIdeas = useAppSelector(state => selectIdeaBranches(state, idea.id));
+  const hasBranches = branchingIdeas.length > 0;
+  const branchingPagesRootIdeas = useAppSelector(state => selectPageBranchRootIdeas(state, idea.id));
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -166,7 +166,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
             />
           </ActionPanel>
         </Row>
-        {childPageIdeas.map((idea, index) => (
+        {branchingPagesRootIdeas.map((idea, index) => (
           <Row key={index}>
             <PageButton
               title="Go to child page"

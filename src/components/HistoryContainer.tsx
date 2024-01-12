@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import IdeaContainer from './IdeaContainer';
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../hooks';
-import { selectCurrentBranchIdeas } from '../redux/textSlice';
+import { selectIdeasById } from '../redux/ideaSlice';
 
 
 const StyledHistoryContainer = styled.div`
@@ -11,7 +11,9 @@ const StyledHistoryContainer = styled.div`
 `;
 
 const HistoryContainer = () => {
-  const ideas = useAppSelector(selectCurrentBranchIdeas);
+  const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
+  const ideas = useAppSelector(state => selectIdeasById(state, activeIdeaIds))
+
   // Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
   const [baseCommentOverflows, setBaseCommentOverflows] = useState<{ [key: number]: number }>({});
   const [chatCommentOverflows, setChatCommentOverflows] = useState<{ [key: number]: number }>({});

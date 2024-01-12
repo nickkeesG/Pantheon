@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea } from '../redux/models';
-import { setSurprisalToIdea, selectCurrentBranchIdeas } from '../redux/textSlice';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
 import {dispatchError} from '../errorHandler';
+import { selectIdeasById, setSurprisalToIdea } from '../redux/ideaSlice';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
-  const pastIdeas = useAppSelector(selectCurrentBranchIdeas);
+  const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
+  const activeIdeas = useAppSelector(state => selectIdeasById(state, activeIdeaIds));
   const openAIKey = useAppSelector(state => state.llm.openAIKey);
   const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
   const baseModel = useAppSelector(state => state.llm.baseModel);
@@ -62,18 +63,18 @@ const Synchronizer = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!currentlyRequestingSurprisal) {
-        if (baseDaemon && pastIdeas.length > 0) {         
-          for (let i = 0; i < pastIdeas.length; i++) {
-            if (pastIdeas[i].textTokens.length === 0) {
+        if (baseDaemon && activeIdeas.length > 0) {         
+          for (let i = 0; i < activeIdeas.length; i++) {
+            if (activeIdeas[i].textTokens.length === 0) {
               if(!openAIKey) {
                 dispatchError("OpenAI API key not set");
                 return;
               }
 
-              let targetString = pastIdeas[i].text;
-              let fullContext = getFullContext(pastIdeas, i, baseDaemon);
-              let partialContext = getPartialContext(pastIdeas, i, baseDaemon);
-              requestSurprisal(fullContext, partialContext, targetString, pastIdeas[i].id);
+              let targetString = activeIdeas[i].text;
+              let fullContext = getFullContext(activeIdeas, i, baseDaemon);
+              let partialContext = getPartialContext(activeIdeas, i, baseDaemon);
+              requestSurprisal(fullContext, partialContext, targetString, activeIdeas[i].id);
               break;
             }
           }
@@ -84,7 +85,7 @@ const Synchronizer = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [pastIdeas, baseDaemon, baseModel, openAIKey, openAIOrgId, currentlyRequestingSurprisal, getFullContext, getPartialContext, requestSurprisal]);
+  }, [activeIdeas, baseDaemon, baseModel, openAIKey, openAIOrgId, currentlyRequestingSurprisal, getFullContext, getPartialContext, requestSurprisal]);
 
   return null;
 }

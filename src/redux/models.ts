@@ -2,7 +2,7 @@ export interface Page {
   id: number;
   parentPageId: number | null;
   parentIdeaId: number | null;
-  ideas: Idea[];
+  ideaIds: number[];
 }
 
 export interface Idea {

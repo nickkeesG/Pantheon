@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import Settings from './settings/Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
-import { selectCurrentPage, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButtonMedium } from '../styles/sharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 import { navigateToParentPage } from '../redux/thunks';
+import { selectPageContentForExporting } from '../redux/ideaSlice';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -42,9 +42,10 @@ const UpButton = styled(IconButtonMedium).attrs({
 
 const TopBar = () => {
   const dispatch = useAppDispatch();
-  const ideaExports = useAppSelector(selectFullContext);
+  const activePageId = useAppSelector(state => state.ui.activePageId);
+  const activePage = useAppSelector(state => state.text.pages[activePageId]);
+  const ideaExports = useAppSelector(state => selectPageContentForExporting(state, activePageId));
   const [isCopied, setIsCopied] = useState(false);
-  const currentPage = useAppSelector(selectCurrentPage);
 
   const copyContextToMarkdown = async () => {
     let context = '# Pantheon Context\n';
@@ -80,7 +81,7 @@ const TopBar = () => {
 
   return (
     <StyledTopBar>
-      {currentPage.parentPageId !== null && (
+      {activePage.parentPageId !== null && (
         <UpButton
           title="Back to previous tree"
           onClick={() => dispatch(navigateToParentPage())}

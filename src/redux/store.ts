@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import textReducer from './textSlice';
+import ideaReducer from './ideaSlice';
 import commentReducer from './commentSlice';
 import daemonReducer from './daemonSlice';
 import llmReducer from './llmSlice';
@@ -16,6 +17,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   text: textReducer,
+  idea: ideaReducer,
   comment: commentReducer,
   daemon: daemonReducer,
   llm: llmReducer,

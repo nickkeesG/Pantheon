@@ -1,18 +1,4 @@
-import { Comment, Idea, IdeaExport, Page } from "./models";
-
-/**
- * 
- * @param pages - The dictionary of all pages
- * @param ideaId - The ID of the idea
- * @returns The idea instance corresponding to the given id, or undefined if no such idea found
- */
-export const getIdea = (pages: { [id: number]: Page }, ideaId: number): Idea | undefined => {
-  for (const pageId in pages) {
-    const foundIdea = pages[pageId].ideas.find(idea => idea.id === ideaId);
-    if (foundIdea) return foundIdea;
-  }
-  return undefined;
-}
+import { Comment, Idea, IdeaExport } from "./models";
 
 /**
  * Retrieves all direct descendants of a given idea within the ideas array.
@@ -85,13 +71,16 @@ export const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] =
  * @param comments 
  * @returns 
  */
-export const getIdeasSinceLastComment = (ideas: Idea[], ideaIds: number[], comments: Record<number, Comment>): Idea[] => {
-  const ideaIdsWithComments = new Set(Object.values(comments).map(comment => comment.ideaId));
-  const newestIdeaIdWithComments = Math.max(...Array.from(ideaIdsWithComments));
-  return ideas.filter(idea => ideaIds.includes(idea.id) && idea.id > newestIdeaIdWithComments);
+export const getIdeasSinceLastComment = (ideas: Idea[], comments: Record<number, Comment>): Idea[] => {
+  // Extract idea IDs from comments and store them in a set for uniqueness
+  const ideaIdsWithComments = new Set<number>();
+  Object.values(comments).forEach(comment => ideaIdsWithComments.add(comment.ideaId));
+  // Find the ID of the most recently commented idea
+  const newestCommentedIdeaId = Math.max(...Array.from(ideaIdsWithComments));
+  // Return ideas that were created after the most recent comment
+  return ideas.filter(idea => idea.id > newestCommentedIdeaId);
 }
 
-// TODO All this logic should probably be moved to another file
 export function exploreBranch(ideas: Idea[], selectedIdea: Idea): IdeaExport[] {
   let ideaExports: IdeaExport[] = [];
   let openIdeas: Idea[] = []; // Ideas that have multiple children (that need to be followed up on)

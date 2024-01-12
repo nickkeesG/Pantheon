@@ -1,28 +1,30 @@
+import { addIdea, selectIdeasById } from "./ideaSlice";
 import { Idea, Page } from "./models";
 import { AppThunk } from './store';
-import { getAllAncestorIds, getChildren, getIdea, getMostRecentDescendent } from "./storeUtils";
-import { addIdea, addPage, deletePage } from "./textSlice";
+import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
+import { addIdeaToParentPage, addPage, deletePage } from "./textSlice";
 import { setActiveIdeaIds, setActivePageId } from "./uiSlice";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
   const state = getState();
   const page = state.text.pages[parentIdea.pageId];
-  const childIdeas = getChildren(page.ideas, parentIdea.id);
-  const currentChild = page.ideas.find(idea => idea.parentIdeaId === parentIdea.id && state.ui.activeIdeaIds.includes(idea.id));
+  const ideas = selectIdeasById(state, page.ideaIds);
+  const childIdeas = getChildren(ideas, parentIdea.id);
+  const currentChild = ideas.find(idea => idea.parentIdeaId === parentIdea.id && state.ui.activeIdeaIds.includes(idea.id));
   let newCurrentIdea: Idea;
   if (currentChild) {
     const currentIndex = childIdeas.findIndex(idea => idea.id === currentChild.id);
     const newChild = moveForward
       ? childIdeas[(currentIndex + 1) % childIdeas.length]
       : childIdeas[(currentIndex - 1 + childIdeas.length) % childIdeas.length];
-    newCurrentIdea = getMostRecentDescendent(page.ideas, newChild.id);
+    newCurrentIdea = getMostRecentDescendent(ideas, newChild.id);
   } else {
     // User was likely adding a new branch but changed their mind
-    newCurrentIdea = getMostRecentDescendent(page.ideas, parentIdea.id);
+    newCurrentIdea = getMostRecentDescendent(ideas, parentIdea.id);
   }
 
-  dispatch(setActiveIdeaIds(getAllAncestorIds(page.ideas, newCurrentIdea.id)));
+  dispatch(setActiveIdeaIds(getAllAncestorIds(ideas, newCurrentIdea.id)));
 };
 
 export const createPage = (): AppThunk => (dispatch, getState) => {
@@ -32,7 +34,7 @@ export const createPage = (): AppThunk => (dispatch, getState) => {
     id: newPageId,
     parentPageId: state.ui.activePageId,
     parentIdeaId: state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1],
-    ideas: []
+    ideaIds: []
   };
 
   dispatch(addPage(newPage));
@@ -44,16 +46,16 @@ export const createPage = (): AppThunk => (dispatch, getState) => {
 export const navigateToParentPage = (): AppThunk => (dispatch, getState) => {
   const state = getState();
   const activePage = state.text.pages[state.ui.activePageId];
-  if (activePage.parentPageId !== null) {
+  if (activePage.parentPageId !== null && activePage.parentIdeaId !== null) {
     const parentPage = state.text.pages[activePage.parentPageId];
-    const parentIdea = getIdea(state.text.pages, activePage.parentIdeaId!)!;
-    const newActiveIdea = getMostRecentDescendent(parentPage.ideas, parentIdea.id);
-    const newActiveIdeaIds = getAllAncestorIds(parentPage.ideas, newActiveIdea.id);
+    const parentPageIdeas = selectIdeasById(state, parentPage.ideaIds);
+    const newActiveIdea = getMostRecentDescendent(parentPageIdeas, activePage.parentIdeaId);
+    const newActiveIdeaIds = getAllAncestorIds(parentPageIdeas, newActiveIdea.id);
 
     dispatch(setActivePageId(parentPage.id));
     dispatch(setActiveIdeaIds(newActiveIdeaIds));
 
-    if (activePage.ideas.length === 0) {
+    if (activePage.ideaIds.length === 0) {
       // User cancelled creating a new page
       dispatch(deletePage(activePage.id))
     }
@@ -63,8 +65,11 @@ export const navigateToParentPage = (): AppThunk => (dispatch, getState) => {
 export const navigateToChildPage = (rootIdea: Idea): AppThunk => (dispatch, getState) => {
   const state = getState();
   const childPage = state.text.pages[rootIdea.pageId];
-  const newCurrentIdea = getMostRecentDescendent(childPage.ideas, rootIdea.id);
-  const newActiveIdeaIds = getAllAncestorIds(childPage.ideas, newCurrentIdea.id);
+  const ideaIds = childPage.ideaIds;
+  const allIdeas = state.idea.ideas;
+  const ideas = ideaIds.map(id => allIdeas[id]);
+  const newCurrentIdea = getMostRecentDescendent(ideas, rootIdea.id);
+  const newActiveIdeaIds = getAllAncestorIds(ideas, newCurrentIdea.id);
 
   dispatch(setActivePageId(childPage.id));
   dispatch(setActiveIdeaIds(newActiveIdeaIds));
@@ -86,5 +91,6 @@ export const createIdea = (text: string): AppThunk => (dispatch, getState) => {
   const newActiveIdeaIds = [...state.ui.activeIdeaIds, id];
 
   dispatch(addIdea(newIdea));
+  dispatch(addIdeaToParentPage(newIdea));
   dispatch(setActiveIdeaIds(newActiveIdeaIds))
 }

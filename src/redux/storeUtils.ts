@@ -44,7 +44,6 @@ export const getMostRecentDescendent = (ideas: Idea[], ancestorIdeaId: number): 
  */
 export const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] => {
   // Finds all the ancestor IDs of a given idea
-  console.debug("In getAllAncestorIds", ideas, lastIdeaId)
   let ancestorIds: number[] = [];
   let currentId: number | null = lastIdeaId;
 
@@ -60,7 +59,6 @@ export const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] =
     currentId = current.parentIdeaId;
   }
 
-  console.debug("Returning: " + ancestorIds)
   return ancestorIds;
 };
 

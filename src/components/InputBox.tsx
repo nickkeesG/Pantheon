@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { addIdea, addPage, setLastTimeActive } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button, TextArea } from '../styles/sharedStyles';
+import { createIdea, createPage } from '../redux/thunks';
+import { setLastTimeActive } from '../redux/uiSlice';
 
 const Container = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ const NewPageButton = styled(Button)`
 
 const InputBox = () => {
   const dispatch = useAppDispatch();
-  const newPageButtonDisabled = useAppSelector(state => state.text.currentBranchIds.length === 0)
+  const newPageButtonDisabled = useAppSelector(state => state.ui.activeIdeaIds.length === 0)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const resizeTextArea = () => {
@@ -50,7 +51,7 @@ const InputBox = () => {
 
       //Save the text to the history
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
-        dispatch(addIdea({ text: textAreaRef.current.value }));
+        dispatch(createIdea(textAreaRef.current.value));
         textAreaRef.current.scrollIntoView();
       }
 
@@ -73,12 +74,12 @@ const InputBox = () => {
         onChange={handleTextChange}
         onKeyDown={handleKeyDown}
       />
-      <NewPageButton 
-        onClick={() => dispatch(addPage())}
+      <NewPageButton
+        onClick={() => dispatch(createPage())}
         disabled={newPageButtonDisabled}
-        >
-          + Start a new page
-          </NewPageButton>
+      >
+        + Start a new page
+      </NewPageButton>
     </Container>
   );
 };

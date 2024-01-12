@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { switchBranch, setCurrentIdea, selectChildrenOfIdea, selectChildPageIdeas, goDownPage } from '../redux/textSlice';
+import { selectChildrenOfIdea, selectChildPageIdeas } from '../redux/textSlice';
 import { Idea } from '../redux/models';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import CommentList from './CommentList';
@@ -9,6 +9,8 @@ import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';
 import { selectCommentsForIdea } from '../redux/commentSlice';
+import { createBranch } from '../redux/uiSlice';
+import { navigateToChildPage, switchBranch } from '../redux/thunks';
 
 const Container = styled.div`
   display: flex;
@@ -107,12 +109,12 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
     setCommentOverflow(isChat, idea.id, Math.max(0, commentOverflow));
   };
 
-  const createNewBranch = () => {
-    dispatch(setCurrentIdea(idea))
+  const newBranch = () => {
+    dispatch(createBranch(idea.id))
   }
 
   const switchBranches = (moveForward: boolean) => {
-    dispatch(switchBranch({ parentIdea: idea, moveForward }))
+    dispatch(switchBranch(idea, moveForward))
   }
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
@@ -146,7 +148,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
             <IdeaText idea={idea} />
             <PlusButton
               title='New branch'
-              onClick={createNewBranch}
+              onClick={newBranch}
               style={{
                 visibility: showPlusButton ? 'visible' : 'hidden',
                 float: 'right'
@@ -168,9 +170,10 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
           <Row key={index}>
             <PageButton
               title="Go to child page"
-              onClick={() => dispatch(goDownPage({ newRootIdea: idea }))}
+              onClick={() => dispatch(navigateToChildPage(idea))}
             >
-              Child page: {idea.text}</PageButton>
+              Child page: {idea.text}
+            </PageButton>
           </Row>
         ))}
       </CenterPanel>

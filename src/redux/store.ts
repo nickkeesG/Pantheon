@@ -1,9 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import textReducer from './textSlice';
 import commentReducer from './commentSlice';
 import daemonReducer from './daemonSlice';
 import llmReducer from './llmSlice';
+import uiReducer from './uiSlice';
 import errorReducer from './errorSlice';
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   comment: commentReducer,
   daemon: daemonReducer,
   llm: llmReducer,
+  ui: uiReducer,
   error: errorReducer
 });
 
@@ -37,3 +39,9 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof persistedReducer>
 export type AppDispatch = typeof store.dispatch
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;

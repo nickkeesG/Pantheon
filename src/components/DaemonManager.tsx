@@ -13,7 +13,7 @@ Central controller for the deployment of daemons.
 */
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
-  const lastTimeActive = useAppSelector(state => state.text.lastTimeActive);
+  const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
   const [alreadyWasInactive, setAlreadyWasInactive] = useState(false);
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const [baseDaemonActive, setBaseDaemonActive] = useState(false);

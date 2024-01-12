@@ -1,149 +1,14 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { Idea, IdeaExport, Comment, Page } from './models';
+import { Idea, Page } from './models';
+import { exploreBranch, getChildren, getIdea, getIdeasSinceLastComment } from './storeUtils';
 
-
-/**
- * 
- * @param pages - The dictionary of all pages
- * @param ideaId - The ID of the idea
- * @returns The idea instance corresponding to the given id, or undefined if no such idea found
- */
-const getIdea = (pages: { [id: number]: Page }, ideaId: number): Idea | undefined => {
-  for (const pageId in pages) {
-    const foundIdea = pages[pageId].ideas.find(idea => idea.id === ideaId);
-    if (foundIdea) return foundIdea;
-  }
-  return undefined;
-}
-
-/**
- * Retrieves all direct descendants of a given idea within the ideas array.
- * 
- * @param ideas - The array containing all ideas.
- * @param parentId - The ID of the parent idea.
- * @returns An array of ideas representing all the children of the given idea.
- */
-const getChildren = (ideas: Idea[], parentId: number): Idea[] => {
-  return ideas.filter(idea => idea.parentIdeaId === parentId);
-}
-
-/**
- * Finds the most recent descendent of a given ancestor idea within the entire tree.
- * 
- * @param ideas - The array of all ideas.
- * @param ancestorIdeaId - The ID of the ancestor idea for which to find the descendent.
- * @returns The most recent descendent of the given ancestor idea.
- */
-const getMostRecentDescendent = (ideas: Idea[], ancestorIdeaId: number): Idea => {
-  let mostRecentDescendent = ideas.find(idea => idea.id === ancestorIdeaId);
-  if (!mostRecentDescendent) {
-    throw new Error(`Ancestor idea with id ${ancestorIdeaId} not found`);
-  }
-  let queue = [mostRecentDescendent];
-  while (queue.length > 0) {
-    const currentIdea = queue.shift()!;
-    const children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
-    queue.push(...children);
-    if (currentIdea.id > mostRecentDescendent.id) {
-      mostRecentDescendent = currentIdea;
-    }
-  }
-  return mostRecentDescendent;
-}
-
-/**
- * Retrieves all ancestors of a given idea in the ideas array.
- * 
- * @param ideas - The array of all ideas.
- * @param lastIdeaId - The ID of the last idea in the chain of ancestors.
- * @returns An array of idea ids representing all the ancestors of the given idea.
- */
-const getAllAncestorIds = (ideas: Idea[], lastIdeaId: number): number[] => {
-  // Finds all the ancestor IDs of a given idea
-  let ancestorIds: number[] = [];
-  let currentId: number | null = lastIdeaId;
-
-  const findIdeaById = (id: number) => ideas.find(idea => idea.id === id);
-
-  while (currentId) {
-    const current = findIdeaById(currentId);
-    if (!current) {
-      console.error("Error finding idea list! IdeaId: " + currentId);
-      break;
-    }
-    ancestorIds.unshift(current.id);
-    currentId = current.parentIdeaId;
-  }
-
-  return ancestorIds;
-};
-
-/**
- * Retrieves all ideas since the most recent idea that has received comments.
- * 
- * @param ideas 
- * @param comments 
- * @returns 
- */
-const getIdeasSinceLastComment = (ideas: Idea[], ideaIds: number[], comments: Record<number, Comment>): Idea[] => {
-  const ideaIdsWithComments = new Set(Object.values(comments).map(comment => comment.ideaId));
-  const newestIdeaIdWithComments = Math.max(...Array.from(ideaIdsWithComments));
-  return ideas.filter(idea => ideaIds.includes(idea.id) && idea.id > newestIdeaIdWithComments);
-}
-
-// TODO All this logic should probably be moved to another file
-function exploreBranch(ideas: Idea[], selectedIdea: Idea): IdeaExport[] {
-  let ideaExports: IdeaExport[] = [];
-  let openIdeas: Idea[] = []; // Ideas that have multiple children (that need to be followed up on)
-  while (selectedIdea) {
-    let newExport = {
-      text: selectedIdea.text,
-      incoming: false,
-      outgoing: false
-    }
-    let children = getChildren(ideas, selectedIdea.id);
-    if (children.length > 1) {
-      newExport.outgoing = true;
-      openIdeas.push(selectedIdea); //save the idea to follow up on later
-    }
-    ideaExports.push(newExport);
-
-    if (children.length === 0) {
-      break;
-    } else {
-      selectedIdea = children[0];
-    }
-  }
-
-  // Now follow up on the open ideas
-  for (let i = 0; i < openIdeas.length; i++) {
-    let currentIdea = openIdeas[i];
-    let newExport = {
-      text: currentIdea.text,
-      incoming: true,
-      outgoing: false
-    }
-    ideaExports.push(newExport);
-    let children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
-    for (let j = 1; j < children.length; j++) { //skip the first child, since we already explored it
-      let newBranch = exploreBranch(ideas, children[j]); //
-      ideaExports.push(...newBranch);
-    }
-  }
-
-  return ideaExports;
-}
 
 export interface TextState {
-  lastTimeActive: number;
   pages: { [key: number]: Page };
-  currentPageId: number;
-  currentBranchIds: number[];
 }
 
 const initialState: TextState = {
-  lastTimeActive: Date.now(),
   pages: {
     0: {
       id: 0,
@@ -151,99 +16,23 @@ const initialState: TextState = {
       parentIdeaId: null,
       ideas: []
     }
-  },
-  currentPageId: 0,
-  currentBranchIds: [],
+  }
 };
 
 const textSlice = createSlice({
   name: 'text',
   initialState,
   reducers: {
-    setLastTimeActive(state) {
-      state.lastTimeActive = Date.now();
+    addPage(state, action: PayloadAction<Page>) {
+      const page = action.payload;
+      state.pages[page.id] = page;
     },
-    setCurrentIdea(state, action: PayloadAction<Idea | null>) {
-      if (action.payload) {
-        const page = state.pages[action.payload.pageId];
-        state.currentBranchIds = getAllAncestorIds(page.ideas, action.payload.id);
-      }
-      else {
-        state.currentBranchIds = [];
-      }
+    deletePage(state, action: PayloadAction<number>) {
+      delete state.pages[action.payload];
     },
-    changeBranch(state, action: PayloadAction<Idea>) {
-      const newCurrentPage = state.pages[action.payload.pageId];
-      const newCurrentIdea = getMostRecentDescendent(newCurrentPage.ideas, action.payload.id);
-      state.currentBranchIds = getAllAncestorIds(newCurrentPage.ideas, newCurrentIdea.id);
-      state.currentPageId = newCurrentPage.id;
-    },
-    switchBranch(state, action: PayloadAction<{ parentIdea: Idea, moveForward: boolean }>) {
-      const parentIdea = action.payload.parentIdea;
-      const page = state.pages[action.payload.parentIdea.pageId];
-      const childIdeas = getChildren(page.ideas, parentIdea.id);
-      const currentChild = page.ideas.find(idea => idea.parentIdeaId === parentIdea.id && state.currentBranchIds.includes(idea.id));
-      let newCurrentIdea: Idea;
-      if (currentChild) {
-        const currentIndex = childIdeas.findIndex(idea => idea.id === currentChild.id);
-        const newChild = action.payload.moveForward
-          ? childIdeas[(currentIndex + 1) % childIdeas.length]
-          : childIdeas[(currentIndex - 1 + childIdeas.length) % childIdeas.length]
-        newCurrentIdea = getMostRecentDescendent(page.ideas, newChild.id)
-      } else {
-        // User was likely adding a new branch but changed their mind
-        newCurrentIdea = getMostRecentDescendent(page.ideas, parentIdea.id);
-      }
-      state.currentBranchIds = getAllAncestorIds(page.ideas, newCurrentIdea.id)
-      state.currentPageId = page.id;
-    },
-    addPage(state) {
-      const parentPageId = state.currentPageId;
-      const parentIdeaId = state.currentBranchIds[state.currentBranchIds.length - 1];
-      const newPageId = Date.now();
-      const newPage: Page = {
-        id: newPageId,
-        parentPageId: parentPageId,
-        parentIdeaId,
-        ideas: []
-      };
-      state.pages[newPageId] = newPage;
-      state.currentPageId = newPageId;
-      state.currentBranchIds = [];
-    },
-    goUpPage(state) {
-      const page = state.pages[state.currentPageId];
-      const parentIdea = getIdea(state.pages, page.parentIdeaId!)!;
-      const newPage = state.pages[parentIdea.pageId];
-      const newCurrentIdea = getMostRecentDescendent(newPage.ideas, parentIdea.id);
-      state.currentBranchIds = getAllAncestorIds(newPage.ideas, newCurrentIdea.id);
-      state.currentPageId = newPage.id;
-      // If the current page has no ideas, delete it (user cancelled the creation)
-      if (page.ideas.length === 0) {
-        delete state.pages[page.id];
-      }
-    },
-    goDownPage(state, action: PayloadAction<{ newRootIdea: Idea }>) {
-      const newRootIdea = action.payload.newRootIdea;
-      const newPage = state.pages[newRootIdea.pageId];
-      const newCurrentIdea = getMostRecentDescendent(newPage.ideas, newRootIdea.id);
-      state.currentBranchIds = getAllAncestorIds(newPage.ideas, newCurrentIdea.id)
-      state.currentPageId = newPage.id;
-    },
-    addIdea(state, action: PayloadAction<{ text: string }>) {
-      const parentId = state.currentBranchIds.length > 0 ? state.currentBranchIds[state.currentBranchIds.length - 1] : null;
-      const page = state.pages[state.currentPageId];
-      const newId = Date.now();
-      const newIdea: Idea = {
-        id: newId,
-        pageId: state.currentPageId,
-        parentIdeaId: parentId,
-        text: action.payload.text,
-        textTokens: [],
-        tokenSurprisals: []
-      };
-      page.ideas.push(newIdea);
-      state.currentBranchIds.push(newIdea.id);
+    addIdea(state, action: PayloadAction<Idea>) {
+      const page = state.pages[action.payload.pageId];
+      page.ideas.push(action.payload);
     },
     setSurprisalToIdea(state, action: PayloadAction<{ ideaId: number, textTokens: string[], tokenSurprisals: number[] }>) {
       const idea = getIdea(state.pages, action.payload.ideaId);
@@ -277,7 +66,7 @@ export const selectChildrenOfIdea = createSelector(
 export const selectCurrentPage = createSelector(
   [
     (state: RootState) => state.text.pages,
-    (staet: RootState) => staet.text.currentPageId
+    (staet: RootState) => staet.ui.activePageId
   ], (pages, currentPageId) => {
     return pages[currentPageId];
   }
@@ -286,8 +75,8 @@ export const selectCurrentPage = createSelector(
 export const selectCurrentBranchIdeas = createSelector(
   [
     (state: RootState) => state.text.pages,
-    (state: RootState) => state.text.currentPageId,
-    (state: RootState) => state.text.currentBranchIds
+    (state: RootState) => state.ui.activePageId,
+    (state: RootState) => state.ui.activeIdeaIds
   ],
   (pages, currentPageId, currentBranchIds) => {
     const page = pages[currentPageId];
@@ -298,8 +87,8 @@ export const selectCurrentBranchIdeas = createSelector(
 // TODO Probably ideas should also have references to their comments
 export const selectRecentIdeasWithoutComments = createSelector(
   [(state: RootState) => state.text.pages,
-  (state: RootState) => state.text.currentPageId,
-  (state: RootState) => state.text.currentBranchIds,
+  (state: RootState) => state.ui.activePageId,
+  (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (pages, currentPageId, currentBranchIds, comments) => {
     const page = pages[currentPageId];
@@ -309,8 +98,8 @@ export const selectRecentIdeasWithoutComments = createSelector(
 
 export const selectIdeasUpToMaxCommented = createSelector(
   [(state: RootState) => state.text.pages,
-  (state: RootState) => state.text.currentPageId,
-  (state: RootState) => state.text.currentBranchIds,
+  (state: RootState) => state.ui.activePageId,
+  (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (pages, currentPageId, currentBranchIds, comments) => {
     const page = pages[currentPageId];
@@ -323,8 +112,8 @@ export const selectIdeasUpToMaxCommented = createSelector(
 export const selectBranchesFromIdea = createSelector(
   [
     (state: RootState) => state.text.pages,
-    (state: RootState) => state.text.currentPageId,
-    (state: RootState) => state.text.currentBranchIds,
+    (state: RootState) => state.ui.activePageId,
+    (state: RootState) => state.ui.activeIdeaIds,
     (_: RootState, parentId: number) => parentId
   ],
   (pages, currentPageId, currentBranchIds, parentId) => {
@@ -348,7 +137,7 @@ export const selectChildPageIdeas = createSelector(
 export const selectFullContext = createSelector(
   [
     (state: RootState) => state.text.pages,
-    (state: RootState) => state.text.currentPageId
+    (state: RootState) => state.ui.activePageId
   ],
   (pages, currentPageId) => {
     const ideas = pages[currentPageId].ideas;
@@ -358,5 +147,5 @@ export const selectFullContext = createSelector(
   }
 )
 
-export const { setCurrentIdea, changeBranch, switchBranch, addPage, goUpPage, goDownPage, addIdea, setSurprisalToIdea, setLastTimeActive, replaceTree } = textSlice.actions;
+export const { addPage, deletePage, addIdea, setSurprisalToIdea, replaceTree } = textSlice.actions;
 export default textSlice.reducer;

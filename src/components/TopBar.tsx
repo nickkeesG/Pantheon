@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import Settings from './settings/Settings';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
-import { goUpPage, selectCurrentPage, selectFullContext } from '../redux/textSlice';
+import { selectCurrentPage, selectFullContext } from '../redux/textSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButtonMedium } from '../styles/sharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
+import { navigateToParentPage } from '../redux/thunks';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -82,7 +83,7 @@ const TopBar = () => {
       {currentPage.parentPageId !== null && (
         <UpButton
           title="Back to previous tree"
-          onClick={() => dispatch(goUpPage())}
+          onClick={() => dispatch(navigateToParentPage())}
         />
       )}
       <IconButtonMedium

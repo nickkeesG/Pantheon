@@ -7,6 +7,7 @@ import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectCommentsGroupedByIdeaIds } from '../redux/commentSlice';
 import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
+import { SelectChatDaemon } from '../llmHandler';
 
 /*
 Central controller for the deployment of daemons.
@@ -84,22 +85,68 @@ const DaemonManager = () => {
     }
   }, [openAIKey, openAIOrgId, baseModel, dispatch]);
 
-  const handleDaemonDispatch = useCallback(() => {
+  const selectChatDaemon = useCallback(async (pastIdeas: Idea[], currentIdeas: Idea[]) => {
+    const context = [...pastIdeas, ...currentIdeas].map(idea => idea.text).join('\n');
+    const daemonDescriptions = chatDaemons.map(daemon => `${daemon.config.name}: ${daemon.config.description}`);
+
+    const systemPrompt = `You are the DaemonManager. You have been designed to impartially select the most useful chat daemon for a given context.
+    It is critical that your judgement is fair, and that you do not show preferential treatment to any particular chat daemon.`
+
+    const prompt = `Given the following context:/n${context}\n\n` +
+    `Here are the available chat daemons and their descriptions:\n` +
+    `${daemonDescriptions.join('\n')}\n\n` +
+    `Which chat daemon seems the most useful for this context? Please respond with the name of the chat daemon. Do not write any other text.`;
+    
+    let daemonName = await SelectChatDaemon(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
+    daemonName = daemonName.trim();
+
+    const daemon = chatDaemons.find(daemon => daemon.config.name === daemonName);
+    if (!daemon) {
+      dispatchError(`Daemon Manager picked invalid daemon name: ${daemonName}`);
+    }
+    return daemon;
+
+  }, [chatDaemons, openAIKey, openAIOrgId, chatModel, dispatch]);
+
+  const selectCurrentIdea = useCallback(async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
+    const context = pastIdeas.map(idea => idea.text).join('\n');
+    const currentIdeaText = currentIdeas.map(idea => idea.text).join('\n');
+
+    const systemPrompt = daemon.config.description;
+    const prompt = `Given the following past context: ${context}\n\n` +
+    `Please select one of the following current ideas you would be most interested in discussing:\n${currentIdeaText}\n\n` +
+    `Please write out the idea you want to respond to. Do not write any other text.`;
+
+    let currentIdea = await SelectChatDaemon(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
+    currentIdea = currentIdea.trim();
+
+    const idea = currentIdeas.find(idea => idea.text === currentIdea);
+    if (!idea) {
+      dispatchError(`Daemon Manager picked invalid idea: ${currentIdea}`);
+    }
+    return idea;
+  }, [openAIKey, openAIOrgId, chatModel]);
+
+
+  const handleDaemonDispatch = useCallback(async() => {
     if(!openAIKey) {
       dispatchError('OpenAI API key not set');
       return;
     }
 
     if (currentIdeas.length > 0) {
-
       if (chatDaemonActive) {
         console.log('Chat daemon already active');
       }
       else {
-        const randomDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+        const chatDaemon = await selectChatDaemon(pastIdeas, currentIdeas);
+        if (chatDaemon) {
+          const currentIdea = await selectCurrentIdea(pastIdeas, currentIdeas, chatDaemon);
 
-        // Currently only generates for the oldest idea, TODO update this to generate for any idea
-        dispatchChatComment(pastIdeas, currentIdeas[0], randomDaemon);
+          if (currentIdea) {
+            dispatchChatComment(pastIdeas, currentIdea, chatDaemon);
+          }
+        }
       }
 
       if (baseDaemonActive) {

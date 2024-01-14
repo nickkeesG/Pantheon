@@ -44,6 +44,27 @@ async function CallBaseAPIForLogprobs(data: any, config: any) {
     }
 }
 
+export async function SelectChatDaemon(systemPrompt: string, userPrompt: string, openAIKey: string, openAIOrgId: string, chatModel: string) {
+    var data = {
+        model: chatModel,
+        messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
+        ]
+    };
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAIKey}`,
+            'OpenAI-Organization': openAIOrgId
+        }
+    };
+
+    var response = await CallChatAPI(data, config);
+    return response[0];
+}
+
 export async function GenerateChatComments(systemPrompt: string, firstInstruction: string, lastInstruction: string, openAIKey: string, openAIOrgId: string, chatModel: string) {
     var data = {
         model: chatModel,

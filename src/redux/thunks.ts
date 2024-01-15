@@ -4,6 +4,9 @@ import { AppThunk } from './store';
 import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
 import { addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
 import { setActiveIdeaIds, setActivePageId } from "./uiSlice";
+import { PageState, replaceSlice as replacePageSlice } from "./pageSlice";
+import { IdeaState, replaceSlice as replaceIdeaSlice } from "./ideaSlice";
+import { CommentState, replaceSlice as replaceCommentSlice } from "./commentSlice";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
@@ -93,4 +96,22 @@ export const createIdea = (text: string): AppThunk => (dispatch, getState) => {
   dispatch(addIdea(newIdea));
   dispatch(addIdeaToParentPage(newIdea));
   dispatch(setActiveIdeaIds(newActiveIdeaIds))
+}
+
+export const importTree = (json: string): AppThunk => (dispatch, getState) => {
+  try {
+    const importedState = JSON.parse(json) as { page: PageState; idea: IdeaState; comment: CommentState };
+    console.debug(importedState)
+    dispatch(replacePageSlice(importedState.page));
+    dispatch(replaceIdeaSlice(importedState.idea));
+    dispatch(replaceCommentSlice(importedState.comment));
+    const allImportedIdeas = Object.values(importedState.idea.ideas);
+    const mostRecentIdea = allImportedIdeas.reduce((prev, current) => (prev.id > current.id) ? prev : current);
+    console.debug(allImportedIdeas, mostRecentIdea)
+    dispatch(setActivePageId(mostRecentIdea.pageId));
+    dispatch(setActiveIdeaIds(getAllAncestorIds(allImportedIdeas, mostRecentIdea.id)));
+    // TODO Notify the user that the import was successful
+  } catch (error) {
+    console.error('Error parsing the imported file', error);
+  }
 }

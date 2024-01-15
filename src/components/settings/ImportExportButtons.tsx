@@ -2,10 +2,10 @@ import styled from "styled-components";
 import { Button, ButtonHighlighted } from "../../styles/sharedStyles";
 import { LuImport } from "react-icons/lu";
 import { PiExportBold } from "react-icons/pi";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { replaceTree } from "../../redux/pageSlice";
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { importTree } from "../../redux/thunks";
 
 
 const ButtonsContainer = styled.div`
@@ -27,8 +27,10 @@ const StyledButton = styled(Button)`
 `;
 
 const ImportExportButtons = () => {
-  const dispatch = useDispatch();
-  const textState = useSelector((state: RootState) => state.page);
+  const dispatch = useAppDispatch();
+  const pageState = useAppSelector((state: RootState) => state.page);
+  const ideaState = useAppSelector((state: RootState) => state.idea);
+  const commentState = useAppSelector((state: RootState) => state.comment);
 
   const importStateFromJson = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -37,13 +39,7 @@ const ImportExportButtons = () => {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const text = e.target?.result;
         if (typeof text === 'string') {
-          try {
-            const importedState = JSON.parse(text);
-            dispatch(replaceTree(importedState));
-            // TODO Notify the user that the import was successful
-          } catch (error) {
-            console.error('Error parsing the imported file', error);
-          }
+          dispatch(importTree(text));
         }
       }
       reader.readAsText(file);
@@ -51,7 +47,11 @@ const ImportExportButtons = () => {
   }
 
   const exportStateToJson = () => {
-    const serializedState = JSON.stringify(textState);
+    const serializedState = JSON.stringify({
+      page: pageState,
+      idea: ideaState,
+      comment: commentState
+    });
     const blob = new Blob([serializedState], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

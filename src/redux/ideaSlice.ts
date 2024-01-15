@@ -32,6 +32,10 @@ const ideaSlice = createSlice({
       const idea = state.ideas[action.payload.ideaId]!;
       idea.textTokens = action.payload.textTokens;
       idea.tokenSurprisals = action.payload.tokenSurprisals;
+    },
+    replaceSlice(state, action: PayloadAction<IdeaState>) {
+      console.debug(action.payload)
+      return action.payload;
     }
   },
 });
@@ -106,5 +110,5 @@ export const selectPageContentForExporting = createSelector(
   }
 )
 
-export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea } = ideaSlice.actions;
+export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice } = ideaSlice.actions;
 export default ideaSlice.reducer;

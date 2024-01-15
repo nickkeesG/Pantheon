@@ -32,11 +32,11 @@ const pageSlice = createSlice({
       const page = state.pages[action.payload.pageId];
       page.ideaIds.push(action.payload.id);
     },
-    replaceTree(state, action: PayloadAction<PageState>) {
+    replaceSlice(state, action: PayloadAction<PageState>) {
       return action.payload;
     }
   },
 });
 
-export const { addPage, deletePage, addIdeaToParentPage, replaceTree } = pageSlice.actions;
+export const { addPage, deletePage, addIdeaToParentPage, replaceSlice } = pageSlice.actions;
 export default pageSlice.reducer;

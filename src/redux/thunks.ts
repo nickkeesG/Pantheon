@@ -2,13 +2,13 @@ import { addIdea, selectIdeasById } from "./ideaSlice";
 import { Idea, Page } from "./models";
 import { AppThunk } from './store';
 import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
-import { addIdeaToParentPage, addPage, deletePage } from "./textSlice";
+import { addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
 import { setActiveIdeaIds, setActivePageId } from "./uiSlice";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
   const state = getState();
-  const page = state.text.pages[parentIdea.pageId];
+  const page = state.page.pages[parentIdea.pageId];
   const ideas = selectIdeasById(state, page.ideaIds);
   const childIdeas = getChildren(ideas, parentIdea.id);
   const currentChild = ideas.find(idea => idea.parentIdeaId === parentIdea.id && state.ui.activeIdeaIds.includes(idea.id));
@@ -45,9 +45,9 @@ export const createPage = (): AppThunk => (dispatch, getState) => {
 
 export const navigateToParentPage = (): AppThunk => (dispatch, getState) => {
   const state = getState();
-  const activePage = state.text.pages[state.ui.activePageId];
+  const activePage = state.page.pages[state.ui.activePageId];
   if (activePage.parentPageId !== null && activePage.parentIdeaId !== null) {
-    const parentPage = state.text.pages[activePage.parentPageId];
+    const parentPage = state.page.pages[activePage.parentPageId];
     const parentPageIdeas = selectIdeasById(state, parentPage.ideaIds);
     const newActiveIdea = getMostRecentDescendent(parentPageIdeas, activePage.parentIdeaId);
     const newActiveIdeaIds = getAllAncestorIds(parentPageIdeas, newActiveIdea.id);
@@ -64,7 +64,7 @@ export const navigateToParentPage = (): AppThunk => (dispatch, getState) => {
 
 export const navigateToChildPage = (rootIdea: Idea): AppThunk => (dispatch, getState) => {
   const state = getState();
-  const childPage = state.text.pages[rootIdea.pageId];
+  const childPage = state.page.pages[rootIdea.pageId];
   const ideaIds = childPage.ideaIds;
   const allIdeas = state.idea.ideas;
   const ideas = ideaIds.map(id => allIdeas[id]);

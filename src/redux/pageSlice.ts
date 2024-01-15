@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Idea, Page } from './models';
 
 
-export interface TextState {
+export interface PageState {
   pages: { [key: number]: Page };
 }
 
-const initialState: TextState = {
+const initialState: PageState = {
   pages: {
     0: {
       id: 0,
@@ -17,8 +17,8 @@ const initialState: TextState = {
   }
 };
 
-const textSlice = createSlice({
-  name: 'text',
+const pageSlice = createSlice({
+  name: 'page',
   initialState,
   reducers: {
     addPage(state, action: PayloadAction<Page>) {
@@ -32,11 +32,11 @@ const textSlice = createSlice({
       const page = state.pages[action.payload.pageId];
       page.ideaIds.push(action.payload.id);
     },
-    replaceTree(state, action: PayloadAction<TextState>) {
+    replaceTree(state, action: PayloadAction<PageState>) {
       return action.payload;
     }
   },
 });
 
-export const { addPage, deletePage, addIdeaToParentPage, replaceTree } = textSlice.actions;
-export default textSlice.reducer;
+export const { addPage, deletePage, addIdeaToParentPage, replaceTree } = pageSlice.actions;
+export default pageSlice.reducer;

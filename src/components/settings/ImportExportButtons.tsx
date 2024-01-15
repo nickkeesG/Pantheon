@@ -4,7 +4,7 @@ import { LuImport } from "react-icons/lu";
 import { PiExportBold } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { replaceTree } from "../../redux/textSlice";
+import { replaceTree } from "../../redux/pageSlice";
 import React from "react";
 
 
@@ -28,7 +28,7 @@ const StyledButton = styled(Button)`
 
 const ImportExportButtons = () => {
   const dispatch = useDispatch();
-  const textState = useSelector((state: RootState) => state.text);
+  const textState = useSelector((state: RootState) => state.page);
 
   const importStateFromJson = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;

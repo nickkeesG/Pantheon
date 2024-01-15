@@ -60,7 +60,7 @@ export const selectIdeaBranches = createSelector(
 
 export const selectPageBranchRootIdeas = createSelector(
   [
-    (state: RootState) => state.text.pages,
+    (state: RootState) => state.page.pages,
     (state: RootState) => state.idea.ideas,
     (_: RootState, parentIdeaId: number) => parentIdeaId
   ],

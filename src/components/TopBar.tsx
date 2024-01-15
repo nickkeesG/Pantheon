@@ -43,7 +43,7 @@ const UpButton = styled(IconButtonMedium).attrs({
 const TopBar = () => {
   const dispatch = useAppDispatch();
   const activePageId = useAppSelector(state => state.ui.activePageId);
-  const activePage = useAppSelector(state => state.text.pages[activePageId]);
+  const activePage = useAppSelector(state => state.page.pages[activePageId]);
   const ideaExports = useAppSelector(state => selectPageContentForExporting(state, activePageId));
   const [isCopied, setIsCopied] = useState(false);
 

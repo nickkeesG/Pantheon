@@ -61,32 +61,32 @@ const Synchronizer = () => {
   Surprisal is defined as a decrease in loglikelihood of a token after conditioning on the past context
   */
  // TODO Disabled due to network and processing load. Enable later once improved.
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (!currentlyRequestingSurprisal) {
-  //       if (baseDaemon && activeIdeas.length > 0) {         
-  //         for (let i = 0; i < activeIdeas.length; i++) {
-  //           if (activeIdeas[i].textTokens.length === 0) {
-  //             if(!openAIKey) {
-  //               dispatchError("OpenAI API key not set");
-  //               return;
-  //             }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!currentlyRequestingSurprisal) {
+        if (baseDaemon && activeIdeas.length > 0) {         
+          for (let i = 0; i < activeIdeas.length; i++) {
+            if (activeIdeas[i].textTokens.length === 0) {
+              if(!openAIKey) {
+                dispatchError("OpenAI API key not set");
+                return;
+              }
 
-  //             let targetString = activeIdeas[i].text;
-  //             let fullContext = getFullContext(activeIdeas, i, baseDaemon);
-  //             let partialContext = getPartialContext(activeIdeas, i, baseDaemon);
-  //             requestSurprisal(fullContext, partialContext, targetString, activeIdeas[i].id);
-  //             break;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }, 1000);
+              let targetString = activeIdeas[i].text;
+              let fullContext = getFullContext(activeIdeas, i, baseDaemon);
+              let partialContext = getPartialContext(activeIdeas, i, baseDaemon);
+              requestSurprisal(fullContext, partialContext, targetString, activeIdeas[i].id);
+              break;
+            }
+          }
+        }
+      }
+    }, 1000);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [activeIdeas, baseDaemon, baseModel, openAIKey, openAIOrgId, currentlyRequestingSurprisal, getFullContext, getPartialContext, requestSurprisal]);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [activeIdeas, baseDaemon, baseModel, openAIKey, openAIOrgId, currentlyRequestingSurprisal, getFullContext, getPartialContext, requestSurprisal]);
 
   return null;
 }

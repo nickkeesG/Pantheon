@@ -3,7 +3,7 @@ import { addChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
+import { ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 
 
 const ChatDaemonSettingsContainer = styled.div`

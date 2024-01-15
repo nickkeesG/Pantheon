@@ -106,7 +106,7 @@ const DaemonManager = () => {
     }
     return daemon;
 
-  }, [chatDaemons, openAIKey, openAIOrgId, chatModel, dispatch]);
+  }, [chatDaemons, openAIKey, openAIOrgId, chatModel]);
 
   const selectCurrentIdea = useCallback(async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
     const context = pastIdeas.map(idea => idea.text).join('\n');
@@ -163,17 +163,16 @@ const DaemonManager = () => {
       }
     }
   }, [currentIdeas,
-    chatDaemons,
     baseDaemon,
     pastIdeas,
     commentsForPastIdeas,
     chatDaemonActive,
     baseDaemonActive,
     openAIKey,
-    openAIOrgId,
-    chatModel,
-    baseModel,
-    dispatch]);
+    dispatchBaseComment,
+    dispatchChatComment,
+    selectChatDaemon,
+    selectCurrentIdea]);
 
   useEffect(() => {
     const interval = setInterval(() => {

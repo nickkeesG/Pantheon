@@ -1,12 +1,13 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { BaseDaemonConfig, ChatDaemonConfig } from './models';
+import { BaseDaemonConfig, ChatDaemonConfig, InstructDaemonConfig } from './models';
 import { defaultDaemonState } from '../daemons/daemonInstructions';
 
 
 export interface DaemonState {
   chatDaemons: ChatDaemonConfig[];
   baseDaemon: BaseDaemonConfig;
+  instructDaemon: InstructDaemonConfig;
 }
 
 const daemonSlice = createSlice({

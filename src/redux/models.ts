@@ -42,3 +42,8 @@ export interface BaseDaemonConfig {
   ideaTemplate: string;
   commentTemplate: string;
 }
+
+export interface InstructDaemonConfig {
+  systemPrompt: string;
+  contextTemplate: string;
+}

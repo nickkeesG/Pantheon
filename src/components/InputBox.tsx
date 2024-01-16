@@ -1,9 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button, TextArea } from '../styles/sharedStyles';
 import { createIdea, createPage } from '../redux/thunks';
 import { setLastTimeActive } from '../redux/uiSlice';
+import InstructDaemon from '../daemons/instructDaemon';
+import { dispatchError } from '../errorHandler';
 
 const Container = styled.div`
   display: flex;
@@ -32,6 +34,16 @@ const InputBox = () => {
   const dispatch = useAppDispatch();
   const newPageButtonDisabled = useAppSelector(state => state.ui.activeIdeaIds.length === 0)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
+  const [instructDaemon, setInstructDaemon] = useState<InstructDaemon | null>(null);
+  const openAIKey = useAppSelector(state => state.llm.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
+  const instructModel = useAppSelector(state => state.llm.chatModel); // using the chat model
+
+  useEffect(() => {
+    const daemon = instructDaemonConfig ? new InstructDaemon(instructDaemonConfig) : null;
+    setInstructDaemon(daemon);
+  }, [instructDaemonConfig]);
 
   const resizeTextArea = () => {
     if (textAreaRef.current) {
@@ -44,14 +56,37 @@ const InputBox = () => {
     resizeTextArea();
   };
 
+  const dispatchInstruction = useCallback(async (instruction: string) => {
+    if (instructDaemon) {
+      try {
+        const response = await instructDaemon.handleInstruction([], 
+                                                                [], 
+                                                                instruction, 
+                                                                openAIKey, 
+                                                                openAIOrgId, 
+                                                                instructModel);
+        if (response) {
+          dispatch(createIdea(response));
+        } else {
+          dispatchError('Instruct daemon failed to generate response');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, dispatch]);
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     dispatch(setLastTimeActive())
     if (event.key === 'Enter') {
       event.preventDefault(); // Prevents the addition of a new line
 
-      //Save the text to the history
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
-        dispatch(createIdea(textAreaRef.current.value));
+        if (event.ctrlKey) { // Treat text as instruction
+          dispatchInstruction(textAreaRef.current.value);
+        } else { // Save the text to the history
+          dispatch(createIdea(textAreaRef.current.value));
+        }
         textAreaRef.current.scrollIntoView();
       }
 

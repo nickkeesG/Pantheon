@@ -110,7 +110,7 @@ const DaemonManager = () => {
 
   const selectCurrentIdea = useCallback(async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
     const context = pastIdeas.map(idea => idea.text).join('\n');
-    const currentIdeaText = currentIdeas.map(idea => idea.text).join('\n');
+    const currentIdeaText = currentIdeas.map(idea => idea.text).join('\n\n');
 
     const systemPrompt = daemon.config.description;
     const prompt = `Given the following past context: ${context}\n\n` +

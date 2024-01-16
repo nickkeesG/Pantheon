@@ -12,6 +12,7 @@
     "@types/react": "^18.2.42",
     "@types/react-dom": "^18.2.17",
     "axios": "^1.6.2",
+    "fastest-levenshtein": "^1.0.16",
     "js-tiktoken": "^1.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

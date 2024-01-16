@@ -44,7 +44,7 @@ async function CallBaseAPIForLogprobs(data: any, config: any) {
     }
 }
 
-export async function SelectChatDaemon(systemPrompt: string, userPrompt: string, openAIKey: string, openAIOrgId: string, chatModel: string) {
+export async function CallChatModel(systemPrompt: string, userPrompt: string, openAIKey: string, openAIOrgId: string, chatModel: string) {
     var data = {
         model: chatModel,
         messages: [

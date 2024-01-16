@@ -7,7 +7,8 @@ import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectCommentsGroupedByIdeaIds } from '../redux/commentSlice';
 import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
-import { SelectChatDaemon } from '../llmHandler';
+import { CallChatModel } from '../llmHandler';
+import { distance } from 'fastest-levenshtein';
 
 /*
 Central controller for the deployment of daemons.
@@ -97,7 +98,7 @@ const DaemonManager = () => {
     `${daemonDescriptions.join('\n')}\n\n` +
     `Which chat daemon seems the most useful for this context? Please respond with the name of the chat daemon. Do not write any other text.`;
     
-    let daemonName = await SelectChatDaemon(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
+    let daemonName = await CallChatModel(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
     daemonName = daemonName.trim();
 
     const daemon = chatDaemons.find(daemon => daemon.config.name === daemonName);
@@ -117,10 +118,17 @@ const DaemonManager = () => {
     `Please select one of the following current ideas you would be most interested in discussing:\n${currentIdeaText}\n\n` +
     `Please write out the idea you want to respond to. Do not write any other text.`;
 
-    let currentIdea = await SelectChatDaemon(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
+    let currentIdea = await CallChatModel(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
     currentIdea = currentIdea.trim();
 
-    const idea = currentIdeas.find(idea => idea.text === currentIdea);
+    // Find the idea with the smallest edit distance to the currentIdea
+    const idea = currentIdeas.reduce((closestIdea, idea) => {
+      const currentDistance = distance(currentIdea, idea.text);
+      const closestDistance = closestIdea ? distance(currentIdea, closestIdea.text) : Infinity;
+
+      return currentDistance < closestDistance ? idea : closestIdea;
+    }, null as Idea | null);
+
     if (!idea) {
       dispatchError(`Daemon Manager picked invalid idea: ${currentIdea}`);
     }

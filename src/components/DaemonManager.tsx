@@ -28,10 +28,10 @@ const DaemonManager = () => {
   const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
   const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
 
-  const openAIKey = useAppSelector(state => state.llm.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
-  const chatModel = useAppSelector(state => state.llm.chatModel);
-  const baseModel = useAppSelector(state => state.llm.baseModel);
+  const openAIKey = useAppSelector(state => state.config.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
+  const chatModel = useAppSelector(state => state.config.chatModel);
+  const baseModel = useAppSelector(state => state.config.baseModel);
 
   const maxTimeInactive = 5; // seconds
 

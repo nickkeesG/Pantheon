@@ -4,7 +4,7 @@ import pageReducer from './pageSlice';
 import ideaReducer from './ideaSlice';
 import commentReducer from './commentSlice';
 import daemonReducer from './daemonSlice';
-import llmReducer from './llmSlice';
+import configReducer from './configSlice';
 import uiReducer from './uiSlice';
 import errorReducer from './errorSlice';
 import storage from 'redux-persist/lib/storage'
@@ -20,7 +20,7 @@ const rootReducer = combineReducers({
   idea: ideaReducer,
   comment: commentReducer,
   daemon: daemonReducer,
-  llm: llmReducer,
+  config: configReducer,
   ui: uiReducer,
   error: errorReducer
 });

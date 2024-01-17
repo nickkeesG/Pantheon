@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { TextInput } from "../../styles/sharedStyles";
-import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/llmSlice";
+import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { setSynchronizerActive } from "../../redux/configSlice";
 
 
 const SettingLabel = styled.p`
@@ -17,12 +18,20 @@ const TextSettingContainer = styled.div`
   margin: 0 auto;
 `;
 
-const KeySettings = () => {
+const CheckboxSettingContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px auto;
+`;
+
+const ConfigSettings = () => {
   const dispatch = useAppDispatch();
-  const openAIKey = useAppSelector(state => state.llm.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
-  const chatModel = useAppSelector(state => state.llm.chatModel);
-  const baseModel = useAppSelector(state => state.llm.baseModel);
+  const openAIKey = useAppSelector(state => state.config.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
+  const chatModel = useAppSelector(state => state.config.chatModel);
+  const baseModel = useAppSelector(state => state.config.baseModel);
+  const isSynchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
   return (
     <div>
@@ -58,8 +67,12 @@ const KeySettings = () => {
           onChange={(event) => dispatch(updateBaseModel(event.target.value))}
         />
       </TextSettingContainer>
+      <CheckboxSettingContainer>
+        <input type="checkbox" checked={isSynchronizerActive} onChange={(e) => { dispatch(setSynchronizerActive(e.target.checked))}} />
+        <p>Surprisal synchronizer active</p>
+      </CheckboxSettingContainer> 
     </div>
   )
 }
 
-export default KeySettings;
+export default ConfigSettings;

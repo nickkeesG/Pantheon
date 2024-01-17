@@ -10,12 +10,13 @@ const Synchronizer = () => {
   const dispatch = useAppDispatch();
   const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
   const activeIdeas = useAppSelector(state => selectIdeasById(state, activeIdeaIds));
-  const openAIKey = useAppSelector(state => state.llm.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
-  const baseModel = useAppSelector(state => state.llm.baseModel);
+  const openAIKey = useAppSelector(state => state.config.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
+  const baseModel = useAppSelector(state => state.config.baseModel);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
+  const synchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
   // Gets surprisal for a single idea, and dispatches it to redux
   const requestSurprisal = useCallback(async (fullContext: string, partialContext: string, targetString: string, ideaId: number) => {
@@ -63,7 +64,7 @@ const Synchronizer = () => {
  // TODO Disabled due to network and processing load. Enable later once improved.
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!currentlyRequestingSurprisal) {
+      if (!currentlyRequestingSurprisal && synchronizerActive) {
         if (baseDaemon && activeIdeas.length > 0) {         
           for (let i = 0; i < activeIdeas.length; i++) {
             if (activeIdeas[i].textTokens.length === 0) {
@@ -86,7 +87,16 @@ const Synchronizer = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [activeIdeas, baseDaemon, baseModel, openAIKey, openAIOrgId, currentlyRequestingSurprisal, getFullContext, getPartialContext, requestSurprisal]);
+  }, [activeIdeas, 
+      baseDaemon, 
+      baseModel, 
+      openAIKey, 
+      openAIOrgId, 
+      currentlyRequestingSurprisal, 
+      synchronizerActive, 
+      getFullContext, 
+      getPartialContext, 
+      requestSurprisal]);
 
   return null;
 }

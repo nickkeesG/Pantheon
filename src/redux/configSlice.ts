@@ -1,22 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface LLMState {
+export interface ConfigState {
   openAIKey: string;
   openAIOrgId: string;
   baseModel: string;
   chatModel: string;
+  isSynchronizerActive: boolean;
 }
 
 
-const initialLLMState: LLMState = {
+const initialConfigState: ConfigState = {
   openAIKey: '',
   openAIOrgId: '',
   baseModel: 'davinci-002',
-  chatModel: 'gpt-4-1106-preview'
+  chatModel: 'gpt-4-1106-preview',
+  isSynchronizerActive: false
 };
-const llmSlice = createSlice({
-  name: 'llm',
-  initialState: initialLLMState,
+const configSlice = createSlice({
+  name: 'config',
+  initialState: initialConfigState,
   reducers: {
     setOpenaiKey(state, action: PayloadAction<string>) {
       state.openAIKey = action.payload;
@@ -29,9 +31,12 @@ const llmSlice = createSlice({
     },
     updateChatModel(state, action: PayloadAction<string>) {
       state.chatModel = action.payload;
+    },
+    setSynchronizerActive(state, action: PayloadAction<boolean>) {
+      state.isSynchronizerActive = action.payload;
     }
   },
 });
 
-export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId } = llmSlice.actions;
-export default llmSlice.reducer;
+export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive} = configSlice.actions;
+export default configSlice.reducer;

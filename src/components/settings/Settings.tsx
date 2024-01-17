@@ -6,7 +6,7 @@ import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
 import Modal from '../Modal';
 import ConfirmationModal from '../ConfirmationModal';
 import { resetDaemonState } from '../../redux/daemonSlice';
-import KeySettings from './KeySettings';
+import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
 import ImportExportButtons from './ImportExportButtons';
 
@@ -73,7 +73,7 @@ const Settings = () => {
             <SettingsHeader>SETTINGS</SettingsHeader>
             <ImportExportButtons />
             <hr />
-            <KeySettings />
+            <ConfigSettings />
             <hr />
             <DaemonSettings key={key} />
             <hr />

@@ -1,14 +1,14 @@
 import './app.css'
 import Display from './components/Display';
 import DaemonManager from './components/DaemonManager';
-//import Synchronizer from './components/Synchronizer';
+import Synchronizer from './components/Synchronizer';
 
 function App() {
   return (
     <div className='App'>
       <Display />
       <DaemonManager />
-      {/* <Synchronizer /> */}
+      <Synchronizer />
     </div>
   );
 }

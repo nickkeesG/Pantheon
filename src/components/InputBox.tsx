@@ -36,9 +36,9 @@ const InputBox = () => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon | null>(null);
-  const openAIKey = useAppSelector(state => state.llm.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.llm.openAIOrgId);
-  const instructModel = useAppSelector(state => state.llm.chatModel); // using the chat model
+  const openAIKey = useAppSelector(state => state.config.openAIKey);
+  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
+  const instructModel = useAppSelector(state => state.config.chatModel); // using the chat model
 
   useEffect(() => {
     const daemon = instructDaemonConfig ? new InstructDaemon(instructDaemonConfig) : null;

@@ -4,10 +4,12 @@ import { RootState } from './store';
 
 export interface ErrorState {
   errors: string[];
+  latestErrorTime?: number;
 }
 
 const initialErrorState: ErrorState = {
-  errors: []
+  errors: [],
+  latestErrorTime: undefined,
 };
 
 const errorSlice = createSlice({
@@ -16,9 +18,11 @@ const errorSlice = createSlice({
   reducers: {
     addError(state, action: PayloadAction<string>) {
       state.errors.push(action.payload);
+      state.latestErrorTime = Date.now();
     },
     clearErrors(state) {
       state.errors = [];
+      state.latestErrorTime = undefined;
     },
   },
 });

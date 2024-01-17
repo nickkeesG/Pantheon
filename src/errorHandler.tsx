@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from './hooks';
 import { store } from './redux/store';
-import { selectLatestError, selectNumberOfErrors} from './redux/errorSlice';
+import { selectLatestError } from './redux/errorSlice';
 import styled from 'styled-components';
 
 const ErrorContainer = styled.div`
@@ -17,20 +17,23 @@ export function dispatchError(error: any) {
 
 const ErrorDisplay: React.FC = () => {
   const latestError = useAppSelector(selectLatestError);
-  const numberOfErrors = useAppSelector(selectNumberOfErrors);
   const [showError, setShowError] = useState<boolean>(false);
+  const latestErrorTime = useAppSelector(state => state.error.latestErrorTime);
+  const maxTimeErrorVisible = 10; // seconds
 
   useEffect(() => {
-    if (latestError) {
-      console.error(latestError);
-      setShowError(true);
-      const timer = setTimeout(() => {
-        setShowError(false);
-      }, 10000);
-  
-      return () => clearTimeout(timer);
+    if (latestErrorTime) {
+      const timeSinceLatestError = Date.now() - latestErrorTime;
+      if (timeSinceLatestError < maxTimeErrorVisible * 1000) {
+        setShowError(true);
+        const timer = setTimeout(() => {
+          setShowError(false);
+        }, maxTimeErrorVisible * 1000 - timeSinceLatestError);
+
+        return () => clearTimeout(timer);
+      }
     }
-  }, [latestError, numberOfErrors]);
+  }, [latestErrorTime]);
 
   if (!showError) {
     return null;

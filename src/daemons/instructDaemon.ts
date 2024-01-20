@@ -25,6 +25,8 @@ class InstructDaemon {
         context += ",\n";
       }
 
+      // Comments disabled for now
+      /*
       let comments = groupedComments[currentBranchIdeas[i].id];
       for (let j = 0; j < comments.length; j++) {
         context += hardcodedCommentTemplate.replace("{}", comments[j].daemonName).replace("{}", comments[j].text);
@@ -32,6 +34,7 @@ class InstructDaemon {
           context += ",\n";
         }
       }
+      */
     }
     return context;
   }

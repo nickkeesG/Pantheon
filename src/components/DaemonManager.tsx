@@ -33,6 +33,8 @@ const DaemonManager = () => {
   const chatModel = useAppSelector(state => state.config.chatModel);
   const baseModel = useAppSelector(state => state.config.baseModel);
 
+  const [daemonSelectionCounts, setDaemonSelectionCounts] = useState<Record<string, number>>({});
+
   const maxTimeInactive = 5; // seconds
 
   useEffect(() => {
@@ -44,6 +46,16 @@ const DaemonManager = () => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));
     setChatDaemons(daemons);
   }, [chatDaemonConfigs]);
+
+  useEffect(() => {
+    console.log('Resetting daemon selection counts');
+    const initialCounts = chatDaemons.reduce((counts, daemon) => {
+      counts[daemon.config.name] = 0;
+      return counts;
+    }, {} as Record<string, number>);
+  
+    setDaemonSelectionCounts(initialCounts);
+  }, [chatDaemons]);
 
   const dispatchChatComment = useCallback(async (pastIdeas: Idea[], currentIdea: Idea, daemon: ChatDaemon) => {
     setChatDaemonActive(true);
@@ -96,8 +108,11 @@ const DaemonManager = () => {
     const prompt = `Given the following context:/n${context}\n\n` +
     `Here are the available chat daemons and their descriptions:\n` +
     `${daemonDescriptions.join('\n')}\n\n` +
-    `Which chat daemon seems the most useful for this context? Please respond with the name of the chat daemon. Do not write any other text.`;
-    
+    'These daemons have been previously selected with the following frequency:\n' +
+    `${JSON.stringify(daemonSelectionCounts)}\n\n` +
+    `Which chat daemon seems the most useful for this context? Remember to pick the daemons in roughly equal frequency.
+    Please respond with the name of the chat daemon. Do not write any other text.`;
+
     let daemonName = await CallChatModel(systemPrompt, prompt, openAIKey, openAIOrgId, chatModel);
     daemonName = daemonName.trim();
 
@@ -105,9 +120,15 @@ const DaemonManager = () => {
     if (!daemon) {
       dispatchError(`Daemon Manager picked invalid daemon name: ${daemonName}`);
     }
+    else {
+      setDaemonSelectionCounts((prevCounts) => ({
+        ...prevCounts,
+        [daemonName]: (prevCounts[daemonName] || 0) + 1
+      }));
+    }
     return daemon;
 
-  }, [chatDaemons, openAIKey, openAIOrgId, chatModel]);
+  }, [chatDaemons, openAIKey, openAIOrgId, chatModel, daemonSelectionCounts]);
 
   const selectCurrentIdea = useCallback(async (pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
     const context = pastIdeas.map(idea => idea.text).join('\n');

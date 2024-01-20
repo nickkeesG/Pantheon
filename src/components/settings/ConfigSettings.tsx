@@ -69,7 +69,7 @@ const ConfigSettings = () => {
       </TextSettingContainer>
       <CheckboxSettingContainer>
         <input type="checkbox" checked={isSynchronizerActive} onChange={(e) => { dispatch(setSynchronizerActive(e.target.checked))}} />
-        <p>Surprisal synchronizer active</p>
+        <p>Surprisal metric active</p>
       </CheckboxSettingContainer> 
     </div>
   )

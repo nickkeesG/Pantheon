@@ -146,7 +146,6 @@ const InputBox = () => {
               resizeTextArea(); // Resize the text area
             }
           }}
-          disabled={!instructDaemon}
           title = "Press Ctrl + Enter to send text as instruction"
         >
           Send instruction

@@ -17,20 +17,31 @@ const IdeaText: React.FC<{ idea: Idea }> = ({ idea }) => {
     return 'transparent';
   };
 
+  const renderTextWithNewLines = (text: string) => {
+    return text.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index !== text.split('\n').length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <>
       {(hasSurprisals && isSynchronizerActive) ? (
         idea.textTokens.map((token, index) => (
-          <span
-            key={index}
-            style={{ backgroundColor: getBackgroundColor(idea.tokenSurprisals[index]) }}
-            title={`Surprisal: ${idea.tokenSurprisals[index].toFixed(2)}`}
-          >
-            {token}
-          </span>
+          <React.Fragment key={index}>
+            <span
+              style={{ backgroundColor: getBackgroundColor(idea.tokenSurprisals[index]) }}
+              title={`Surprisal: ${idea.tokenSurprisals[index].toFixed(2)}`}
+            >
+              {token}
+            </span>
+            {token.endsWith('\n') && <br />}
+          </React.Fragment>
         ))
       ) : (
-        idea.text
+        renderTextWithNewLines(idea.text)
       )}
     </>
   )

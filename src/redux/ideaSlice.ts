@@ -82,7 +82,7 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
-    const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
+    const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
     return getIdeasSinceLastComment(activeBranchIdeas, comments);
   }
 )
@@ -107,6 +107,15 @@ export const selectPageContentForExporting = createSelector(
     const pageIdeas = Object.values(ideas).filter(idea => idea.pageId === pageId);
     const rootIdea = pageIdeas.find(idea => idea.parentIdeaId === null)!;
     return exploreBranch(pageIdeas, rootIdea);
+  }
+)
+
+export const selectCurrentBranchIdeas = createSelector(
+  [
+    (state: RootState) => state.idea.ideas,
+    (state: RootState) => state.ui.activeIdeaIds
+  ], (ideas, activeIdeaIds) => {
+    return activeIdeaIds.map(id => ideas[id]);
   }
 )
 

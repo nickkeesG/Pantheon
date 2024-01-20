@@ -6,6 +6,8 @@ import { createIdea, createPage } from '../redux/thunks';
 import { setLastTimeActive } from '../redux/uiSlice';
 import InstructDaemon from '../daemons/instructDaemon';
 import { dispatchError } from '../errorHandler';
+import { selectCurrentBranchIdeas } from '../redux/ideaSlice';
+import { selectCommentsGroupedByIdeaIds } from '../redux/commentSlice';
 
 const Container = styled.div`
   display: flex;
@@ -22,7 +24,24 @@ const TextAreaField = styled(TextArea)`
   margin-bottom: 12px;
 `;
 
+const ButtonRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; // Adjust the gap between buttons as needed
+  margin-bottom: 20px; // Keep the buttons away from the input box
+`;
+
 const NewPageButton = styled(Button)`
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-bottom: 20px;
+  color: var(--text-color-dark);
+  border-color: var(--line-color-dark);
+`;
+
+const InstructButton = styled(Button)`
   padding-left: 20px;
   padding-right: 20px;
   margin-bottom: 20px;
@@ -39,6 +58,9 @@ const InputBox = () => {
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const instructModel = useAppSelector(state => state.config.chatModel); // using the chat model
+  const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
+  const ideaIds = currentBranchIdeas.map(idea => idea.id); // Replace with actual logic to obtain ideaIds
+  const commentsGroupedByIdeaIds = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, ideaIds));
 
   useEffect(() => {
     const daemon = instructDaemonConfig ? new InstructDaemon(instructDaemonConfig) : null;
@@ -59,14 +81,14 @@ const InputBox = () => {
   const dispatchInstruction = useCallback(async (instruction: string) => {
     if (instructDaemon) {
       try {
-        const response = await instructDaemon.handleInstruction([], 
-                                                                [], 
+        const response = await instructDaemon.handleInstruction(currentBranchIdeas, 
+                                                                commentsGroupedByIdeaIds, 
                                                                 instruction, 
                                                                 openAIKey, 
                                                                 openAIOrgId, 
                                                                 instructModel);
         if (response) {
-          dispatch(createIdea(response));
+          dispatch(createIdea(response, false)); // false flags it as system generated 
         } else {
           dispatchError('Instruct daemon failed to generate response');
         }
@@ -74,7 +96,7 @@ const InputBox = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, dispatch]);
+  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, currentBranchIdeas, commentsGroupedByIdeaIds, dispatch]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     dispatch(setLastTimeActive())
@@ -109,12 +131,27 @@ const InputBox = () => {
         onChange={handleTextChange}
         onKeyDown={handleKeyDown}
       />
-      <NewPageButton
-        onClick={() => dispatch(createPage())}
-        disabled={newPageButtonDisabled}
-      >
-        + Start a new page
-      </NewPageButton>
+      <ButtonRow>
+        <NewPageButton
+          onClick={() => dispatch(createPage())}
+          disabled={newPageButtonDisabled}
+        >
+          + Start a new page
+        </NewPageButton>
+        <InstructButton
+          onClick={() => {
+            if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
+              dispatchInstruction(textAreaRef.current.value);
+              textAreaRef.current.value = ''; // Clear the text area
+              resizeTextArea(); // Resize the text area
+            }
+          }}
+          disabled={!instructDaemon}
+          title = "Press Ctrl + Enter to send text as instruction"
+        >
+          Send instruction
+        </InstructButton>
+      </ButtonRow>
     </Container>
   );
 };

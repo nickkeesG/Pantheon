@@ -78,13 +78,14 @@ export const navigateToChildPage = (rootIdea: Idea): AppThunk => (dispatch, getS
   dispatch(setActiveIdeaIds(newActiveIdeaIds));
 };
 
-export const createIdea = (text: string): AppThunk => (dispatch, getState) => {
+export const createIdea = (text: string, isUser: boolean = true): AppThunk => (dispatch, getState) => {
   const state = getState();
   const id = Date.now();
   const pageId = state.ui.activePageId;
   const parentIdeaId = state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1];
   const newIdea: Idea = {
     id,
+    isUser,
     pageId,
     parentIdeaId,
     text,

@@ -135,6 +135,6 @@ You will be evaluated on how well your responses conform to the following rules:
 2. Follow instructions. Do not write anything that is not directly asked for in the instructions.`,
     contextTemplate: `Please read the following context, and then follow the instructions that follow:\n\n{}\n\n
 Now follow the next instructions keeping in mind the context you just read. 
-Make sure to to keep your response as short as possible (less that 400 characters) and to write no unnecessary text which wasn't directly asked for my the user.`
+Make sure to to keep your response as short as possible (less that 400 characters) and to write no unnecessary text which wasn't directly asked for by the user:`
   }
 };

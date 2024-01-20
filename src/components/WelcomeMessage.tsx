@@ -39,7 +39,7 @@ const WelcomeMessage = () => {
         <Modal toggleVisibility={() => setIsWelcomeOpen(false)} zIndex={100}>
           <WelcomePanel>
             <WelcomeHeader>Welcome to Pantheon</WelcomeHeader>
-            <p>Pick a topic you would like to make progress on, and make an effort to think out loud, writing out your thoughs as they appear. Daemons will appear to the left and right of your thoughts offering commentary.</p>
+            <p>Pick a topic you would like to make progress on, and make an effort to think out loud, writing out your thoughts as they appear. Daemons will appear to the left and right of your thoughts offering commentary.</p>
           </WelcomePanel>
         </Modal>
       )}

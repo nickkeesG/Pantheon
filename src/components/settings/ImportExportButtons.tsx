@@ -28,6 +28,7 @@ const StyledButton = styled(Button)`
 
 const ImportExportButtons = () => {
   const dispatch = useAppDispatch();
+  const treeState = useAppSelector((state: RootState) => state.tree);
   const pageState = useAppSelector((state: RootState) => state.page);
   const ideaState = useAppSelector((state: RootState) => state.idea);
   const commentState = useAppSelector((state: RootState) => state.comment);
@@ -48,6 +49,7 @@ const ImportExportButtons = () => {
 
   const exportStateToJson = () => {
     const serializedState = JSON.stringify({
+      tree: treeState,
       page: pageState,
       idea: ideaState,
       comment: commentState

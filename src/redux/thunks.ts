@@ -1,11 +1,11 @@
-import { resetTreeSlice, addPageToTree } from './treeSlice';
+import { resetTreeSlice, addPageToTree, replaceTreeSlice, TreeState } from './treeSlice';
 import { PageState, replaceSlice as replacePageSlice, resetPageSlice, addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
 import { IdeaState, replaceSlice as replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById } from "./ideaSlice";
 import { CommentState, replaceSlice as replaceCommentSlice, resetCommentSlice } from "./commentSlice";
 import { resetDaemonSlice } from "./daemonSlice";
 import { clearErrors } from './errorSlice';
 import { resetConfigSlice } from './configSlice';
-import { setActiveIdeaIds, setActivePageId, resetUiSlice } from "./uiSlice";
+import { setActiveIdeaIds, setActivePageId, resetUiSlice, setActiveTreeId } from "./uiSlice";
 import { Idea, Page } from "./models";
 import { AppThunk } from './store';
 import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
@@ -105,15 +105,18 @@ export const createIdea = (text: string, isUser: boolean = true): AppThunk => (d
 
 export const importTree = (json: string): AppThunk => (dispatch, getState) => {
   try {
-    const importedState = JSON.parse(json) as { page: PageState; idea: IdeaState; comment: CommentState };
+    const importedState = JSON.parse(json) as { tree: TreeState; page: PageState; idea: IdeaState; comment: CommentState };
     console.debug(importedState)
+    dispatch(replaceTreeSlice(importedState.tree))
     dispatch(replacePageSlice(importedState.page));
     dispatch(replaceIdeaSlice(importedState.idea));
     dispatch(replaceCommentSlice(importedState.comment));
     const allImportedIdeas = Object.values(importedState.idea.ideas);
     const mostRecentIdea = allImportedIdeas.reduce((prev, current) => (prev.id > current.id) ? prev : current);
+    const currentPage = importedState.page.pages[mostRecentIdea.pageId];
     console.debug(allImportedIdeas, mostRecentIdea)
-    dispatch(setActivePageId(mostRecentIdea.pageId));
+    dispatch(setActiveTreeId(currentPage.treeId));
+    dispatch(setActivePageId(currentPage.id));
     dispatch(setActiveIdeaIds(getAllAncestorIds(allImportedIdeas, mostRecentIdea.id)));
     console.info("Import finished successfully")
     // TODO Notify the user that the import was successful

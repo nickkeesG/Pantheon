@@ -1,7 +1,7 @@
 import { resetTreeSlice, addPageToTree, replaceTreeSlice, TreeState } from './treeSlice';
-import { PageState, replaceSlice as replacePageSlice, resetPageSlice, addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
-import { IdeaState, replaceSlice as replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById } from "./ideaSlice";
-import { CommentState, replaceSlice as replaceCommentSlice, resetCommentSlice } from "./commentSlice";
+import { PageState, replacePageSlice, resetPageSlice, addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
+import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById } from "./ideaSlice";
+import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentSlice";
 import { resetDaemonSlice } from "./daemonSlice";
 import { clearErrors } from './errorSlice';
 import { resetConfigSlice } from './configSlice';

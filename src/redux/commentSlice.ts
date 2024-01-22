@@ -35,10 +35,8 @@ const commentSlice = createSlice({
     removeComment(state, action: PayloadAction<number>) {
       delete state.comments[action.payload];
     },
-    replaceSlice(state, action: PayloadAction<CommentState>) {
-      return action.payload;
-    },
-    resetCommentSlice: (state) => initialState
+    replaceSlice: (_, action: PayloadAction<CommentState>) => action.payload,
+    resetSlice: (_) => initialState
   },
 });
 
@@ -67,5 +65,5 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
 );
 
 
-export const { addComment, approveComment, removeComment, replaceSlice, resetCommentSlice } = commentSlice.actions;
+export const { addComment, approveComment, removeComment, replaceSlice: replaceCommentSlice, resetSlice: resetCommentSlice } = commentSlice.actions;
 export default commentSlice.reducer;

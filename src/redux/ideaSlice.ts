@@ -33,11 +33,8 @@ const ideaSlice = createSlice({
       idea.textTokens = action.payload.textTokens;
       idea.tokenSurprisals = action.payload.tokenSurprisals;
     },
-    replaceSlice(state, action: PayloadAction<IdeaState>) {
-      console.debug(action.payload)
-      return action.payload;
-    },
-    resetIdeaSlice: (state) => initialState
+    replaceSlice: (_, action: PayloadAction<IdeaState>) => action.payload,
+    resetSlice: (_) => initialState
   },
 });
 
@@ -120,5 +117,5 @@ export const selectCurrentBranchIdeas = createSelector(
   }
 )
 
-export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice, resetIdeaSlice } = ideaSlice.actions;
+export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
 export default ideaSlice.reducer;

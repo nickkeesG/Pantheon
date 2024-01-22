@@ -33,12 +33,10 @@ const pageSlice = createSlice({
       const page = state.pages[action.payload.pageId];
       page.ideaIds.push(action.payload.id);
     },
-    replaceSlice(state, action: PayloadAction<PageState>) {
-      return action.payload;
-    },
-    resetPageSlice: (state) => initialState
+    replaceSlice: (_, action: PayloadAction<PageState>) => action.payload,
+    resetSlice: (_) => initialState
   },
 });
 
-export const { addPage, deletePage, addIdeaToParentPage, replaceSlice, resetPageSlice } = pageSlice.actions;
+export const { addPage, deletePage, addIdeaToParentPage, replaceSlice: replacePageSlice, resetSlice: resetPageSlice } = pageSlice.actions;
 export default pageSlice.reducer;

@@ -7,6 +7,7 @@ import { setActiveIdeaIds, setActivePageId } from "./uiSlice";
 import { PageState, replaceSlice as replacePageSlice } from "./pageSlice";
 import { IdeaState, replaceSlice as replaceIdeaSlice } from "./ideaSlice";
 import { CommentState, replaceSlice as replaceCommentSlice } from "./commentSlice";
+import { addPageToTree } from "./treeSlice";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
@@ -35,12 +36,14 @@ export const createPage = (): AppThunk => (dispatch, getState) => {
   const newPageId = Date.now();
   const newPage: Page = {
     id: newPageId,
+    treeId: state.ui.activeTreeId,
     parentPageId: state.ui.activePageId,
     parentIdeaId: state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1],
     ideaIds: []
   };
 
   dispatch(addPage(newPage));
+  dispatch(addPageToTree(newPage));
   dispatch(setActivePageId(newPageId));
   dispatch(setActiveIdeaIds([]));
 };

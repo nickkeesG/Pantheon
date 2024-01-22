@@ -1,5 +1,11 @@
+export interface Tree {
+  id: number,
+  pageIds: number[];
+}
+
 export interface Page {
   id: number;
+  treeId: number;
   parentPageId: number | null;
   parentIdeaId: number | null;
   ideaIds: number[];

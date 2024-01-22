@@ -10,6 +10,7 @@ const initialState: PageState = {
   pages: {
     0: {
       id: 0,
+      treeId: 0,
       parentPageId: null,
       parentIdeaId: null,
       ideaIds: []

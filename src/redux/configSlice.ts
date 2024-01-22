@@ -8,17 +8,17 @@ export interface ConfigState {
   isSynchronizerActive: boolean;
 }
 
-
-const initialConfigState: ConfigState = {
+const initialState: ConfigState = {
   openAIKey: '',
   openAIOrgId: '',
   baseModel: 'davinci-002',
   chatModel: 'gpt-4-1106-preview',
   isSynchronizerActive: false
 };
+
 const configSlice = createSlice({
   name: 'config',
-  initialState: initialConfigState,
+  initialState: initialState,
   reducers: {
     setOpenaiKey(state, action: PayloadAction<string>) {
       state.openAIKey = action.payload;

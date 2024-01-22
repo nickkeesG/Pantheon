@@ -7,14 +7,14 @@ export interface ErrorState {
   latestErrorTime?: number;
 }
 
-const initialErrorState: ErrorState = {
+const initialState: ErrorState = {
   errors: [],
   latestErrorTime: undefined,
 };
 
 const errorSlice = createSlice({
   name: 'error',
-  initialState: initialErrorState,
+  initialState: initialState,
   reducers: {
     addError(state, action: PayloadAction<string>) {
       state.errors.push(action.payload);
@@ -27,10 +27,10 @@ const errorSlice = createSlice({
   },
 });
 
-export const { addError, clearErrors } = errorSlice.actions;
-export default errorSlice.reducer;
-
 // Selectors
 export const selectLatestError = (state: RootState) => state.error.errors[state.error.errors.length - 1];
 
 export const selectNumberOfErrors = (state: RootState) => state.error.errors.length;
+
+export const { addError, clearErrors } = errorSlice.actions;
+export default errorSlice.reducer;

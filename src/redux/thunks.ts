@@ -115,6 +115,7 @@ export const importTree = (json: string): AppThunk => (dispatch, getState) => {
     console.debug(allImportedIdeas, mostRecentIdea)
     dispatch(setActivePageId(mostRecentIdea.pageId));
     dispatch(setActiveIdeaIds(getAllAncestorIds(allImportedIdeas, mostRecentIdea.id)));
+    console.info("Import finished successfully")
     // TODO Notify the user that the import was successful
   } catch (error) {
     console.error('Error parsing the imported file', error);

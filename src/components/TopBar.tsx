@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 import { navigateToParentPage } from '../redux/thunks';
 import { selectPageContentForExporting } from '../redux/ideaSlice';
+import { MdOutlineCollectionsBookmark } from "react-icons/md";
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -16,10 +17,10 @@ const StyledTopBar = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 4px;
   background: var(--bg-color-light);
-  padding: 4px 12px 4px 4px;
+  padding: 4px 12px;
   z-index: 1000;
   border-bottom: 0.5px solid var(--line-color-dark);
 `;
@@ -38,6 +39,11 @@ const UpButton = styled(IconButtonMedium).attrs({
   border-left: 0.5px solid var(--line-color-dark);
   border-right: 0.5px solid var(--line-color-dark);
   border-radius: 0px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 4px;
 `;
 
 const TopBar = () => {
@@ -81,19 +87,28 @@ const TopBar = () => {
 
   return (
     <StyledTopBar>
+      <div />
+      {/* <IconButtonMedium
+        title="Collection view"
+        // TODO Implement onClick, then make visible
+      >
+        <MdOutlineCollectionsBookmark />
+      </IconButtonMedium> */}
       {activePage.parentPageId !== null && (
         <UpButton
           title="Back to previous tree"
           onClick={() => dispatch(navigateToParentPage())}
         />
       )}
-      <IconButtonMedium
-        title="Copy context"
-        onClick={copyContextToMarkdown}
-      >
-        {isCopied ? <FiCheckCircle /> : <FiCopy />}
-      </IconButtonMedium>
-      <Settings />
+      <ButtonContainer>
+        <IconButtonMedium
+          title="Copy context"
+          onClick={copyContextToMarkdown}
+        >
+          {isCopied ? <FiCheckCircle /> : <FiCopy />}
+        </IconButtonMedium>
+        <Settings />
+      </ButtonContainer>
     </StyledTopBar>
   )
 };

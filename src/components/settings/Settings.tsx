@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
+import { IconButtonMedium } from '../../styles/sharedStyles';
 import Modal from '../Modal';
-import ConfirmationModal from '../ConfirmationModal';
-import { resetDaemonState } from '../../redux/daemonSlice';
 import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
 import ImportExportButtons from './ImportExportButtons';
+import ButtonWithConfirmation from '../ButtonWithConfirmation';
+import { resetState } from '../../redux/thunks';
+import { resetDaemonSlice } from '../../redux/daemonSlice';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -35,21 +36,20 @@ const SettingsHeader = styled.h3`
 const Settings = () => {
   const dispatch = useAppDispatch();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [key, setKey] = useState(Date.now()) // Key modifier for UI reset
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
 
-  const toggleConfirmationModal = () => {
-    setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  const resetDaemonSettings = () => {
+    dispatch(resetDaemonSlice());
+    setKey(Date.now());
   }
 
-  const resetDaemonSettings = () => {
-    dispatch(resetDaemonState());
+  const resetAppState = () => {
+    dispatch(resetState());
     setKey(Date.now());
-    setIsConfirmationModalOpen(false);
   }
 
   useEffect(() => {
@@ -77,19 +77,21 @@ const Settings = () => {
             <hr />
             <DaemonSettings key={key} />
             <hr />
-            <ButtonDangerous onClick={toggleConfirmationModal}>
-              Reset daemon settings
-            </ButtonDangerous>
+            <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
+            <ButtonWithConfirmation
+              buttonText="Reset daemon settings"
+              confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
+              onConfirm={resetDaemonSettings}
+            />
+            <hr />
+            <p style={{ color: 'var(--text-color-dark)' }}>Reset the entire app state back to default. All ideas, comments, and custom daemons will be lost.</p>
+            <ButtonWithConfirmation
+              buttonText="Reset entire app state"
+              confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
+              onConfirm={resetAppState}
+            />
           </SettingsPanel>
         </Modal>
-      )}
-      {isConfirmationModalOpen && (
-        <ConfirmationModal
-          onConfirm={resetDaemonSettings}
-          onCancel={toggleConfirmationModal}
-          message="Are you sure you want to reset all daemon settings? This cannot be undone."
-          zIndex={120}
-        />
       )}
     </div>
   );

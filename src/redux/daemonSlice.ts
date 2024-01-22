@@ -35,9 +35,7 @@ const daemonSlice = createSlice({
         ...action.payload
       };
     },
-    resetDaemonState(state) {
-      Object.assign(state, defaultDaemonState);
-    }
+    resetDaemonSlice: (state) => defaultDaemonState
   },
 });
 
@@ -46,5 +44,5 @@ export const selectEnabledChatDaemons = createSelector(
   (chatDaemons) => chatDaemons.filter(daemon => daemon.enabled)
 );
 
-export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon, resetDaemonState } = daemonSlice.actions;
+export const { addChatDaemon, removeChatDaemon, updateChatDaemon, updateBaseDaemon, resetDaemonSlice } = daemonSlice.actions;
 export default daemonSlice.reducer;

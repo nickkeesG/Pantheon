@@ -34,9 +34,10 @@ const configSlice = createSlice({
     },
     setSynchronizerActive(state, action: PayloadAction<boolean>) {
       state.isSynchronizerActive = action.payload;
-    }
+    },
+    resetConfigSlice: (state) => initialState
   },
 });
 
-export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive} = configSlice.actions;
+export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive, resetConfigSlice } = configSlice.actions;
 export default configSlice.reducer;

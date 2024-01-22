@@ -32,9 +32,10 @@ const treeSlice = createSlice({
     updateTree(state, action: PayloadAction<Tree>) {
       const tree = action.payload;
       state.trees[tree.id] = tree;
-    }
+    },
+    resetTreeSlice: (state) => initialState
   },
 });
 
-export const { addTree, deleteTree, addPageToTree, updateTree } = treeSlice.actions;
+export const { addTree, deleteTree, addPageToTree, updateTree, resetTreeSlice } = treeSlice.actions;
 export default treeSlice.reducer;

@@ -36,10 +36,11 @@ const uiSlice = createSlice({
       if (ideaIndex >= 0) {
         state.activeIdeaIds = state.activeIdeaIds.slice(0, ideaIndex + 1);
       }
-    }
+    },
+    resetUiSlice: (state) => initialState
   }
 })
 
 
-export const { setLastTimeActive, setActiveTreeId, setActivePageId, setActiveIdeaIds, createBranch } = uiSlice.actions;
+export const { setLastTimeActive, setActiveTreeId, setActivePageId, setActiveIdeaIds, createBranch, resetUiSlice } = uiSlice.actions;
 export default uiSlice.reducer;

@@ -37,7 +37,8 @@ const commentSlice = createSlice({
     },
     replaceSlice(state, action: PayloadAction<CommentState>) {
       return action.payload;
-    }
+    },
+    resetCommentSlice: (state) => initialState
   },
 });
 
@@ -66,5 +67,5 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
 );
 
 
-export const { addComment, approveComment, removeComment, replaceSlice } = commentSlice.actions;
+export const { addComment, approveComment, removeComment, replaceSlice, resetCommentSlice } = commentSlice.actions;
 export default commentSlice.reducer;

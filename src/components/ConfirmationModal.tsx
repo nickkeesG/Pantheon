@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 import styled from 'styled-components';
-import { Button, ButtonHighlighted } from '../styles/sharedStyles';
+import { Button, ButtonDangerous } from '../styles/sharedStyles';
 
 const ConfirmationContent = styled.div`
   background: var(--bg-color);
@@ -30,9 +30,9 @@ const ConfirmationModal: React.FC<{
       <ConfirmationContent>
         <ConfirmationMessage>{message}</ConfirmationMessage>
         <ButtonGroup>
-          <ButtonHighlighted onClick={onConfirm} >
+          <ButtonDangerous onClick={onConfirm} >
             Confirm
-          </ButtonHighlighted>
+          </ButtonDangerous>
           <Button onClick={onCancel}>
             Cancel
           </Button>

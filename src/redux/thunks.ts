@@ -1,13 +1,14 @@
-import { addIdea, selectIdeasById } from "./ideaSlice";
+import { resetTreeSlice, addPageToTree } from './treeSlice';
+import { PageState, replaceSlice as replacePageSlice, resetPageSlice, addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
+import { IdeaState, replaceSlice as replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById } from "./ideaSlice";
+import { CommentState, replaceSlice as replaceCommentSlice, resetCommentSlice } from "./commentSlice";
+import { resetDaemonSlice } from "./daemonSlice";
+import { clearErrors } from './errorSlice';
+import { resetConfigSlice } from './configSlice';
+import { setActiveIdeaIds, setActivePageId, resetUiSlice } from "./uiSlice";
 import { Idea, Page } from "./models";
 import { AppThunk } from './store';
 import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
-import { addIdeaToParentPage, addPage, deletePage } from "./pageSlice";
-import { setActiveIdeaIds, setActivePageId } from "./uiSlice";
-import { PageState, replaceSlice as replacePageSlice } from "./pageSlice";
-import { IdeaState, replaceSlice as replaceIdeaSlice } from "./ideaSlice";
-import { CommentState, replaceSlice as replaceCommentSlice } from "./commentSlice";
-import { addPageToTree } from "./treeSlice";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
@@ -118,4 +119,16 @@ export const importTree = (json: string): AppThunk => (dispatch, getState) => {
   } catch (error) {
     console.error('Error parsing the imported file', error);
   }
+}
+
+export const resetState = (): AppThunk => (dispatch, getState) => {
+  console.info("Resetting app state");
+  dispatch(resetTreeSlice());
+  dispatch(resetPageSlice());
+  dispatch(resetIdeaSlice());
+  dispatch(resetCommentSlice());
+  dispatch(resetDaemonSlice());
+  dispatch(resetConfigSlice());
+  dispatch(resetUiSlice());
+  dispatch(clearErrors());
 }

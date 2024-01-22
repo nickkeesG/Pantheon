@@ -35,9 +35,10 @@ const pageSlice = createSlice({
     },
     replaceSlice(state, action: PayloadAction<PageState>) {
       return action.payload;
-    }
+    },
+    resetPageSlice: (state) => initialState
   },
 });
 
-export const { addPage, deletePage, addIdeaToParentPage, replaceSlice } = pageSlice.actions;
+export const { addPage, deletePage, addIdeaToParentPage, replaceSlice, resetPageSlice } = pageSlice.actions;
 export default pageSlice.reducer;

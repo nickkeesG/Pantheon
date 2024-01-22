@@ -36,7 +36,8 @@ const ideaSlice = createSlice({
     replaceSlice(state, action: PayloadAction<IdeaState>) {
       console.debug(action.payload)
       return action.payload;
-    }
+    },
+    resetIdeaSlice: (state) => initialState
   },
 });
 
@@ -119,5 +120,5 @@ export const selectCurrentBranchIdeas = createSelector(
   }
 )
 
-export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice } = ideaSlice.actions;
+export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice, resetIdeaSlice } = ideaSlice.actions;
 export default ideaSlice.reducer;

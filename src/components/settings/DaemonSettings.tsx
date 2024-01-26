@@ -32,7 +32,7 @@ const DaemonSettings = () => {
       )}
       {!addingNewDaemon && (
         <TextButton onClick={() => setAddingNewDaemon(true)}>
-          Add new daemon
+          + New daemon
         </TextButton>
       )}
       <h4>Base daemons</h4>

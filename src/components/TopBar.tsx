@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 import { navigateToParentSection } from '../redux/thunks';
 import { selectSectionContentForExporting } from '../redux/ideaSlice';
-import { MdOutlineCollectionsBookmark } from "react-icons/md";
+// import { MdOutlineCollectionsBookmark } from "react-icons/md";
 
 const StyledTopBar = styled.div`
   position: fixed;

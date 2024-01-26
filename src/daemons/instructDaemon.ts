@@ -2,7 +2,7 @@ import { Comment, Idea, InstructDaemonConfig } from '../redux/models';
 import { CallChatModel } from '../llmHandler';
 
 const hardcodedIdeaTemplate = 'Me: "{}"';
-const hardcodedCommentTemplate = '    {}: "{}"';
+// const hardcodedCommentTemplate = '    {}: "{}"';
 
 type GroupedComments = { [ideaId: number]: Comment[] };
 

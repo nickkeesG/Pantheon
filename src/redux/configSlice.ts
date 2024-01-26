@@ -40,4 +40,5 @@ const configSlice = createSlice({
 });
 
 export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive, resetConfigSlice } = configSlice.actions;
+export const initialConfigState = initialState;
 export default configSlice.reducer;

@@ -1,7 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import treeReducer from './treeSlice';
-import pageReducer from './pageSlice';
+import sectionReducer from './sectionSlice';
 import ideaReducer from './ideaSlice';
 import commentReducer from './commentSlice';
 import daemonReducer from './daemonSlice';
@@ -9,16 +9,19 @@ import configReducer from './configSlice';
 import uiReducer from './uiSlice';
 import errorReducer from './errorSlice';
 import storage from 'redux-persist/lib/storage'
-import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, createMigrate } from 'redux-persist';
+import migrations from './migrations';
 
 const persistConfig = {
   key: 'root',
-  storage
+  version: 0,
+  storage,
+  migrate: createMigrate(migrations, { debug: true })
 };
 
 const rootReducer = combineReducers({
   tree: treeReducer,
-  page: pageReducer,
+  section: sectionReducer,
   idea: ideaReducer,
   comment: commentReducer,
   daemon: daemonReducer,

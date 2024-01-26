@@ -4,14 +4,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface UIState {
   lastTimeActive: number;
   activeTreeId: number;
-  activePageId: number;
+  activeSectionId: number;
   activeIdeaIds: number[];
 }
 
 const initialState: UIState = {
   lastTimeActive: Date.now(),
   activeTreeId: 0,
-  activePageId: 0,
+  activeSectionId: 0,
   activeIdeaIds: []
 }
 
@@ -25,8 +25,8 @@ const uiSlice = createSlice({
     setActiveTreeId(state, action: PayloadAction<number>) {
       state.activeTreeId = action.payload;
     },
-    setActivePageId(state, action: PayloadAction<number>) {
-      state.activePageId = action.payload;
+    setActiveSectionId(state, action: PayloadAction<number>) {
+      state.activeSectionId = action.payload;
     },
     setActiveIdeaIds(state, action: PayloadAction<number[]>) {
       state.activeIdeaIds = action.payload;
@@ -42,5 +42,6 @@ const uiSlice = createSlice({
 })
 
 
-export const { setLastTimeActive, setActiveTreeId, setActivePageId, setActiveIdeaIds, createBranch, resetUiSlice } = uiSlice.actions;
+export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, createBranch, resetUiSlice } = uiSlice.actions;
+export const initialUiState = initialState;
 export default uiSlice.reducer;

@@ -66,4 +66,5 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
 
 
 export const { addComment, approveComment, removeComment, replaceSlice: replaceCommentSlice, resetSlice: resetCommentSlice } = commentSlice.actions;
+export const initialCommentState = initialState;
 export default commentSlice.reducer;

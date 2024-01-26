@@ -33,4 +33,5 @@ export const selectLatestError = (state: RootState) => state.error.errors[state.
 export const selectNumberOfErrors = (state: RootState) => state.error.errors.length;
 
 export const { addError, clearErrors } = errorSlice.actions;
+export const initialErrorState = initialState;
 export default errorSlice.reducer;

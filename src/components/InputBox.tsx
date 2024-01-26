@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button, TextArea } from '../styles/sharedStyles';
-import { createIdea, createPage } from '../redux/thunks';
+import { createIdea, createSection } from '../redux/thunks';
 import { setLastTimeActive } from '../redux/uiSlice';
 import InstructDaemon from '../daemons/instructDaemon';
 import { dispatchError } from '../errorHandler';
@@ -33,7 +33,7 @@ const ButtonRow = styled.div`
   margin-bottom: 20px; // Keep the buttons away from the input box
 `;
 
-const NewPageButton = styled(Button)`
+const NewSectionButton = styled(Button)`
   padding-left: 20px;
   padding-right: 20px;
   margin-bottom: 20px;
@@ -51,7 +51,7 @@ const InstructButton = styled(Button)`
 
 const InputBox = () => {
   const dispatch = useAppDispatch();
-  const newPageButtonDisabled = useAppSelector(state => state.ui.activeIdeaIds.length === 0)
+  const newSectionButtonDisabled = useAppSelector(state => state.ui.activeIdeaIds.length === 0)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon | null>(null);
@@ -132,12 +132,12 @@ const InputBox = () => {
         onKeyDown={handleKeyDown}
       />
       <ButtonRow>
-        <NewPageButton
-          onClick={() => dispatch(createPage())}
-          disabled={newPageButtonDisabled}
+        <NewSectionButton
+          onClick={() => dispatch(createSection())}
+          disabled={newSectionButtonDisabled}
         >
-          + Start a new page
-        </NewPageButton>
+          + New section
+        </NewSectionButton>
         <InstructButton
           onClick={() => {
             if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {

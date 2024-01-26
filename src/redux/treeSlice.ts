@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Page, Tree } from './models';
+import { Section, Tree } from './models';
 
 export interface TreeState {
   trees: { [key: number]: Tree };
@@ -9,7 +9,7 @@ const initialState: TreeState = {
   trees: {
     0: {
       id: 0,
-      pageIds: [0]
+      sectionIds: [0]
     }
   }
 };
@@ -25,9 +25,9 @@ const treeSlice = createSlice({
     deleteTree(state, action: PayloadAction<number>) {
       delete state.trees[action.payload];
     },
-    addPageToTree(state, action: PayloadAction<Page>) {
+    addSectionToTree(state, action: PayloadAction<Section>) {
       const tree = state.trees[action.payload.treeId];
-      tree.pageIds.push(action.payload.id);
+      tree.sectionIds.push(action.payload.id);
     },
     updateTree(state, action: PayloadAction<Tree>) {
       const tree = action.payload;
@@ -38,5 +38,6 @@ const treeSlice = createSlice({
   },
 });
 
-export const { addTree, deleteTree, addPageToTree, updateTree, replaceSlice: replaceTreeSlice, resetSlice: resetTreeSlice } = treeSlice.actions;
+export const { addTree, deleteTree, addSectionToTree, updateTree, replaceSlice: replaceTreeSlice, resetSlice: resetTreeSlice } = treeSlice.actions;
+export const initialTreeState = initialState;
 export default treeSlice.reducer;

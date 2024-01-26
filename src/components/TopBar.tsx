@@ -5,8 +5,8 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButtonMedium } from '../styles/sharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
-import { navigateToParentPage } from '../redux/thunks';
-import { selectPageContentForExporting } from '../redux/ideaSlice';
+import { navigateToParentSection } from '../redux/thunks';
+import { selectSectionContentForExporting } from '../redux/ideaSlice';
 import { MdOutlineCollectionsBookmark } from "react-icons/md";
 
 const StyledTopBar = styled.div`
@@ -48,9 +48,9 @@ const ButtonContainer = styled.div`
 
 const TopBar = () => {
   const dispatch = useAppDispatch();
-  const activePageId = useAppSelector(state => state.ui.activePageId);
-  const activePage = useAppSelector(state => state.page.pages[activePageId]);
-  const ideaExports = useAppSelector(state => selectPageContentForExporting(state, activePageId));
+  const activeSectionId = useAppSelector(state => state.ui.activeSectionId);
+  const activeSection = useAppSelector(state => state.section.sections[activeSectionId]);
+  const ideaExports = useAppSelector(state => selectSectionContentForExporting(state, activeSectionId));
   const [isCopied, setIsCopied] = useState(false);
 
   const copyContextToMarkdown = async () => {
@@ -94,10 +94,10 @@ const TopBar = () => {
       >
         <MdOutlineCollectionsBookmark />
       </IconButtonMedium> */}
-      {activePage.parentPageId !== null && (
+      {activeSection.parentSectionId !== null && (
         <UpButton
           title="Back to previous tree"
-          onClick={() => dispatch(navigateToParentPage())}
+          onClick={() => dispatch(navigateToParentSection())}
         />
       )}
       <ButtonContainer>

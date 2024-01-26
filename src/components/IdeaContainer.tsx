@@ -9,8 +9,8 @@ import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';
 import { selectCommentsForIdea } from '../redux/commentSlice';
 import { createBranch } from '../redux/uiSlice';
-import { navigateToChildPage, switchBranch } from '../redux/thunks';
-import { selectIdeaBranches, selectPageBranchRootIdeas } from '../redux/ideaSlice';
+import { navigateToChildSection, switchBranch } from '../redux/thunks';
+import { selectIdeaBranches, selectSectionBranchRootIdeas } from '../redux/ideaSlice';
 
 const Container = styled.div`
   display: flex;
@@ -41,7 +41,7 @@ const ArrowButton = styled(IconButtonLarge).attrs({
   margin: 4px;
 `;
 
-const PageButton = styled(TextButton)`
+const SectionButton = styled(TextButton)`
   white-space: nowrap;
   margin: 0px 28px;
   font-size: 0.75rem;
@@ -92,7 +92,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
   const dispatch = useAppDispatch();
   const branchingIdeas = useAppSelector(state => selectIdeaBranches(state, idea.id));
   const hasBranches = branchingIdeas.length > 0;
-  const branchingPagesRootIdeas = useAppSelector(state => selectPageBranchRootIdeas(state, idea.id));
+  const branchingSectionsRootIdeas = useAppSelector(state => selectSectionBranchRootIdeas(state, idea.id));
   const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
   const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -166,14 +166,14 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
             />
           </ActionPanel>
         </Row>
-        {branchingPagesRootIdeas.map((idea, index) => (
+        {branchingSectionsRootIdeas.map((idea, index) => (
           <Row key={index}>
-            <PageButton
-              title="Go to child page"
-              onClick={() => dispatch(navigateToChildPage(idea))}
+            <SectionButton
+              title="Go to child section"
+              onClick={() => dispatch(navigateToChildSection(idea))}
             >
-              Child page: {idea.text}
-            </PageButton>
+              Child section: {idea.text}
+            </SectionButton>
           </Row>
         ))}
       </CenterPanel>

@@ -60,16 +60,16 @@ export const selectIdeaBranches = createSelector(
   }
 )
 
-export const selectPageBranchRootIdeas = createSelector(
+export const selectSectionBranchRootIdeas = createSelector(
   [
-    (state: RootState) => state.page.pages,
+    (state: RootState) => state.section.sections,
     (state: RootState) => state.idea.ideas,
     (_: RootState, parentIdeaId: number) => parentIdeaId
   ],
-  (pages, ideas, parentIdeaId) => {
-    const childPages = Object.values(pages)
-      .filter(page => page.parentIdeaId === parentIdeaId);
-    const rootIdeaIds = childPages.map(page => page.ideaIds[0]);
+  (sections, ideas, parentIdeaId) => {
+    const childSections = Object.values(sections)
+      .filter(section => section.parentIdeaId === parentIdeaId);
+    const rootIdeaIds = childSections.map(section => section.ideaIds[0]);
     return rootIdeaIds.map(id => ideas[id]);
   }
 )
@@ -97,14 +97,14 @@ export const selectActivePastIdeas = createSelector(
   }
 )
 
-export const selectPageContentForExporting = createSelector(
+export const selectSectionContentForExporting = createSelector(
   [
     (state: RootState) => state.idea.ideas,
-    (_: RootState, pageId: number) => pageId
-  ], (ideas, pageId) => {
-    const pageIdeas = Object.values(ideas).filter(idea => idea.pageId === pageId);
-    const rootIdea = pageIdeas.find(idea => idea.parentIdeaId === null)!;
-    return exploreBranch(pageIdeas, rootIdea);
+    (_: RootState, sectionId: number) => sectionId
+  ], (ideas, sectionId) => {
+    const sectionIdeas = Object.values(ideas).filter(idea => idea.sectionId === sectionId);
+    const rootIdea = sectionIdeas.find(idea => idea.parentIdeaId === null)!;
+    return exploreBranch(sectionIdeas, rootIdea);
   }
 )
 
@@ -118,4 +118,5 @@ export const selectCurrentBranchIdeas = createSelector(
 )
 
 export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
+export const initialIdeaState = initialState;
 export default ideaSlice.reducer;

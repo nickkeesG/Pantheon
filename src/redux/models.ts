@@ -1,12 +1,12 @@
 export interface Tree {
   id: number,
-  pageIds: number[];
+  sectionIds: number[];
 }
 
-export interface Page {
+export interface Section {
   id: number;
   treeId: number;
-  parentPageId: number | null;
+  parentSectionId: number | null;
   parentIdeaId: number | null;
   ideaIds: number[];
 }
@@ -14,7 +14,7 @@ export interface Page {
 export interface Idea {
   id: number;
   isUser: boolean;
-  pageId: number;
+  sectionId: number;
   parentIdeaId: number | null;
   text: string;
   textTokens: string[];

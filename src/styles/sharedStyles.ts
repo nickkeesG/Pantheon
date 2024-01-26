@@ -62,7 +62,6 @@ export const Icon = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  font-size: 10em;
 
   img {
     max-width: 16px;
@@ -74,7 +73,6 @@ export const IconButtonLarge = styled(Button)`
   width: 20px;
   height: 20px;
   box-sizing: content-box;
-  font-size: 10em;
   background: none;
   border: none;
   padding: 8px;
@@ -84,9 +82,9 @@ export const IconButtonLarge = styled(Button)`
   justify-content: center;
   border-radius: 4px;
 
-  img {
-    max-width: 16px;
-    max-height: 16px;
+  svg {
+    width: 100%;
+    height: 100%;
   }
 `;
 

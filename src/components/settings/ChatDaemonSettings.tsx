@@ -20,11 +20,13 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
   const [isEnabled, setIsEnabled] = useState(config.enabled);
   const [isEdited, setIsEdited] = useState(false);
 
+  const [name, setName] = useState(config.name) || '';
   const [description, setDescription] = useState(config.description || '');
   const [rules, setRules] = useState(config.rules || '');
 
   const dispatch = useAppDispatch();
 
+  const nameRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const rulesRef = useRef<HTMLTextAreaElement>(null);
 
@@ -47,6 +49,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
     try {
       const newConfig = {
         ...config,
+        name: name,
         description: description,
         rules: rules,
         enabled: isEnabled,
@@ -81,6 +84,19 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
       </span>
       {!isCollapsed && (
         <>
+          <br />
+          <label>
+            Name:
+            <TextArea
+              ref={nameRef}
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setIsEdited(true);
+              }}
+              style={{ width: '100%', height: 'min-content' }}
+            />
+          </label>
           <br />
           <label>
             Description:

@@ -35,7 +35,7 @@ const DaemonManager = () => {
 
   const [daemonSelectionCounts, setDaemonSelectionCounts] = useState<Record<string, number>>({});
 
-  const maxTimeInactive = 5; // seconds
+  const maxTimeInactive = 3; // seconds
 
   useEffect(() => {
     const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;

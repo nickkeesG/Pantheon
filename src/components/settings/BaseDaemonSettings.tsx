@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { updateBaseDaemon } from "../../redux/daemonSlice"
 import { BaseDaemonConfig } from '../../redux/models';
 import BaseDaemon from '../../daemons/baseDaemon';
@@ -20,15 +20,36 @@ type BaseDaemonSettingsProps = {
 const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEdited, setIsEdited] = useState(false);
-  const [json, setJson] = useState(() => {
-    const { ...editableFields } = config;
-    return JSON.stringify(editableFields, null, 2);
-  })
   const [rawContext, setRawContext] = useState('');
   const pastIdeas = useAppSelector(selectActivePastIdeas);
   const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
   const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
+
+  const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
+  const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
+  const [commentTemplate, setCommentTemplate] = useState(config.commentTemplate || '');
+
+  const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
+  const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
+  const commentTemplateRef = useRef<HTMLTextAreaElement>(null);
+
   const dispatch = useAppDispatch();
+
+  const resizeTextArea = (textArea: HTMLTextAreaElement | null) => {
+    if (textArea) {
+      textArea.style.height = 'auto';
+      textArea.style.height = textArea.scrollHeight + 'px';
+    }
+  };
+
+  useEffect(() => {
+    // Adjust the height of the text areas
+    if (!isCollapsed) {
+      resizeTextArea(mainTemplateRef.current);
+      resizeTextArea(ideaTemplateRef.current);
+      resizeTextArea(commentTemplateRef.current);
+    }
+  }, [mainTemplate, ideaTemplate, commentTemplate, isCollapsed]);
 
   const getRawContext = () => {
     try {
@@ -42,11 +63,17 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
 
   const updateDaemonConfig = () => {
     try {
-      const newConfig = JSON.parse(json);
+      const newConfig = {
+        ...config,
+        mainTemplate: mainTemplate,
+        ideaTemplate: ideaTemplate,
+        commentTemplate: commentTemplate,
+      };
       dispatch(updateBaseDaemon(newConfig));
       setIsEdited(false);
     } catch (error) {
-      console.error("Failed to parse JSON:", error); // TODO show an error to the user
+      console.error("Failed to update config:", error);
+      // TODO: Handle the error state appropriately, e.g., show an error message to the user
     }
   }
 
@@ -64,14 +91,48 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
         )}
       </span>
       {!isCollapsed && (
-        <TextArea
-          value={json}
-          onChange={(e) => {
-            setJson(e.target.value);
-            setIsEdited(true);
-          }}
-          style={{ width: '100%', minHeight: '100px' }}
-        />
+        <>
+          <br/>
+          <label>
+            Main template:
+            <TextArea
+              ref={mainTemplateRef}
+              value={mainTemplate}
+              onChange={(e) => {
+                setMainTemplate(e.target.value);
+                setIsEdited(true);
+                resizeTextArea(e.target);
+              }}
+              style={{ width: '100%' }}
+            />
+          </label>
+          <label>
+            Idea template:
+            <TextArea
+              ref={ideaTemplateRef}
+              value={ideaTemplate}
+              onChange={(e) => {
+                setIdeaTemplate(e.target.value);
+                setIsEdited(true);
+                resizeTextArea(e.target);
+              }}
+              style={{ width: '100%' }}
+            />
+          </label>
+          <label>
+            Comment template:
+            <TextArea
+              ref={commentTemplateRef}
+              value={commentTemplate}
+              onChange={(e) => {
+                setCommentTemplate(e.target.value);
+                setIsEdited(true);
+                resizeTextArea(e.target);
+              }}
+              style={{ width: '100%' }}
+            />
+          </label>
+        </>
       )}
       {!isCollapsed && (
         <div>

@@ -116,6 +116,7 @@ export const TextArea = styled.textarea`
     outline: none;
     border-color: var(--line-color-light); 
   }
+  overflow: hidden;
 `;
 
 export const TextInput = styled.input`

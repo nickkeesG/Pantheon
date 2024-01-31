@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { addChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
@@ -19,17 +19,38 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
   const [isCollapsed, setIsCollapsed] = useState(!isNewDaemon);
   const [isEnabled, setIsEnabled] = useState(config.enabled);
   const [isEdited, setIsEdited] = useState(false);
-  const [json, setJson] = useState(() => {
-    const { id, enabled, ...editableFields } = config;
-    return JSON.stringify(editableFields, null, 2);
-  })
+
+  const [description, setDescription] = useState(config.description || '');
+  const [rules, setRules] = useState(config.rules || '');
+
   const dispatch = useAppDispatch();
+
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const rulesRef = useRef<HTMLTextAreaElement>(null);
+
+  const resizeTextArea = (textArea: HTMLTextAreaElement | null) => {
+    if (textArea) {
+      textArea.style.height = 'auto';
+      textArea.style.height = textArea.scrollHeight + 'px';
+    }
+  };
+
+  useEffect(() => {
+    // Adjust the height of the text areas
+    if (!isCollapsed) {
+      resizeTextArea(descriptionRef.current);
+      resizeTextArea(rulesRef.current);
+    }
+  }, [description, rules, isCollapsed]);
 
   const updateDaemonConfig = () => {
     try {
-      const newConfig = JSON.parse(json);
-      newConfig.id = config.id;
-      newConfig.enabled = isEnabled;
+      const newConfig = {
+        ...config,
+        description: description,
+        rules: rules,
+        enabled: isEnabled,
+      };
       if (isNewDaemon) {
         dispatch(addChatDaemon(newConfig));
       } else {
@@ -37,7 +58,8 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
       }
       setIsEdited(false);
     } catch (error) {
-      console.error("Failed to parse JSON:", error); // TODO If the json is incorrect, show an error to the user
+      console.error("Failed to update config:", error);
+      // TODO: Handle the error state appropriately, e.g., show an error message to the user
     }
   }
 
@@ -58,14 +80,35 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
         )}
       </span>
       {!isCollapsed && (
-        <TextArea
-          value={json}
-          onChange={(e) => {
-            setJson(e.target.value);
-            setIsEdited(true);
-          }}
-          style={{ width: '100%', minHeight: '150px' }}
-        />
+        <>
+          <br />
+          <label>
+            Description:
+            <TextArea
+              ref={descriptionRef}
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                setIsEdited(true);
+                resizeTextArea(e.target);
+              }}
+              style={{ width: '100%' }}
+            />
+          </label>
+          <label>
+            Rules:
+            <TextArea
+              ref={rulesRef}
+              value={rules}
+              onChange={(e) => {
+                setRules(e.target.value);
+                setIsEdited(true);
+                resizeTextArea(e.target);
+              }}
+              style={{ width: '100%'}}
+            />
+          </label>
+        </>
       )}
     </ChatDaemonSettingsContainer>
   );

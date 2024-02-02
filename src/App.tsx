@@ -1,15 +1,23 @@
 import './app.css'
-import Display from './components/Display';
+import TreeView from './components/TreeView';
 import DaemonManager from './components/DaemonManager';
 import Synchronizer from './components/Synchronizer';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import CollectionView from './components/CollectionView';
 
 function App() {
   return (
-    <div className='App'>
-      <Display />
-      <DaemonManager />
-      <Synchronizer />
-    </div>
+    <BrowserRouter>
+      <div className='App'>
+        <Routes>
+          <Route path="/" element={<TreeView />} />
+          <Route path="/tree/:treeId" element={<TreeView />} />
+          <Route path="/collection" element={<CollectionView />} />
+        </Routes>
+        <DaemonManager />
+        <Synchronizer />
+      </div>
+    </BrowserRouter>
   );
 }
 

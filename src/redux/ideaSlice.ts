@@ -1,7 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { Idea } from './models';
-import { exploreBranch, getIdeasSinceLastComment } from './storeUtils';
+import { exploreBranch, getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
 
 export interface IdeaState {
   ideas: { [id: number]: Idea };
@@ -114,6 +114,27 @@ export const selectCurrentBranchIdeas = createSelector(
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
     return activeIdeaIds.map(id => ideas[id]);
+  }
+)
+
+export const selectMostRecentIdeaInTree = createSelector(
+  [
+    (state: RootState) => state.idea.ideas,
+    (state: RootState) => state.section.sections,
+    (_: RootState, treeId: number) => treeId
+  ], (ideas, sections, treeId) => {
+    let mostRecentIdea = null;
+    const treeSections = Object.values(sections).filter(section => section.treeId === treeId);
+    for (const section of treeSections) {
+      if (section.ideaIds.length === 0) continue;
+      const firstIdea = section.ideaIds[0];
+      const sectionIdeas = section.ideaIds.map(id => ideas[id]);
+      const mostRecentIdeaInSection = getMostRecentDescendent(sectionIdeas, firstIdea);
+      if (!mostRecentIdea || mostRecentIdeaInSection.id > mostRecentIdea.id) {
+        mostRecentIdea = mostRecentIdeaInSection;
+      }
+    }
+    return mostRecentIdea
   }
 )
 

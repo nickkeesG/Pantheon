@@ -1,12 +1,12 @@
-import { resetTreeSlice, addSectionToTree, replaceTreeSlice, TreeState } from './treeSlice';
+import { resetTreeSlice, addSectionToTree, replaceTreeSlice, TreeState, addTree } from './treeSlice';
 import { SectionState, replaceSectionSlice, resetSectionSlice, addIdeaToParentSection, addSection, deleteSection } from "./sectionSlice";
-import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById } from "./ideaSlice";
+import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById, selectMostRecentIdeaInTree } from "./ideaSlice";
 import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentSlice";
 import { resetDaemonSlice } from "./daemonSlice";
 import { clearErrors } from './errorSlice';
 import { resetConfigSlice } from './configSlice';
-import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId } from "./uiSlice";
-import { Idea, Section } from "./models";
+import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView } from "./uiSlice";
+import { Idea, Section, Tree } from "./models";
 import { AppThunk } from './store';
 import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
 
@@ -49,6 +49,24 @@ export const createSection = (): AppThunk => (dispatch, getState) => {
   dispatch(setActiveIdeaIds([]));
 };
 
+export const openTree = (treeId: number): AppThunk => (dispatch, getState) => {
+  const state = getState();
+  const newIdea = selectMostRecentIdeaInTree(state, treeId);
+  let newSectionId: number;
+  let newActiveIdeaIds: number[];
+  if (newIdea) {
+    newSectionId = newIdea.sectionId;
+    const newSection = state.section.sections[newSectionId];
+    const sectionIdeas = newSection.ideaIds.map(id => state.idea.ideas[id]);
+    newActiveIdeaIds = getAllAncestorIds(sectionIdeas, newIdea.id);
+  } else {
+    // Empty tree
+    newSectionId = state.tree.trees[treeId].sectionIds[0];
+    newActiveIdeaIds = []
+  }
+
+  dispatch(setActiveView({ treeId, sectionId: newSectionId, ideaIds: newActiveIdeaIds }));
+}
 
 export const navigateToParentSection = (): AppThunk => (dispatch, getState) => {
   const state = getState();
@@ -81,6 +99,26 @@ export const navigateToChildSection = (rootIdea: Idea): AppThunk => (dispatch, g
   dispatch(setActiveSectionId(childSection.id));
   dispatch(setActiveIdeaIds(newActiveIdeaIds));
 };
+
+export const createTree = (treeId: number): AppThunk => (dispatch) => {
+  const sectionId = Date.now();
+
+  const newSection: Section = {
+    id: sectionId,
+    treeId,
+    parentSectionId: null,
+    parentIdeaId: null,
+    ideaIds: []
+  }
+
+  const newTree: Tree = {
+    id: treeId,
+    sectionIds: [sectionId]
+  }
+
+  dispatch(addSection(newSection));
+  dispatch(addTree(newTree));
+}
 
 export const createIdea = (text: string, isUser: boolean = true): AppThunk => (dispatch, getState) => {
   const state = getState();

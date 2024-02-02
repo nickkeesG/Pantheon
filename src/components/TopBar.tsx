@@ -7,7 +7,8 @@ import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 import { navigateToParentSection } from '../redux/thunks';
 import { selectSectionContentForExporting } from '../redux/ideaSlice';
-// import { MdOutlineCollectionsBookmark } from "react-icons/md";
+import { MdOutlineCollectionsBookmark } from "react-icons/md";
+import { Link } from 'react-router-dom';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -87,13 +88,13 @@ const TopBar = () => {
 
   return (
     <StyledTopBar>
-      <div />
-      {/* <IconButtonMedium
-        title="Collection view"
-        // TODO Implement onClick, then make visible
-      >
-        <MdOutlineCollectionsBookmark />
-      </IconButtonMedium> */}
+      <div>
+        <Link to="/collection" >
+          <IconButtonMedium title="Collection view">
+            <MdOutlineCollectionsBookmark />
+          </IconButtonMedium>
+        </Link>
+      </div>
       {activeSection.parentSectionId !== null && (
         <UpButton
           title="Back to previous tree"

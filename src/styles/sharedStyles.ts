@@ -1,5 +1,19 @@
 import styled from 'styled-components';
 
+export const ContainerVertical = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
+export const ContainerHorizontal = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
 export const Button = styled.button`
   cursor: pointer;
   font-family: inherit;

@@ -31,6 +31,11 @@ const uiSlice = createSlice({
     setActiveIdeaIds(state, action: PayloadAction<number[]>) {
       state.activeIdeaIds = action.payload;
     },
+    setActiveView(state, action: PayloadAction<{treeId: number, sectionId: number, ideaIds: number[]}>) {
+      state.activeTreeId = action.payload.treeId;
+      state.activeSectionId = action.payload.sectionId;
+      state.activeIdeaIds = action.payload.ideaIds;
+    },
     createBranch(state, action: PayloadAction<number>) {
       const ideaIndex = state.activeIdeaIds.indexOf(action.payload);
       if (ideaIndex >= 0) {
@@ -42,6 +47,6 @@ const uiSlice = createSlice({
 })
 
 
-export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, createBranch, resetUiSlice } = uiSlice.actions;
+export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, setActiveView, createBranch, resetUiSlice } = uiSlice.actions;
 export const initialUiState = initialState;
 export default uiSlice.reducer;

@@ -12,6 +12,9 @@ import { createBranch } from '../redux/uiSlice';
 import { navigateToChildSection, switchBranch } from '../redux/thunks';
 import { selectIdeaBranches, selectSectionBranchRootIdeas } from '../redux/ideaSlice';
 
+// TODO Massively cleanup this file, it's way too big
+// TODO Also restructure files into folders based on view
+
 const Container = styled.div`
   display: flex;
   position: relative;

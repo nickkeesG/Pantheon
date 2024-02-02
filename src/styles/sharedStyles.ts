@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+// TODO Create a 'styles' folder with files like mixins.ts, theme.ts, globalStyles.ts, buttonStyles.ts - or GlobalStyles.tsx, ButtonStyles.tsx if necessary
+
 export const ContainerVertical = styled.div`
   display: flex;
   flex-direction: column;

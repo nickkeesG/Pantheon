@@ -11,6 +11,7 @@ const StyledHistoryContainer = styled.div`
 `;
 
 const HistoryContainer = () => {
+  const creatingSection = useAppSelector(state => state.ui.creatingSection);
   const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
   const ideas = useAppSelector(state => selectIdeasById(state, activeIdeaIds))
 
@@ -31,7 +32,7 @@ const HistoryContainer = () => {
   return (
     <StyledHistoryContainer>
       {/* TODO Add some cute animation when adding blocks */}
-      {ideas.map((idea, index) => {
+      {!creatingSection && ideas.map((idea, index) => {
         const baseOverflow = index === 0 ? 0 : baseCommentOverflows[ideas[index - 1].id];
         const chatOverflow = index === 0 ? 0 : chatCommentOverflows[ideas[index - 1].id];
         return (

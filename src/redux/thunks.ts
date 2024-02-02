@@ -5,7 +5,7 @@ import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentS
 import { resetDaemonSlice } from "./daemonSlice";
 import { clearErrors } from './errorSlice';
 import { resetConfigSlice } from './configSlice';
-import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView } from "./uiSlice";
+import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView, setCreatingSection } from "./uiSlice";
 import { Idea, Section, Tree } from "./models";
 import { AppThunk } from './store';
 import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
@@ -30,23 +30,6 @@ export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk =
   }
 
   dispatch(setActiveIdeaIds(getAllAncestorIds(ideas, newCurrentIdea.id)));
-};
-
-export const createSection = (): AppThunk => (dispatch, getState) => {
-  const state = getState();
-  const newSectionId = Date.now();
-  const newSection: Section = {
-    id: newSectionId,
-    treeId: state.ui.activeTreeId,
-    parentSectionId: state.ui.activeSectionId,
-    parentIdeaId: state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1],
-    ideaIds: []
-  };
-
-  dispatch(addSection(newSection));
-  dispatch(addSectionToTree(newSection));
-  dispatch(setActiveSectionId(newSectionId));
-  dispatch(setActiveIdeaIds([]));
 };
 
 export const openTree = (treeId: number): AppThunk => (dispatch, getState) => {
@@ -130,10 +113,37 @@ export const deleteTreeAndContent = (treeId: number): AppThunk => (dispatch, get
   dispatch(deleteTree(treeId));
 }
 
+export const finishCreatingSection = (newSectionId: number): AppThunk => (dispatch, getState) => {
+  const state = getState();
+
+  if (!state.ui.creatingSection) throw Error(`Error creating new section: state.ui.creatingSection = ${state.ui.creatingSection}`)
+
+  const newSection: Section = {
+    id: newSectionId,
+    treeId: state.ui.activeTreeId,
+    parentSectionId: state.ui.activeSectionId,
+    parentIdeaId: state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1],
+    ideaIds: []
+  };
+
+  dispatch(addSection(newSection));
+  dispatch(addSectionToTree(newSection));
+  dispatch(setActiveSectionId(newSectionId));
+  dispatch(setActiveIdeaIds([]));
+  dispatch(setCreatingSection(false));
+};
+
 export const createIdea = (text: string, isUser: boolean = true): AppThunk => (dispatch, getState) => {
   const state = getState();
+  
+  let sectionId = state.ui.activeSectionId;
+
+  if (state.ui.creatingSection) {
+    sectionId = Date.now();
+    dispatch(finishCreatingSection(sectionId));
+  }
+
   const id = Date.now();
-  const sectionId = state.ui.activeSectionId;
   const parentIdeaId = state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1];
   const newIdea: Idea = {
     id,

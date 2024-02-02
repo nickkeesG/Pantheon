@@ -6,6 +6,7 @@ export interface UIState {
   activeTreeId: number;
   activeSectionId: number;
   activeIdeaIds: number[];
+  creatingSection?: boolean;
 }
 
 const initialState: UIState = {
@@ -35,6 +36,10 @@ const uiSlice = createSlice({
       state.activeTreeId = action.payload.treeId;
       state.activeSectionId = action.payload.sectionId;
       state.activeIdeaIds = action.payload.ideaIds;
+      state.creatingSection = false;
+    },
+    setCreatingSection(state, action: PayloadAction<boolean>) {
+      state.creatingSection = action.payload;
     },
     createBranch(state, action: PayloadAction<number>) {
       const ideaIndex = state.activeIdeaIds.indexOf(action.payload);
@@ -47,6 +52,6 @@ const uiSlice = createSlice({
 })
 
 
-export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, setActiveView, createBranch, resetUiSlice } = uiSlice.actions;
+export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, setActiveView, setCreatingSection, createBranch, resetUiSlice } = uiSlice.actions;
 export const initialUiState = initialState;
 export default uiSlice.reducer;

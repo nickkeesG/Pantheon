@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button, TextArea } from '../styles/sharedStyles';
-import { createIdea, createSection } from '../redux/thunks';
-import { setLastTimeActive } from '../redux/uiSlice';
+import { createIdea } from '../redux/thunks';
+import { setCreatingSection, setLastTimeActive } from '../redux/uiSlice';
 import InstructDaemon from '../daemons/instructDaemon';
 import { dispatchError } from '../errorHandler';
 import { selectCurrentBranchIdeas } from '../redux/ideaSlice';
@@ -134,7 +134,7 @@ const InputBox = () => {
       />
       <ButtonRow>
         <NewSectionButton
-          onClick={() => dispatch(createSection())}
+          onClick={() => dispatch(setCreatingSection(true))}
           disabled={newSectionButtonDisabled}
         >
           + New section

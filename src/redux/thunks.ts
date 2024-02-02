@@ -1,6 +1,6 @@
-import { resetTreeSlice, addSectionToTree, replaceTreeSlice, TreeState, addTree } from './treeSlice';
+import { resetTreeSlice, addSectionToTree, replaceTreeSlice, TreeState, addTree, deleteTree } from './treeSlice';
 import { SectionState, replaceSectionSlice, resetSectionSlice, addIdeaToParentSection, addSection, deleteSection } from "./sectionSlice";
-import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById, selectMostRecentIdeaInTree } from "./ideaSlice";
+import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById, selectMostRecentIdeaInTree, deleteIdeas } from "./ideaSlice";
 import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentSlice";
 import { resetDaemonSlice } from "./daemonSlice";
 import { clearErrors } from './errorSlice';
@@ -118,6 +118,16 @@ export const createTree = (treeId: number): AppThunk => (dispatch) => {
 
   dispatch(addSection(newSection));
   dispatch(addTree(newTree));
+}
+
+export const deleteTreeAndContent = (treeId: number): AppThunk => (dispatch, getState) => {
+  const state = getState();
+  const sectionsToDelete = Object.values(state.section.sections).filter(section => section.treeId === treeId)
+  sectionsToDelete.forEach(section => {
+    dispatch(deleteIdeas(section.ideaIds));
+    dispatch(deleteSection(section.id));
+  });
+  dispatch(deleteTree(treeId));
 }
 
 export const createIdea = (text: string, isUser: boolean = true): AppThunk => (dispatch, getState) => {

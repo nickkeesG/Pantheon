@@ -25,8 +25,10 @@ const ideaSlice = createSlice({
         state.ideas[idea.id] = idea;
       }
     },
-    deleteIdea(state, action: PayloadAction<number>) {
-      delete state.ideas[action.payload];
+    deleteIdeas(state, action: PayloadAction<number[]>) {
+      action.payload.forEach(ideaId => {
+        delete state.ideas[ideaId];
+      });
     },
     setSurprisalToIdea(state, action: PayloadAction<{ ideaId: number, textTokens: string[], tokenSurprisals: number[] }>) {
       const idea = state.ideas[action.payload.ideaId]!;
@@ -45,6 +47,10 @@ export const selectIdeasById = createSelector(
     (state: RootState) => state.idea.ideas,
     (_: RootState, ideaIds: number[]) => ideaIds
   ], (ideas, ideaIds) => {
+    const missingIdeas = ideaIds.filter(id => !ideas[id]);
+    if (missingIdeas.length > 0) {
+      console.warn("Couldn't find some ideas", missingIdeas);
+    }
     return ideaIds.map(id => ideas[id])
   }
 )
@@ -80,8 +86,17 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
-    const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
-    return getIdeasSinceLastComment(activeBranchIdeas, comments);
+    try {
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+      return getIdeasSinceLastComment(activeBranchIdeas, comments);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        // The active tree was probably deleted
+        return []
+      } else {
+        throw e;
+      }
+    }
   }
 )
 
@@ -90,10 +105,19 @@ export const selectActivePastIdeas = createSelector(
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
-    const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
-    const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, comments);
-    const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
-    return ideasUpToMaxCommented;
+    try {
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
+      const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, comments);
+      const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
+      return ideasUpToMaxCommented;
+    } catch (e) {
+      if (e instanceof TypeError) {
+        // The active tree was probably deleted
+        return []
+      } else {
+        throw e;
+      }
+    }
   }
 )
 
@@ -138,6 +162,6 @@ export const selectMostRecentIdeaInTree = createSelector(
   }
 )
 
-export const { addIdea, updateIdea, deleteIdea, setSurprisalToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
+export const { addIdea, updateIdea, deleteIdeas, setSurprisalToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
 export const initialIdeaState = initialState;
 export default ideaSlice.reducer;

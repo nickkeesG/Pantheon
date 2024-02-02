@@ -4,30 +4,47 @@ import TopBar from './TopBar';
 import ErrorDisplay from '../errorHandler';
 // import WelcomeMessage from './WelcomeMessage';
 import { ContainerVertical } from '../styles/sharedStyles';
-import { useParams } from 'react-router-dom';
-import { useAppDispatch } from '../hooks';
-import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { useEffect, useState } from 'react';
 import { openTree } from '../redux/thunks';
 
 
 const TreeView = () => {
   const { treeId } = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const trees = useAppSelector(state => state.tree.trees);
+  const mostRecentTreeId = useAppSelector(state => state.ui.activeTreeId);
+  const [treeFound, setTreeFound] = useState(false);
 
   useEffect(() => {
-    if (treeId) {
+    const requestedTreeExists = treeId && trees[parseInt(treeId)]
+    const shouldOpenMostRecentTree = !treeId && trees[mostRecentTreeId]
+    if (requestedTreeExists) {
       dispatch(openTree(parseInt(treeId)));
+      setTreeFound(true);
+    } else if (shouldOpenMostRecentTree) {
+      dispatch(openTree(mostRecentTreeId));
+      setTreeFound(true);
+    } else {
+      navigate('/collection');
+      setTreeFound(false);
     }
-  }, [dispatch, treeId]);
+  }, [treeId, dispatch, navigate, trees, mostRecentTreeId]);
 
   // TODO Make WelcomeMesage show up only on first time opening the app
   return (
     <ContainerVertical>
-      <TopBar />
-      <HistoryContainer />
-      <InputBox />
-      <ErrorDisplay />
-      {/* <WelcomeMessage /> */}
+      {treeFound &&
+        <>
+          <TopBar />
+          <HistoryContainer />
+          <InputBox />
+          <ErrorDisplay />
+          {/* <WelcomeMessage /> */}
+        </>
+      }
     </ContainerVertical>
   );
 }

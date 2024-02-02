@@ -29,6 +29,11 @@ const sectionSlice = createSlice({
     deleteSection(state, action: PayloadAction<number>) {
       delete state.sections[action.payload];
     },
+    deleteSections(state, action: PayloadAction<number[]>) {
+      action.payload.forEach(sectionId => {
+        delete state.sections[sectionId];
+      });
+    },
     addIdeaToParentSection(state, action: PayloadAction<Idea>) {
       const section = state.sections[action.payload.sectionId];
       section.ideaIds.push(action.payload.id);
@@ -38,6 +43,6 @@ const sectionSlice = createSlice({
   },
 });
 
-export const { addSection, deleteSection, addIdeaToParentSection, replaceSlice: replaceSectionSlice, resetSlice: resetSectionSlice } = sectionSlice.actions;
+export const { addSection, deleteSection, deleteSections, addIdeaToParentSection, replaceSlice: replaceSectionSlice, resetSlice: resetSectionSlice } = sectionSlice.actions;
 export const initialSectionState = initialState;
 export default sectionSlice.reducer;

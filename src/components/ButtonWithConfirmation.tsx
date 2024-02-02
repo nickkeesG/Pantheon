@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { ButtonDangerous } from "../styles/sharedStyles"
 import ConfirmationModal from "./ConfirmationModal";
 
-interface ButtonWithConfirmationProps {
-  buttonText: string,
+interface ButtonWithConfirmationProps extends React.PropsWithChildren {
   confirmationText: string,
   onConfirm: () => void;
 }
 
-const ButtonWithConfirmation: React.FC<ButtonWithConfirmationProps> = ({ buttonText, confirmationText, onConfirm }) => {
+const ButtonWithConfirmation: React.FC<ButtonWithConfirmationProps> = ({ confirmationText, onConfirm, children }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const toggleConfirmationModal = () => {
@@ -22,9 +20,9 @@ const ButtonWithConfirmation: React.FC<ButtonWithConfirmationProps> = ({ buttonT
 
   return (
     <>
-      <ButtonDangerous onClick={toggleConfirmationModal}>
-        {buttonText}
-      </ButtonDangerous>
+      <div onClick={toggleConfirmationModal}>
+        {children}
+      </div>
       {isConfirmationModalOpen && (
         <ConfirmationModal
           onConfirm={confirmSelected}

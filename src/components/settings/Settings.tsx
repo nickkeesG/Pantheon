@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { IconButtonMedium } from '../../styles/sharedStyles';
+import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
 import Modal from '../Modal';
 import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
@@ -79,17 +79,19 @@ const Settings = () => {
             <hr />
             <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
             <ButtonWithConfirmation
-              buttonText="Reset daemon settings"
               confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
               onConfirm={resetDaemonSettings}
-            />
+            >
+              <ButtonDangerous>Reset daemon settings</ButtonDangerous>
+            </ButtonWithConfirmation>
             <hr />
             <p style={{ color: 'var(--text-color-dark)' }}>Reset the entire app state back to default. All ideas, comments, and custom daemons will be lost.</p>
             <ButtonWithConfirmation
-              buttonText="Reset entire app state"
               confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
               onConfirm={resetAppState}
-            />
+            >
+              <ButtonDangerous>Reset entire app state</ButtonDangerous>
+            </ButtonWithConfirmation>
           </SettingsPanel>
         </Modal>
       )}

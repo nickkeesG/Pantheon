@@ -19,9 +19,14 @@ const HistoryContainer = () => {
   const [chatCommentOverflows, setChatCommentOverflows] = useState<{ [key: number]: number }>({});
 
   const setCommentOverflow = useCallback((isChat: boolean, ideaId: number, height: number) => {
-    if (isChat) setChatCommentOverflows(prevHeights => ({ ...prevHeights, [ideaId]: height }));
-    else setBaseCommentOverflows(prevHeights => ({ ...prevHeights, [ideaId]: height }));
-  }, [setBaseCommentOverflows, setChatCommentOverflows]);
+    const updater = (prevHeights: { [key: number]: number }) => {
+      if (prevHeights[ideaId] === height) return prevHeights; // No change, return the original state to avoid re-render
+      return { ...prevHeights, [ideaId]: height };
+    };
+  
+    if (isChat) setChatCommentOverflows(updater);
+    else setBaseCommentOverflows(updater);
+  }, []);
 
   return (
     <StyledHistoryContainer>

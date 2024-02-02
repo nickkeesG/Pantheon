@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { highlightOnHover } from './mixins';
 
 // TODO Create a 'styles' folder with files like mixins.ts, theme.ts, globalStyles.ts, buttonStyles.ts - or GlobalStyles.tsx, ButtonStyles.tsx if necessary
 
@@ -26,11 +27,7 @@ export const Button = styled.button`
   border-radius: 50px;
   padding: 8px 16px;
   margin: 4px;
-  transition: background-color 0.2s, color 0.2s;
-
-  &:hover {
-    background-color: var(--highlight-weak);
-  }
+  ${highlightOnHover}
 
   &:active {
     opacity: 70%;
@@ -40,10 +37,6 @@ export const Button = styled.button`
     color: var(--text-color-darkest);
     border-color: var(--line-color-darker);
     cursor: default;
-  }
-
-  &:disabled:hover {
-    background-color: transparent;
   }
 `;
 

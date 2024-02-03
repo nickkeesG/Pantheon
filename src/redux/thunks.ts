@@ -137,14 +137,15 @@ export const createIdea = (text: string, isUser: boolean = true): AppThunk => (d
   const state = getState();
   
   let sectionId = state.ui.activeSectionId;
+  let parentIdeaId: number | null = state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1];
 
   if (state.ui.creatingSection) {
     sectionId = Date.now();
+    parentIdeaId = null;
     dispatch(finishCreatingSection(sectionId));
   }
 
   const id = Date.now();
-  const parentIdeaId = state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1];
   const newIdea: Idea = {
     id,
     isUser,

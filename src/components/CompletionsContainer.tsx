@@ -12,6 +12,7 @@ const StyledCompletionsContainer = styled.div`
   width: 100%;
   height: auto;
   padding: 20px;
+  box-sizing: border-box;
 `;
 
 const Column = styled.div`

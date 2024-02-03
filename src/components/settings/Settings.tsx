@@ -3,11 +3,11 @@ import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
 import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
-import Modal from '../Modal';
+import Modal from '../common/Modal';
 import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
 import ImportExportButtons from './ImportExportButtons';
-import ButtonWithConfirmation from '../ButtonWithConfirmation';
+import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { resetState } from '../../redux/thunks';
 import { resetDaemonSlice } from '../../redux/daemonSlice';
 

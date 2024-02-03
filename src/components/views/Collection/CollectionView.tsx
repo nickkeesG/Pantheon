@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { ContainerVertical, TextButton } from '../styles/sharedStyles';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { ContainerVertical, TextButton } from '../../../styles/sharedStyles';
 import TreeListItem from './TreeListItem';
-import { createTree } from '../redux/thunks';
+import { createTree } from '../../../redux/thunks';
 import { useNavigate } from 'react-router-dom';
 
 

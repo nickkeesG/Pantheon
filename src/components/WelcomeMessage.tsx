@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Modal from './Modal';
+import Modal from './common/Modal';
 
 const WelcomePanel = styled.div`
   background-color: var(--bg-color);

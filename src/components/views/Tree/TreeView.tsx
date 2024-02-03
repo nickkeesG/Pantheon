@@ -1,14 +1,14 @@
 import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
-import TopBar from './TopBar';
+import TopBar from '../../TopBar';
 import CompletionsContainer from './CompletionsContainer';
-import ErrorDisplay from '../errorHandler';
+import ErrorDisplay from '../../../errorHandler';
 // import WelcomeMessage from './WelcomeMessage';
-import { ContainerVertical } from '../styles/sharedStyles';
+import { ContainerVertical } from '../../../styles/sharedStyles';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { useEffect, useState } from 'react';
-import { openTree } from '../redux/thunks';
+import { openTree } from '../../../redux/thunks';
 
 
 const TreeView = () => {

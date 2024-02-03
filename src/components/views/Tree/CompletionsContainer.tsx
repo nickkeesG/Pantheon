@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback} from 'react';
-import {selectCurrentBranchIdeas} from '../redux/ideaSlice';
+import {selectCurrentBranchIdeas} from '../../../redux/ideaSlice';
 import styled from 'styled-components';
-import { useAppSelector } from '../hooks';
-import { GenerateBaseCompletions } from '../llmHandler';
-import { dispatchError } from '../errorHandler';
+import { useAppSelector } from '../../../hooks';
+import { GenerateBaseCompletions } from '../../../llmHandler';
+import { dispatchError } from '../../../errorHandler';
 
 const StyledCompletionsContainer = styled.div`
   display: grid;

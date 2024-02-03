@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { Button, TextArea } from '../styles/sharedStyles';
-import { createIdea } from '../redux/thunks';
-import { setCreatingSection, setLastTimeActive } from '../redux/uiSlice';
-import InstructDaemon from '../daemons/instructDaemon';
-import { dispatchError } from '../errorHandler';
-import { selectCurrentBranchIdeas } from '../redux/ideaSlice';
-import { selectCommentsGroupedByIdeaIds } from '../redux/commentSlice';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { Button, TextArea } from '../../../styles/sharedStyles';
+import { createIdea } from '../../../redux/thunks';
+import { setCreatingSection, setLastTimeActive } from '../../../redux/uiSlice';
+import InstructDaemon from '../../../daemons/instructDaemon';
+import { dispatchError } from '../../../errorHandler';
+import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
+import { selectCommentsGroupedByIdeaIds } from '../../../redux/commentSlice';
 
 const Container = styled.div`
   display: flex;

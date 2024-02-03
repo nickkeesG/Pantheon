@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import IdeaContainer from './IdeaContainer';
 import { useCallback, useState } from 'react';
-import { useAppSelector } from '../hooks';
-import { selectIdeasById } from '../redux/ideaSlice';
+import { useAppSelector } from '../../../hooks';
+import { selectIdeasById } from '../../../redux/ideaSlice';
 
 
 const StyledHistoryContainer = styled.div`

@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import { Tree } from '../redux/models';
-import { ContainerHorizontal, ContainerVertical, IconButtonMedium } from '../styles/sharedStyles';
+import { Tree } from '../../../redux/models';
+import { ContainerHorizontal, ContainerVertical, IconButtonMedium } from '../../../styles/sharedStyles';
 import { useNavigate } from 'react-router-dom';
 import { MdDeleteOutline } from "react-icons/md";
-import ButtonWithConfirmation from './ButtonWithConfirmation';
+import ButtonWithConfirmation from '../../common/ButtonWithConfirmation';
 import { useState } from 'react';
-import { useAppDispatch } from '../hooks';
-import { deleteTreeAndContent } from '../redux/thunks';
-import { highlightOnHover } from '../styles/mixins';
+import { useAppDispatch } from '../../../hooks';
+import { deleteTreeAndContent } from '../../../redux/thunks';
+import { highlightOnHover } from '../../../styles/mixins';
 
 
 const TreeListItemContainer = styled(ContainerHorizontal)`

@@ -1,16 +1,16 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea } from '../redux/models';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { Idea } from '../../../redux/models';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import CommentList from './CommentList';
-import { IconButtonLarge, TextButton } from '../styles/sharedStyles';
+import { IconButtonLarge, TextButton } from '../../../styles/sharedStyles';
 import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
 import IdeaText from './IdeaText';
-import { selectCommentsForIdea } from '../redux/commentSlice';
-import { createBranch } from '../redux/uiSlice';
-import { navigateToChildSection, switchBranch } from '../redux/thunks';
-import { selectIdeaBranches, selectSectionBranchRootIdeas } from '../redux/ideaSlice';
+import { selectCommentsForIdea } from '../../../redux/commentSlice';
+import { createBranch } from '../../../redux/uiSlice';
+import { navigateToChildSection, switchBranch } from '../../../redux/thunks';
+import { selectIdeaBranches, selectSectionBranchRootIdeas } from '../../../redux/ideaSlice';
 
 // TODO Massively cleanup this file, it's way too big
 // TODO Also restructure files into folders based on view

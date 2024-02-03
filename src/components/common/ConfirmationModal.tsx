@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 import styled from 'styled-components';
-import { Button, ButtonDangerous } from '../styles/sharedStyles';
+import { Button, ButtonDangerous } from '../../styles/sharedStyles';
 
 const ConfirmationContent = styled.div`
   background: var(--bg-color);

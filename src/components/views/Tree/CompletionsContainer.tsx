@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
 import { GenerateBaseCompletions } from '../../../llmHandler';
 import { dispatchError } from '../../../errorHandler';
+import { fadeInAnimation } from '../../../styles/mixins';
 
 const StyledCompletionsContainer = styled.div`
   display: grid;
@@ -23,10 +24,10 @@ const StyledIndividualCompletion = styled.div`
   position: relative;
   flex: 1;
   padding: 10px 28px 10px 10px;
-  margin: 2px 0px;
+  margin: 2px;
   border: 0.5px solid var(--line-color-dark);
   border-radius: 4px;
-  transition: background-color 0.3s, border-color 0.3s;
+  ${fadeInAnimation};
 `;
 
 const getContext = (currentBranchIdeas: { text: string }[]) => {
@@ -101,7 +102,7 @@ const CompletionsContainer = () => {
       columns.push(
         <Column key={i}>
           {chunk.map((completion, index) => (
-            <StyledIndividualCompletion key={index}>
+            <StyledIndividualCompletion key={completion + index}>
               {completion}
             </StyledIndividualCompletion>
           ))}

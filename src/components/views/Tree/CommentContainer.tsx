@@ -1,19 +1,12 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Comment } from '../../../redux/models';
 import { IconButtonSmall } from '../../../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../../../hooks';
 import { approveComment } from '../../../redux/commentSlice';
+import { fadeInAnimation } from '../../../styles/mixins';
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
 
 const CommentName = styled.div`
   text-align: right;
@@ -24,12 +17,14 @@ const CommentText = styled.div`
   text-align: left;
 `;
 
+
 interface ThumbsUpIconProps {
   userApproved: boolean;
   [key: string]: any; // for the rest of the props
 }
 
 const ThumbsUpIcon = ({ userApproved, ...props }: ThumbsUpIconProps) => <IoIosThumbsUp {...props} />;
+
 
 const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ userApproved: boolean }>`
   position: absolute;
@@ -46,7 +41,7 @@ const StyledCommentContainer = styled.div`
 position: relative;
   padding: 6px 12px;
   color: var(--text-color-dark);
-  animation: ${fadeIn} 0.3s ease-out forwards;
+  ${fadeInAnimation};
 
   // Initially set the ThumbsUpButton to be fully transparent
   ${ThumbsUpButton} {
@@ -59,6 +54,7 @@ position: relative;
     opacity: 1;
   }
 `;
+
 
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
   const dispatch = useAppDispatch();

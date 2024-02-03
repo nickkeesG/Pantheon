@@ -21,3 +21,31 @@ export const highlightOnHover = css`
     background-color: transparent;
   }
 `;
+
+export const emergeAnimation = css`
+  @keyframes emerge {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  animation: emerge 0.3s ease-out forwards;
+`;
+
+export const fadeInAnimation = css`
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  animation: fadeIn 0.3s ease-out forwards;
+`;

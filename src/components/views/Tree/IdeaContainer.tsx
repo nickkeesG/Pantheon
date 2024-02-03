@@ -11,6 +11,7 @@ import { selectCommentsForIdea } from '../../../redux/commentSlice';
 import { createBranch } from '../../../redux/uiSlice';
 import { navigateToChildSection, switchBranch } from '../../../redux/thunks';
 import { selectIdeaBranches, selectSectionBranchRootIdeas } from '../../../redux/ideaSlice';
+import { emergeAnimation } from '../../../styles/mixins';
 
 // TODO Massively cleanup this file, it's way too big
 // TODO Also restructure files into folders based on view
@@ -57,6 +58,7 @@ const CenterPanel = styled.div`
   flex: 0 0 46%;
   display: flex;
   flex-direction: column;
+  ${emergeAnimation};
 `;
 
 const Row = styled.div`

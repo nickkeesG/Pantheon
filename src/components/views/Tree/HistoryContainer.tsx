@@ -31,7 +31,6 @@ const HistoryContainer = () => {
 
   return (
     <StyledHistoryContainer>
-      {/* TODO Add some cute animation when adding blocks */}
       {!creatingSection && ideas.map((idea, index) => {
         const baseOverflow = index === 0 ? 0 : baseCommentOverflows[ideas[index - 1].id];
         const chatOverflow = index === 0 ? 0 : chatCommentOverflows[ideas[index - 1].id];

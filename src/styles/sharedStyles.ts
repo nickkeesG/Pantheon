@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { highlightOnHover } from './mixins';
 
-// TODO Create a 'styles' folder with files like mixins.ts, theme.ts, globalStyles.ts, buttonStyles.ts - or GlobalStyles.tsx, ButtonStyles.tsx if necessary
-
 export const ContainerVertical = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,7 +25,7 @@ export const Button = styled.button`
   border-radius: 50px;
   padding: 8px 16px;
   margin: 4px;
-  ${highlightOnHover}
+  ${highlightOnHover};
 
   &:active {
     opacity: 70%;

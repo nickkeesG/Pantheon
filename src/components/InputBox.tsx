@@ -30,13 +30,11 @@ const ButtonRow = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px; // Adjust the gap between buttons as needed
-  margin-bottom: 20px; // Keep the buttons away from the input box
 `;
 
 const NewSectionButton = styled(Button)`
   padding-left: 20px;
   padding-right: 20px;
-  margin-bottom: 20px;
   color: var(--text-color-dark);
   border-color: var(--line-color-dark);
 `;
@@ -44,7 +42,6 @@ const NewSectionButton = styled(Button)`
 const InstructButton = styled(Button)`
   padding-left: 20px;
   padding-right: 20px;
-  margin-bottom: 20px;
   color: var(--text-color-dark);
   border-color: var(--line-color-dark);
 `;
@@ -149,7 +146,7 @@ const InputBox = () => {
           }}
           title="Press Ctrl + Enter to send text as instruction"
         >
-          Send instruction
+          Send idea as instruction
         </InstructButton>
       </ButtonRow>
     </Container>

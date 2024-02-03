@@ -1,6 +1,7 @@
 import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
 import TopBar from './TopBar';
+import CompletionsContainer from './CompletionsContainer';
 import ErrorDisplay from '../errorHandler';
 // import WelcomeMessage from './WelcomeMessage';
 import { ContainerVertical } from '../styles/sharedStyles';
@@ -41,6 +42,7 @@ const TreeView = () => {
           <TopBar />
           <HistoryContainer />
           <InputBox />
+          <CompletionsContainer />
           <ErrorDisplay />
           {/* <WelcomeMessage /> */}
         </>

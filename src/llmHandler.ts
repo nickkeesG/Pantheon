@@ -140,6 +140,27 @@ export async function GenerateBaseComments(prompt: string, openAIKey: string, op
     return responsesWithScores;
 }
 
+export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string) {
+    var data = {
+        model: baseModel,
+        prompt: prompt,
+        max_tokens: 64,
+        stop: ["\n"],
+        n: 6,
+    };
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAIKey}`,
+            'OpenAI-Organization': openAIOrgId
+        }
+    };
+
+    var response = await CallBaseAPI(data, config);
+    return response;
+}
+
 export async function GetSurprisal(fullContext: string,
     partialContext: string,
     targetString: string,

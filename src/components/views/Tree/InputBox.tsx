@@ -76,6 +76,9 @@ const InputBox = () => {
   };
 
   const dispatchInstruction = useCallback(async (instruction: string) => {
+    // dispatch instruction as idea but flag isUser as false
+    dispatch(createIdea(instruction, false));
+
     if (instructDaemon) {
       try {
         const response = await instructDaemon.handleInstruction(
@@ -86,7 +89,7 @@ const InputBox = () => {
           openAIOrgId,
           instructModel);
         if (response) {
-          dispatch(createIdea(response, false)); // false flags it as system generated 
+          dispatch(createIdea(response, false)); // false flags isUser as false
         } else {
           dispatchError('Instruct daemon failed to generate response');
         }

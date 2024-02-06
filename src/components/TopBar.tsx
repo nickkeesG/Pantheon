@@ -9,6 +9,7 @@ import { navigateToParentSection } from '../redux/thunks';
 import { selectSectionContentForExporting } from '../redux/ideaSlice';
 import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { setCreatingSection } from '../redux/uiSlice';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -51,6 +52,7 @@ const TopBar = () => {
   const dispatch = useAppDispatch();
   const activeSectionId = useAppSelector(state => state.ui.activeSectionId);
   const activeSection = useAppSelector(state => state.section.sections[activeSectionId]);
+  const creatingSection = useAppSelector(state => state.ui.creatingSection);
   const ideaExports = useAppSelector(state => selectSectionContentForExporting(state, activeSectionId));
   const [isCopied, setIsCopied] = useState(false);
 
@@ -86,6 +88,16 @@ const TopBar = () => {
     }
   }, [isCopied]);
 
+  const upButtonClicked = () => {
+    if (creatingSection) {
+      dispatch(setCreatingSection(false));
+    } else if (activeSection.parentSectionId !== null) {
+      dispatch(navigateToParentSection());
+    } else {
+      console.error("Up button pressed but no upper section to return to")
+    }
+  }
+
   return (
     <StyledTopBar>
       <div>
@@ -95,10 +107,10 @@ const TopBar = () => {
           </IconButtonMedium>
         </Link>
       </div>
-      {activeSection.parentSectionId !== null && (
+      {(creatingSection || activeSection.parentSectionId !== null) && (
         <UpButton
           title="Back to previous tree"
-          onClick={() => dispatch(navigateToParentSection())}
+          onClick={upButtonClicked}
         />
       )}
       <ButtonContainer>

@@ -22,6 +22,12 @@ const treeSlice = createSlice({
       const tree = action.payload;
       state.trees[tree.id] = tree;
     },
+    renameTree(state, action: PayloadAction<{ treeId: number; newName: string }>) {
+      const tree = state.trees[action.payload.treeId];
+      if (tree) {
+        tree.name = action.payload.newName;
+      }
+    },
     deleteTree(state, action: PayloadAction<number>) {
       delete state.trees[action.payload];
     },
@@ -38,6 +44,6 @@ const treeSlice = createSlice({
   },
 });
 
-export const { addTree, deleteTree, addSectionToTree, updateTree, replaceSlice: replaceTreeSlice, resetSlice: resetTreeSlice } = treeSlice.actions;
+export const { addTree, renameTree, deleteTree, addSectionToTree, updateTree, replaceSlice: replaceTreeSlice, resetSlice: resetTreeSlice } = treeSlice.actions;
 export const initialTreeState = initialState;
 export default treeSlice.reducer;

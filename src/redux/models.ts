@@ -1,5 +1,6 @@
 export interface Tree {
-  id: number,
+  id: number;
+  name?: string;
   sectionIds: number[];
 }
 

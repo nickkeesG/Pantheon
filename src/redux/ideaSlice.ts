@@ -141,6 +141,18 @@ export const selectCurrentBranchIdeas = createSelector(
   }
 )
 
+export const selectIdeasInTree = createSelector(
+[
+  (state: RootState) => state.idea.ideas,
+  (state: RootState) => state.section.sections,
+  (_: RootState, treeId: number) => treeId
+], (ideas, sections, treeId) => {
+  const treeSections = Object.values(sections).filter(section => section.treeId === treeId);
+  const treeIdeas = treeSections.flatMap(section => section.ideaIds.map(id => ideas[id]));
+  return treeIdeas;
+}
+)
+
 export const selectMostRecentIdeaInTree = createSelector(
   [
     (state: RootState) => state.idea.ideas,

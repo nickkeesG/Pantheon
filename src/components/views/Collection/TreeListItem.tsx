@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { MdDeleteOutline } from "react-icons/md";
 import ButtonWithConfirmation from '../../common/ButtonWithConfirmation';
 import { useState } from 'react';
-import { useAppDispatch } from '../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { deleteTreeAndContent } from '../../../redux/thunks';
 import { highlightOnHover } from '../../../styles/mixins';
+import { selectIdeasInTree, selectMostRecentIdeaInTree } from '../../../redux/ideaSlice';
+import { formatDistanceToNow } from 'date-fns';
 
 
 const TreeListItemContainer = styled(ContainerHorizontal)`
@@ -35,6 +37,8 @@ const Description = styled.div`
 const TreeListItem: React.FC<{ tree: Tree }> = ({ tree }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const mostRecentIdea = useAppSelector(state => selectMostRecentIdeaInTree(state, tree.id));
+  const ideas = useAppSelector(state => selectIdeasInTree(state, tree.id));
   const [hovering, setHovering] = useState(false); // TODO Would be nice to have this as a custom hook
 
   const handleTreeClick = () => {
@@ -54,7 +58,9 @@ const TreeListItem: React.FC<{ tree: Tree }> = ({ tree }) => {
       <ContainerVertical>
         <Header>{tree.id}</Header>
         <Description>
-          {tree.sectionIds.length} sections
+          Sections: {tree.sectionIds.length} |
+          Ideas: {ideas.length}
+          {mostRecentIdea && <> | Last edit {mostRecentIdea ? formatDistanceToNow(new Date(mostRecentIdea.id), { addSuffix: true }) : '?'}</>}
         </Description>
       </ContainerVertical>
       <div onClick={(evt) => evt.stopPropagation()}>

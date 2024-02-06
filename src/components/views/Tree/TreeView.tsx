@@ -3,7 +3,7 @@ import HistoryContainer from './HistoryContainer';
 import TopBar from '../../TopBar';
 import CompletionsContainer from './CompletionsContainer';
 import ErrorDisplay from '../../../errorHandler';
-// import WelcomeMessage from './WelcomeMessage';
+import WelcomeMessage from '../../WelcomeMessage';
 import { ContainerVertical } from '../../../styles/sharedStyles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
@@ -34,7 +34,6 @@ const TreeView = () => {
     }
   }, [treeId, dispatch, navigate, trees, mostRecentTreeId]);
 
-  // TODO Make WelcomeMesage show up only on first time opening the app
   return (
     <ContainerVertical>
       {treeFound &&
@@ -44,7 +43,7 @@ const TreeView = () => {
           <InputBox />
           <CompletionsContainer />
           <ErrorDisplay />
-          {/* <WelcomeMessage /> */}
+          <WelcomeMessage />
         </>
       }
     </ContainerVertical>

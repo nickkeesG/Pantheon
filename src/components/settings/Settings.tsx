@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
@@ -51,18 +51,6 @@ const Settings = () => {
     dispatch(resetState());
     setKey(Date.now());
   }
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsSettingsOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
 
   return (
     <div>

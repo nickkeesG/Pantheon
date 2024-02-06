@@ -35,11 +35,20 @@ const Modal: React.FC<{
 }> = ({ children, toggleVisibility, zIndex }) => {
 
   useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        // TODO Right now this will propagate and close all open modals - we need some kind of modal manager
+        toggleVisibility();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
     return () => {
+      window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'auto';
     };
-  }, []);
+  }, [toggleVisibility]);
 
   return (
     <>

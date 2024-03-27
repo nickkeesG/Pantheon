@@ -61,7 +61,7 @@ const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
 
   return (
     <StyledCommentContainer>
-      <CommentName>{comment.daemonName + "(" + comment.daemonType + " model)"}</CommentName>
+      <CommentName>{comment.daemonName}</CommentName>
       <CommentText>{comment.text}</CommentText>
       <ThumbsUpButton
         userApproved={comment.userApproved}

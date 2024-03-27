@@ -60,7 +60,7 @@ class ChatDaemon {
   /*
     Function called from DaemonManager to generate a list of comments for the current ideas
   */
-  async generateComments(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
+  async generateComment(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
     // Generate prompts
     let systemPrompt = this.config.description + "\n\n" + this.config.rules;
     let firstInstruction = this.getFirstInstruction(pastIdeas, currentIdea);

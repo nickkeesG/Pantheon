@@ -16,31 +16,31 @@ const HistoryContainer = () => {
   const ideas = useAppSelector(state => selectIdeasById(state, activeIdeaIds))
 
   // Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
-  const [baseCommentOverflows, setBaseCommentOverflows] = useState<{ [key: number]: number }>({});
-  const [chatCommentOverflows, setChatCommentOverflows] = useState<{ [key: number]: number }>({});
+  const [leftCommentOverflows, setLeftCommentOverflows] = useState<{ [key: number]: number }>({});
+  const [rightCommentOverflows, setRightCommentOverflows] = useState<{ [key: number]: number }>({});
 
-  const setCommentOverflow = useCallback((isChat: boolean, ideaId: number, height: number) => {
+  const setCommentOverflow = useCallback((isRight: boolean, ideaId: number, height: number) => {
     const updater = (prevHeights: { [key: number]: number }) => {
       if (prevHeights[ideaId] === height) return prevHeights; // No change, return the original state to avoid re-render
       return { ...prevHeights, [ideaId]: height };
     };
   
-    if (isChat) setChatCommentOverflows(updater);
-    else setBaseCommentOverflows(updater);
+    if (isRight) setRightCommentOverflows(updater);
+    else setLeftCommentOverflows(updater);
   }, []);
 
   return (
     <StyledHistoryContainer>
       {!creatingSection && ideas.map((idea, index) => {
-        const baseOverflow = index === 0 ? 0 : baseCommentOverflows[ideas[index - 1].id];
-        const chatOverflow = index === 0 ? 0 : chatCommentOverflows[ideas[index - 1].id];
+        const leftOverflow = index === 0 ? 0 : leftCommentOverflows[ideas[index - 1].id];
+        const rightOverflow = index === 0 ? 0 : rightCommentOverflows[ideas[index - 1].id];
         return (
           <IdeaContainer
             key={idea.id}
             idea={idea}
-            chatCommentOffset={chatOverflow}
+            rightCommentOffset={rightOverflow}
             setCommentOverflow={setCommentOverflow}
-            baseCommentOffset={baseOverflow} />
+            leftCommentOffset={leftOverflow} />
         )
       })}
     </StyledHistoryContainer>

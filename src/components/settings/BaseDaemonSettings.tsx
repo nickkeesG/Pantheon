@@ -27,11 +27,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
 
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
-  const [commentTemplate, setCommentTemplate] = useState(config.commentTemplate || '');
 
   const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
   const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
-  const commentTemplateRef = useRef<HTMLTextAreaElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -47,9 +45,8 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     if (!isCollapsed) {
       resizeTextArea(mainTemplateRef.current);
       resizeTextArea(ideaTemplateRef.current);
-      resizeTextArea(commentTemplateRef.current);
     }
-  }, [mainTemplate, ideaTemplate, commentTemplate, isCollapsed]);
+  }, [mainTemplate, ideaTemplate, isCollapsed]);
 
   const getRawContext = () => {
     try {
@@ -67,7 +64,6 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
         ...config,
         mainTemplate: mainTemplate,
         ideaTemplate: ideaTemplate,
-        commentTemplate: commentTemplate,
       };
       dispatch(updateBaseDaemon(newConfig));
       setIsEdited(false);
@@ -113,19 +109,6 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
               value={ideaTemplate}
               onChange={(e) => {
                 setIdeaTemplate(e.target.value);
-                setIsEdited(true);
-                resizeTextArea(e.target);
-              }}
-              style={{ width: '100%' }}
-            />
-          </label>
-          <label>
-            Comment template:
-            <TextArea
-              ref={commentTemplateRef}
-              value={commentTemplate}
-              onChange={(e) => {
-                setCommentTemplate(e.target.value);
                 setIsEdited(true);
                 resizeTextArea(e.target);
               }}

@@ -65,13 +65,10 @@ export async function CallChatModel(systemPrompt: string, userPrompt: string, op
     return response[0];
 }
 
-export async function GenerateChatComments(systemPrompt: string, firstInstruction: string, lastInstruction: string, openAIKey: string, openAIOrgId: string, chatModel: string) {
-    var data = {
+export async function GenerateChatComments(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string, chatModel: string) {
+    let data = {
         model: chatModel,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: firstInstruction }
-        ]
+        messages: [{ role: "system", content: systemPrompt }]
     };
 
     const config = {
@@ -82,13 +79,16 @@ export async function GenerateChatComments(systemPrompt: string, firstInstructio
         }
     };
 
-    var intermediateResponse = await CallChatAPI(data, config);
-    data.messages.push({ role: "assistant", content: intermediateResponse[0] });
-    data.messages.push({ role: "user", content: lastInstruction });
+    for (const userPrompt of userPrompts) {
+        data.messages.push({ role: "user", content: userPrompt });
 
-    var finalResponse = await CallChatAPI(data, config);
+        let intermediateResponse = await CallChatAPI(data, config);
+        if (intermediateResponse.length > 0) {
+            data.messages.push({ role: "assistant", content: intermediateResponse[0] });
+        }
+    }
 
-    return finalResponse[0];
+    return data.messages[data.messages.length - 1].content;
 }
 
 export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, evaluationTemplate: string) {

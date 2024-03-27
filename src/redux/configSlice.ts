@@ -5,7 +5,7 @@ export interface ConfigState {
   openAIOrgId: string;
   baseModel: string;
   chatModel: string;
-  isSynchronizerActive: boolean;
+  isSynchronizerVisible: boolean;
 }
 
 const initialState: ConfigState = {
@@ -13,7 +13,7 @@ const initialState: ConfigState = {
   openAIOrgId: '',
   baseModel: 'davinci-002',
   chatModel: 'gpt-4-1106-preview',
-  isSynchronizerActive: false
+  isSynchronizerVisible: false
 };
 
 const configSlice = createSlice({
@@ -32,13 +32,13 @@ const configSlice = createSlice({
     updateChatModel(state, action: PayloadAction<string>) {
       state.chatModel = action.payload;
     },
-    setSynchronizerActive(state, action: PayloadAction<boolean>) {
-      state.isSynchronizerActive = action.payload;
+    setSynchronizerVisible(state, action: PayloadAction<boolean>) {
+      state.isSynchronizerVisible = action.payload;
     },
     resetConfigSlice: (state) => initialState
   },
 });
 
-export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive, resetConfigSlice } = configSlice.actions;
+export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerVisible, resetConfigSlice } = configSlice.actions;
 export const initialConfigState = initialState;
 export default configSlice.reducer;

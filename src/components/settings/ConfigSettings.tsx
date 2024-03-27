@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { TextInput } from "../../styles/sharedStyles";
 import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { setSynchronizerActive } from "../../redux/configSlice";
+import { setSynchronizerVisible } from "../../redux/configSlice";
 
 
 const SettingLabel = styled.p`
@@ -31,7 +31,7 @@ const ConfigSettings = () => {
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
   const baseModel = useAppSelector(state => state.config.baseModel);
-  const isSynchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
+  const isSynchronizerVisible = useAppSelector(state => state.config.isSynchronizerVisible);
 
   return (
     <div>
@@ -68,8 +68,8 @@ const ConfigSettings = () => {
         />
       </TextSettingContainer>
       <CheckboxSettingContainer>
-        <input type="checkbox" checked={isSynchronizerActive} onChange={(e) => { dispatch(setSynchronizerActive(e.target.checked))}} />
-        <p>Surprisal metric active</p>
+        <input type="checkbox" checked={isSynchronizerVisible} onChange={(e) => { dispatch(setSynchronizerVisible(e.target.checked))}} />
+        <p>Show surprisal highlighting</p>
       </CheckboxSettingContainer> 
     </div>
   )

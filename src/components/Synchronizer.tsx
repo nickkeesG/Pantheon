@@ -16,7 +16,6 @@ const Synchronizer = () => {
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
-  const synchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
   // Gets surprisal for a single idea, and dispatches it to redux
   const requestSurprisal = useCallback(async (fullContext: string, partialContext: string, targetString: string, ideaId: number) => {
@@ -64,7 +63,7 @@ const Synchronizer = () => {
  // TODO Disabled due to network and processing load. Enable later once improved.
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!currentlyRequestingSurprisal && synchronizerActive) {
+      if (!currentlyRequestingSurprisal) {
         if (baseDaemon && activeIdeas.length > 0) {         
           for (let i = 0; i < activeIdeas.length; i++) {
             if (activeIdeas[i].textTokens.length === 0) {
@@ -92,8 +91,7 @@ const Synchronizer = () => {
       baseModel, 
       openAIKey, 
       openAIOrgId, 
-      currentlyRequestingSurprisal, 
-      synchronizerActive, 
+      currentlyRequestingSurprisal,
       getFullContext, 
       getPartialContext, 
       requestSurprisal]);

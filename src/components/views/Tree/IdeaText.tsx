@@ -8,7 +8,7 @@ const IdeaText: React.FC<{ idea: Idea }> = ({ idea }) => {
     && idea.textTokens.length > 0
     && idea.textTokens.length === idea.tokenSurprisals.length
 
-  const isSynchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
+  const isSynchronizerVisible = useAppSelector(state => state.config.isSynchronizerVisible);
 
   const getBackgroundColor = (surprisal: number) => {
     if (surprisal > 2) return 'var(--highlight-strong)';
@@ -28,7 +28,7 @@ const IdeaText: React.FC<{ idea: Idea }> = ({ idea }) => {
 
   return (
     <>
-      {(hasSurprisals && isSynchronizerActive) ? (
+      {(hasSurprisals && isSynchronizerVisible) ? (
         idea.textTokens.map((token, index) => (
           <React.Fragment key={index}>
             <span

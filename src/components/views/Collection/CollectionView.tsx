@@ -17,13 +17,11 @@ const List = styled.ul`
 
 const CollectionView = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const trees = useAppSelector(state => selectTreesWithMostRecentEdit(state));
 
   const handleCreateTree = () => {
     const treeId = Date.now()
     dispatch(createTree(treeId));
-    navigate(`/tree/${treeId}`);
   }
 
   return (

@@ -4,6 +4,7 @@ import { ContainerVertical, TextButton } from '../../../styles/sharedStyles';
 import TreeListItem from './TreeListItem';
 import { createTree } from '../../../redux/thunks';
 import { useNavigate } from 'react-router-dom';
+import { selectTreesWithMostRecentEdit } from '../../../redux/treeSlice';
 
 
 const List = styled.ul`
@@ -17,7 +18,7 @@ const List = styled.ul`
 const CollectionView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const trees = useAppSelector(state => state.tree.trees);
+  const trees = useAppSelector(state => selectTreesWithMostRecentEdit(state));
 
   const handleCreateTree = () => {
     const treeId = Date.now()
@@ -37,7 +38,7 @@ const CollectionView = () => {
         <List>
           {Object.values(trees).map((tree) => (
             <li key={tree.id}>
-              <TreeListItem tree={tree} />
+              <TreeListItem tree={tree} mostRecentEdit={tree.mostRecentEdit} />
             </li>
           ))}
         </List>

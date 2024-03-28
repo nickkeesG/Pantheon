@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { deleteTreeAndContent } from '../../../redux/thunks';
 import { highlightOnHover } from '../../../styles/mixins';
-import { selectIdeasInTree, selectMostRecentIdeaInTree } from '../../../redux/ideaSlice';
+import { selectIdeasInTree } from '../../../redux/ideaSlice';
 import { formatDistanceToNow } from 'date-fns';
 import { FaRegEdit } from "react-icons/fa";
 import { renameTree } from '../../../redux/treeSlice';
@@ -47,10 +47,9 @@ const Description = styled.div`
 `;
 
 
-const TreeListItem: React.FC<{ tree: Tree }> = ({ tree }) => {
+const TreeListItem: React.FC<{ tree: Tree, mostRecentEdit: Date }> = ({ tree, mostRecentEdit }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const mostRecentIdea = useAppSelector(state => selectMostRecentIdeaInTree(state, tree.id));
   const ideas = useAppSelector(state => selectIdeasInTree(state, tree.id));
   const [hovering, setHovering] = useState(false); // TODO Would be nice to have this as a custom hook
   const [editing, setEditing] = useState(false);
@@ -105,7 +104,9 @@ const TreeListItem: React.FC<{ tree: Tree }> = ({ tree }) => {
         <Description>
           Sections: {tree.sectionIds.length} |
           Ideas: {ideas.length}
-          {mostRecentIdea && <> | Last edit {mostRecentIdea ? formatDistanceToNow(new Date(mostRecentIdea.id), { addSuffix: true }) : '?'}</>}
+          {mostRecentEdit.getFullYear() > 2020 && // The first generated tree has id / timestamp 0
+            <> | Last edit {formatDistanceToNow(mostRecentEdit, { addSuffix: true })}</>
+          }
         </Description>
       </ContainerVertical>
       <ButtonContainer onClick={(evt) => evt.stopPropagation()}>

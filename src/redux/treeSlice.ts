@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Section, Tree } from './models';
+import { selectMostRecentIdeaInTree } from './ideaSlice';
+import { RootState } from './store';
 
 export interface TreeState {
   trees: { [key: number]: Tree };
@@ -43,6 +45,21 @@ const treeSlice = createSlice({
     resetSlice: (_) => initialState
   },
 });
+
+export const selectTreesWithMostRecentEdit = createSelector(
+  [
+    (state: RootState) => state.tree.trees,
+    (state: RootState) => state
+  ], (trees, state) => {
+    return Object.values(trees).map((tree) => {
+      const mostRecentIdea = selectMostRecentIdeaInTree(state, tree.id)
+      return {
+        ...tree,
+        mostRecentEdit: mostRecentIdea ? new Date(mostRecentIdea.id) : new Date(tree.id)
+      };
+    }).sort((a, b) => b.mostRecentEdit.getTime() - a.mostRecentEdit.getTime());
+  }
+)
 
 export const { addTree, renameTree, deleteTree, addSectionToTree, updateTree, replaceSlice: replaceTreeSlice, resetSlice: resetTreeSlice } = treeSlice.actions;
 export const initialTreeState = initialState;

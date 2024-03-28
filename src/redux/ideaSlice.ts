@@ -127,7 +127,14 @@ export const selectSectionContentForExporting = createSelector(
     (_: RootState, sectionId: number) => sectionId
   ], (ideas, sectionId) => {
     const sectionIdeas = Object.values(ideas).filter(idea => idea.sectionId === sectionId);
-    const rootIdea = sectionIdeas.find(idea => idea.parentIdeaId === null)!;
+    if (sectionIdeas.length === 0) {
+      // New, empty section
+      return []
+    }
+    const rootIdea = sectionIdeas.find(idea => !idea.parentIdeaId || idea.parentIdeaId === null); // TODO Technically parentIdeaId should never be undefined, but still it gets stored as undefined sometimes? :/
+    if (!rootIdea) {
+      throw Error(`Couldn't find root idea of section ${sectionId}`)
+    }
     return exploreBranch(sectionIdeas, rootIdea);
   }
 )
@@ -142,15 +149,15 @@ export const selectCurrentBranchIdeas = createSelector(
 )
 
 export const selectIdeasInTree = createSelector(
-[
-  (state: RootState) => state.idea.ideas,
-  (state: RootState) => state.section.sections,
-  (_: RootState, treeId: number) => treeId
-], (ideas, sections, treeId) => {
-  const treeSections = Object.values(sections).filter(section => section.treeId === treeId);
-  const treeIdeas = treeSections.flatMap(section => section.ideaIds.map(id => ideas[id]));
-  return treeIdeas;
-}
+  [
+    (state: RootState) => state.idea.ideas,
+    (state: RootState) => state.section.sections,
+    (_: RootState, treeId: number) => treeId
+  ], (ideas, sections, treeId) => {
+    const treeSections = Object.values(sections).filter(section => section.treeId === treeId);
+    const treeIdeas = treeSections.flatMap(section => section.ideaIds.map(id => ideas[id]));
+    return treeIdeas;
+  }
 )
 
 export const selectMostRecentIdeaInTree = createSelector(

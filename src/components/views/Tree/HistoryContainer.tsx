@@ -3,6 +3,7 @@ import IdeaContainer from './IdeaContainer';
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../../../hooks';
 import { selectIdeasById } from '../../../redux/ideaSlice';
+import StartingHints from './StartingHints';
 
 
 const StyledHistoryContainer = styled.div`
@@ -31,6 +32,9 @@ const HistoryContainer = () => {
 
   return (
     <StyledHistoryContainer>
+      {ideas.length === 0 &&
+        <StartingHints />
+      }
       {!creatingSection && ideas.map((idea, index) => {
         const leftOverflow = index === 0 ? 0 : leftCommentOverflows[ideas[index - 1].id];
         const rightOverflow = index === 0 ? 0 : rightCommentOverflows[ideas[index - 1].id];

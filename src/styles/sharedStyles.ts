@@ -140,3 +140,12 @@ export const TextInput = styled.input`
     border-color: var(--line-color-light); 
   }
 `;
+
+export const Hint = styled.div`
+  font-size: 0.8em;
+  color: var(--text-color-darkest);
+`;
+
+export const Filler = styled.div`
+  flex: 1;
+`;

@@ -127,6 +127,10 @@ export const selectSectionContentForExporting = createSelector(
     (_: RootState, sectionId: number) => sectionId
   ], (ideas, sectionId) => {
     const sectionIdeas = Object.values(ideas).filter(idea => idea.sectionId === sectionId);
+    if (sectionIdeas.length === 0) {
+      // New, empty section
+      return []
+    }
     const rootIdea = sectionIdeas.find(idea => !idea.parentIdeaId || idea.parentIdeaId === null); // TODO Technically parentIdeaId should never be undefined, but still it gets stored as undefined sometimes? :/
     if (!rootIdea) {
       throw Error(`Couldn't find root idea of section ${sectionId}`)

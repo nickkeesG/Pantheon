@@ -87,8 +87,9 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
+      const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
-      return getIdeasSinceLastComment(activeBranchIdeas, comments);
+      return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
       if (e instanceof TypeError) {
         // The active tree was probably deleted
@@ -106,8 +107,9 @@ export const selectActivePastIdeas = createSelector(
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
+      const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
-      const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, comments);
+      const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
       return ideasUpToMaxCommented;
     } catch (e) {

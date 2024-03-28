@@ -91,8 +91,6 @@ const DaemonManager = () => {
       return;
     }
 
-    console.log("Current idea length:", currentIdeas.length);
-    console.log("Past idea length:", pastIdeas.length);
     if (currentIdeas.length >= minCurrentIdeas) {
       if (chatDaemonActive) {
         console.log('Chat daemon already active');

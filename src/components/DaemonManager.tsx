@@ -5,7 +5,7 @@ import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 //import BaseDaemon from '../daemons/baseDaemon';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
-import { addComment } from '../redux/commentSlice';
+import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
 import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
 
 /*
@@ -23,12 +23,12 @@ const DaemonManager = () => {
   const currentIdeas = useAppSelector(selectActiveIdeasEligibleForComments);
   const pastIdeas = useAppSelector(selectActivePastIdeas);
 
+  const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
+
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
   //const baseModel = useAppSelector(state => state.config.baseModel);
-
-  const [leftRightToggle, setLeftRightToggle] = useState(Math.random() < 0.5 ? "left" : "right");
 
   const maxTimeInactive = 3; // seconds
   const minCurrentIdeas = 3;
@@ -106,8 +106,8 @@ const DaemonManager = () => {
             const currentIdeaIndex = currentIdeas.findIndex(idea => idea.id === currentIdea.id);
             const newPastIdeas = [...pastIdeas, ...currentIdeas.slice(0, currentIdeaIndex)];
 
-            let column = leftRightToggle;
-            setLeftRightToggle(leftRightToggle === "left" ? "right" : "left");
+            let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+            let column = lastCommentColumn === 'left' ? 'right' : 'left';
 
             dispatchComment(newPastIdeas, currentIdea, chatDaemon, column);
           }
@@ -120,10 +120,9 @@ const DaemonManager = () => {
     chatDaemonActive,
     openAIKey,
     minCurrentIdeas,
-    leftRightToggle,
+    mostRecentComment,
     dispatchComment,
-    selectCurrentIdea,
-    setLeftRightToggle]);
+    selectCurrentIdea]);
 
   useEffect(() => {
     const interval = setInterval(() => {

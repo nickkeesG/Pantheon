@@ -72,6 +72,20 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
   }
 );
 
+export const selectMostRecentCommentForCurrentBranch = createSelector(
+  [
+    (state: RootState) => state.comment.comments,
+    (state: RootState) => state.ui.activeIdeaIds
+  ],
+  (comments, activeIdeaIds) => {
+    const commentsForActiveIdeas = Object.values(comments).filter((comment: Comment) => 
+      activeIdeaIds.includes(comment.ideaId)
+    );
+    const sortedComments = commentsForActiveIdeas.sort((a, b) => b.ideaId - a.ideaId);
+    return sortedComments.length > 0 ? sortedComments[0] : null;
+  }
+);
+
 
 export const { addComment, approveComment, removeComment, replaceSlice: replaceCommentSlice, resetSlice: resetCommentSlice } = commentSlice.actions;
 export const initialCommentState = initialState;

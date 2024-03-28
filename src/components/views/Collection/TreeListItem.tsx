@@ -7,7 +7,7 @@ import ButtonWithConfirmation from '../../common/ButtonWithConfirmation';
 import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { deleteTreeAndContent } from '../../../redux/thunks';
-import { highlightOnHover } from '../../../styles/mixins';
+import { emergeFromAboveAnimation, highlightOnHover } from '../../../styles/mixins';
 import { selectIdeasInTree } from '../../../redux/ideaSlice';
 import { formatDistanceToNow } from 'date-fns';
 import { FaRegEdit } from "react-icons/fa";
@@ -23,6 +23,7 @@ const TreeListItemContainer = styled(ContainerHorizontal)`
   color: var(--text-color-dark);
   text-align: start;
   ${highlightOnHover};
+  ${emergeFromAboveAnimation};
   padding: 8px 16px;
 `;
 

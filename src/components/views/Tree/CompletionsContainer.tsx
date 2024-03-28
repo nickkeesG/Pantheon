@@ -140,7 +140,7 @@ const CompletionsContainer = () => {
           <TextButton onClick={handleContainerClick}>Refresh</TextButton>
         </ContainerHorizontal>
         {completions.length === 0 &&
-          <Hint>Here you will see how the base model would continue your train-of-thought.</Hint>
+          <Hint>Here you will see how the base model would continue your train-of-thought</Hint>
         }
         <StyledCompletionsContainer>
           {completions.length > 0 &&

@@ -3,6 +3,7 @@ import IdeaContainer from './IdeaContainer';
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../../../hooks';
 import { selectIdeasById } from '../../../redux/ideaSlice';
+import StartingHints from './StartingHints';
 
 
 const StyledHistoryContainer = styled.div`
@@ -24,13 +25,16 @@ const HistoryContainer = () => {
       if (prevHeights[ideaId] === height) return prevHeights; // No change, return the original state to avoid re-render
       return { ...prevHeights, [ideaId]: height };
     };
-  
+
     if (isChat) setChatCommentOverflows(updater);
     else setBaseCommentOverflows(updater);
   }, []);
 
   return (
     <StyledHistoryContainer>
+      {ideas.length === 0 &&
+        <StartingHints />
+      }
       {!creatingSection && ideas.map((idea, index) => {
         const baseOverflow = index === 0 ? 0 : baseCommentOverflows[ideas[index - 1].id];
         const chatOverflow = index === 0 ? 0 : chatCommentOverflows[ideas[index - 1].id];

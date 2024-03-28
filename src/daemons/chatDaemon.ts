@@ -3,7 +3,7 @@ import { GenerateChatComments } from '../llmHandler';
 import { dispatchError } from '../errorHandler';
 
 /*
-  Behavior hardcoded from config. Using instruct model for predictable behavior
+  Behavior hardcoded from config. Using chat model for predictable behavior
 */
 class ChatDaemon {
   config: ChatDaemonConfig;
@@ -14,7 +14,6 @@ class ChatDaemon {
 
   async generateComment(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
     // Generate prompts
-    let systemPrompt = this.config.systemPrompt;
     let userPrompts = [...this.config.userPrompts];
 
     let pastIdeaText = pastIdeas.map(idea => idea.text).join('\n');
@@ -27,7 +26,7 @@ class ChatDaemon {
 
     try {
       // Call LLMHandler to generate comments
-      var response = await GenerateChatComments(systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+      var response = await GenerateChatComments(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
     } catch (error) {
       dispatchError("Error calling chat model"); // send error to user
       console.error(error);

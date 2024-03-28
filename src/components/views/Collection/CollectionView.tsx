@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { ContainerVertical, TextButton } from '../../../styles/sharedStyles';
 import TreeListItem from './TreeListItem';
 import { createTree } from '../../../redux/thunks';
-import { useNavigate } from 'react-router-dom';
 import { selectTreesWithMostRecentEdit } from '../../../redux/treeSlice';
 
 

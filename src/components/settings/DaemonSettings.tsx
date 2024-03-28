@@ -4,6 +4,7 @@ import { TextButton } from "../../styles/sharedStyles";
 import ChatDaemonSettings from "./ChatDaemonSettings";
 import { ChatDaemonConfig } from "../../redux/models";
 import BaseDaemonSettings from "./BaseDaemonSettings";
+import InstructDaemonSettings from "./InstructDaemonSettings";
 
 
 function createEmptyChatDaemonConfig(): ChatDaemonConfig {
@@ -19,6 +20,7 @@ function createEmptyChatDaemonConfig(): ChatDaemonConfig {
 const DaemonSettings = () => {
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
+  const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [addingNewDaemon, setAddingNewDaemon] = useState(false);
 
   return (
@@ -35,8 +37,10 @@ const DaemonSettings = () => {
           + New daemon
         </TextButton>
       )}
-      <h4>Base daemons</h4>
+      <h4>Base daemon</h4>
       <BaseDaemonSettings config={baseDaemonConfig} />
+      <h4>Instruct daemon</h4>
+      <InstructDaemonSettings config={instructDaemonConfig} />
     </div>
   )
 }

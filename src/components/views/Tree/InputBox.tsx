@@ -7,7 +7,6 @@ import { setCreatingSection, setLastTimeActive } from '../../../redux/uiSlice';
 import InstructDaemon from '../../../daemons/instructDaemon';
 import { dispatchError } from '../../../errorHandler';
 import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
-import { selectCommentsGroupedByIdeaIds } from '../../../redux/commentSlice';
 
 const Container = styled.div`
   display: flex;
@@ -56,8 +55,6 @@ const InputBox = () => {
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const instructModel = useAppSelector(state => state.config.chatModel); // using the chat model
   const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
-  const ideaIds = currentBranchIdeas.map(idea => idea.id); // Replace with actual logic to obtain ideaIds
-  const commentsGroupedByIdeaIds = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, ideaIds));
 
   useEffect(() => {
     const daemon = instructDaemonConfig ? new InstructDaemon(instructDaemonConfig) : null;
@@ -83,7 +80,6 @@ const InputBox = () => {
       try {
         const response = await instructDaemon.handleInstruction(
           currentBranchIdeas,
-          commentsGroupedByIdeaIds,
           instruction,
           openAIKey,
           openAIOrgId,
@@ -97,7 +93,7 @@ const InputBox = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, currentBranchIdeas, commentsGroupedByIdeaIds, dispatch]);
+  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, currentBranchIdeas, dispatch]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     dispatch(setLastTimeActive())
@@ -147,9 +143,9 @@ const InputBox = () => {
               resizeTextArea(); // Resize the text area
             }
           }}
-          title="Press Ctrl + Enter to send text as instruction"
+          title="Press Ctrl + Enter to send text to the instruct daemon."
         >
-          Send idea as instruction
+          Send idea to instruct daemon
         </InstructButton>
       </ButtonRow>
     </Container>

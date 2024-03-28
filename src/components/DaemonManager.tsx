@@ -49,6 +49,7 @@ const DaemonManager = () => {
     setChatDaemonActive(true);
     try {
       // Returns a single comment
+      console.log('Generating chat comment');
       const response = await daemon.generateComment(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
       if(response) {
@@ -90,6 +91,8 @@ const DaemonManager = () => {
       return;
     }
 
+    console.log("Current idea length:", currentIdeas.length);
+    console.log("Past idea length:", pastIdeas.length);
     if (currentIdeas.length >= minCurrentIdeas) {
       if (chatDaemonActive) {
         console.log('Chat daemon already active');

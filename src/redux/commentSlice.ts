@@ -16,13 +16,21 @@ const commentSlice = createSlice({
   initialState,
   reducers: {
     addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
+      const { ideaId, text, daemonName, daemonType } = action.payload;
+      const allowedDaemonTypes = ['left', 'right'];
+      
+      if (!allowedDaemonTypes.includes(daemonType)) {
+        console.error(`Invalid daemonType: ${daemonType}. Must be either 'left' or 'right'.`);
+        return;
+      }
+      
       const newId = Date.now();
       const newComment: Comment = {
         id: newId,
-        ideaId: action.payload.ideaId,
-        text: action.payload.text,
-        daemonName: action.payload.daemonName,
-        daemonType: action.payload.daemonType,
+        ideaId,
+        text,
+        daemonName,
+        daemonType,
         userApproved: false
       };
       state.comments[newId] = newComment;

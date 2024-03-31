@@ -6,10 +6,10 @@ import { IconButtonMedium } from '../styles/sharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 import { navigateToParentSection } from '../redux/thunks';
-import { selectSectionContentForExporting } from '../redux/ideaSlice';
 import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import { setCreatingSection } from '../redux/uiSlice';
+import { selectSectionContentAsMarkdown } from '../redux/sectionSlice';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -53,26 +53,12 @@ const TopBar = () => {
   const activeSectionId = useAppSelector(state => state.ui.activeSectionId);
   const activeSection = useAppSelector(state => state.section.sections[activeSectionId]);
   const creatingSection = useAppSelector(state => state.ui.creatingSection);
-  const ideaExports = useAppSelector(state => selectSectionContentForExporting(state, activeSectionId));
+  const markdown = useAppSelector(state => selectSectionContentAsMarkdown(state, activeSectionId));
   const [isCopied, setIsCopied] = useState(false);
 
   const copyContextToMarkdown = async () => {
-    let context = '# Pantheon Context\n';
-    for (let i = 0; i < ideaExports.length; i++) {
-      const ideaExport = ideaExports[i];
-      if (ideaExport.incoming) {
-        context += `\n---`;
-        context += `\n- (${ideaExport.text})`;
-      }
-      else {
-        context += `\n- ${ideaExport.text}`;
-        if (ideaExport.outgoing) {
-          context += ' ->';
-        }
-      }
-    }
     try {
-      await navigator.clipboard.writeText(context);
+      await navigator.clipboard.writeText(markdown);
       setIsCopied(true);
     } catch (err) {
       console.error('Failed to copy context to clipboard', err);
@@ -117,6 +103,7 @@ const TopBar = () => {
         <IconButtonMedium
           title="Copy context"
           onClick={copyContextToMarkdown}
+          disabled={creatingSection || activeSection.ideaIds.length === 0}
         >
           {isCopied ? <FiCheckCircle /> : <FiCopy />}
         </IconButtonMedium>

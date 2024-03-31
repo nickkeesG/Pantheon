@@ -1,7 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { Idea } from './models';
-import { exploreBranch, getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
+import { getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
 
 export interface IdeaState {
   ideas: { [id: number]: Idea };
@@ -118,24 +118,6 @@ export const selectActivePastIdeas = createSelector(
         throw e;
       }
     }
-  }
-)
-
-export const selectSectionContentForExporting = createSelector(
-  [
-    (state: RootState) => state.idea.ideas,
-    (_: RootState, sectionId: number) => sectionId
-  ], (ideas, sectionId) => {
-    const sectionIdeas = Object.values(ideas).filter(idea => idea.sectionId === sectionId);
-    if (sectionIdeas.length === 0) {
-      // New, empty section
-      return []
-    }
-    const rootIdea = sectionIdeas.find(idea => !idea.parentIdeaId || idea.parentIdeaId === null); // TODO Technically parentIdeaId should never be undefined, but still it gets stored as undefined sometimes? :/
-    if (!rootIdea) {
-      throw Error(`Couldn't find root idea of section ${sectionId}`)
-    }
-    return exploreBranch(sectionIdeas, rootIdea);
   }
 )
 

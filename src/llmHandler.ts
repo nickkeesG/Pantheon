@@ -80,10 +80,12 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
     };
 
     for (const userPrompt of userPrompts) {
+        console.log("User prompt:\n" + userPrompt);
         data.messages.push({ role: "user", content: userPrompt });
 
         let intermediateResponse = await CallChatAPI(data, config);
         if (intermediateResponse.length > 0) {
+            console.log("Chat response:\n" + intermediateResponse[0]);
             data.messages.push({ role: "assistant", content: intermediateResponse[0] });
         }
     }

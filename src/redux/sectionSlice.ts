@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Idea, Section } from './models';
+import { RootState } from './store';
+import { prepareIdeasForExport } from './storeUtils';
 
 
 export interface SectionState {
@@ -42,6 +44,33 @@ const sectionSlice = createSlice({
     resetSlice: (_) => initialState
   },
 });
+
+export const selectSectionContentAsMarkdown = createSelector(
+  [
+    (state: RootState) => state.idea.ideas,
+    (_: RootState, sectionId: number) => sectionId
+  ], (ideas, sectionId) => {
+    const sectionIdeas = Object.values(ideas).filter(idea => idea.sectionId === sectionId);
+    if (sectionIdeas.length === 0) return '';
+    const rootIdea = sectionIdeas[0];
+    const ideaExports = prepareIdeasForExport(sectionIdeas, rootIdea);
+    let markdown = '# Pantheon Context\n';
+    ideaExports.forEach(idea => {
+      if (idea.incoming) {
+        markdown += `\n---`;
+        markdown += `\n- (${idea.text})`;
+      }
+      else {
+        markdown += `\n- ${idea.text}`;
+        if (idea.outgoing) {
+          markdown += ' ->';
+        }
+      }
+    });
+
+    return markdown;
+  }
+)
 
 export const { addSection, deleteSection, deleteSections, addIdeaToParentSection, replaceSlice: replaceSectionSlice, resetSlice: resetSectionSlice } = sectionSlice.actions;
 export const initialSectionState = initialState;

@@ -79,43 +79,21 @@ export const getIdeasSinceLastComment = (ideas: Idea[], comments: Record<number,
   return ideas.filter(idea => idea.id > newestCommentedIdeaId);
 }
 
-export function exploreBranch(ideas: Idea[], selectedIdea: Idea): IdeaExport[] {
+export function prepareIdeasForExport(ideas: Idea[], selectedIdea: Idea): IdeaExport[] {
   let ideaExports: IdeaExport[] = [];
-  let openIdeas: Idea[] = []; // Ideas that have multiple children (that need to be followed up on)
-  while (selectedIdea) {
-    let newExport = {
-      text: selectedIdea.text,
-      incoming: false,
-      outgoing: false
-    }
-    let children = getChildren(ideas, selectedIdea.id);
-    if (children.length > 1) {
-      newExport.outgoing = true;
-      openIdeas.push(selectedIdea); //save the idea to follow up on later
-    }
-    ideaExports.push(newExport);
+  const children = getChildren(ideas, selectedIdea.id);
+  ideaExports.push({
+    text: selectedIdea.text,
+    incoming: false,
+    outgoing: children.length > 1
+  })
 
-    if (children.length === 0) {
-      break;
-    } else {
-      selectedIdea = children[0];
+  for (let i = 0; i < children.length; i++) {
+    if (i > 0) {
+      ideaExports.push({ text: selectedIdea.text, incoming: true, outgoing: false })
     }
-  }
 
-  // Now follow up on the open ideas
-  for (let i = 0; i < openIdeas.length; i++) {
-    let currentIdea = openIdeas[i];
-    let newExport = {
-      text: currentIdea.text,
-      incoming: true,
-      outgoing: false
-    }
-    ideaExports.push(newExport);
-    let children = ideas.filter(idea => idea.parentIdeaId === currentIdea.id);
-    for (let j = 1; j < children.length; j++) { //skip the first child, since we already explored it
-      let newBranch = exploreBranch(ideas, children[j]); //
-      ideaExports.push(...newBranch);
-    }
+    ideaExports.push(...prepareIdeasForExport(ideas, children[i]));
   }
 
   return ideaExports;

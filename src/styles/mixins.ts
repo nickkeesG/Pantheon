@@ -22,8 +22,8 @@ export const highlightOnHover = css`
   }
 `;
 
-export const emergeFromBelowAnimation = css`
-  @keyframes emergeFromBelow {
+export const emergeAnimation = css`
+  @keyframes emerge {
     from {
       opacity: 0;
       transform: translateY(16px);
@@ -34,22 +34,7 @@ export const emergeFromBelowAnimation = css`
     }
   }
 
-  animation: emergeFromBelow 0.3s ease-out forwards;
-`;
-
-export const emergeFromAboveAnimation = css`
-  @keyframes emergeFromAbove {
-    from {
-      opacity: 0;
-      transform: translateY(-16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  animation: emergeFromAbove 0.3s ease-out forwards;
+  animation: emerge 0.3s ease-out forwards;
 `;
 
 export const fadeInAnimation = css`

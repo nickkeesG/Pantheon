@@ -64,14 +64,13 @@ const Synchronizer = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!currentlyRequestingSurprisal) {
-        if (baseDaemon && activeIdeas.length > 0) {         
+        if (baseDaemon && activeIdeas.length > 0) {   
+          if(!openAIKey) {
+            dispatchError("OpenAI API key not set");
+            return;
+          }      
           for (let i = 0; i < activeIdeas.length; i++) {
-            if (activeIdeas[i].textTokens.length === 0) {
-              if(!openAIKey) {
-                dispatchError("OpenAI API key not set");
-                return;
-              }
-
+            if (activeIdeas[i].isUser && activeIdeas[i].textTokens.length === 0) {
               let targetString = activeIdeas[i].text;
               let fullContext = getFullContext(activeIdeas, i, baseDaemon);
               let partialContext = getPartialContext(activeIdeas, i, baseDaemon);

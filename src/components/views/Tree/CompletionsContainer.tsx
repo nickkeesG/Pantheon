@@ -49,8 +49,8 @@ const StyledIndividualCompletion = styled.div`
   ${fadeInAnimation};
 `;
 
-const getContext = (currentBranchIdeas: { text: string }[]) => {
-  var context = currentBranchIdeas.map(idea => idea.text).join('\n');
+const getContext = (currentBranchIdeas: { text: string, isUser: boolean }[]) => {
+  var context = currentBranchIdeas.filter(idea => idea.isUser).map(idea => idea.text).join('\n');
   context += '\n';
   return context;
 }

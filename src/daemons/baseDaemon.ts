@@ -21,7 +21,9 @@ class BaseDaemon {
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
-      context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
+      if (pastIdeas[i].isUser) {
+        context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
+      }
     }
 
     context = this.mainTemplate.replace("{}", context);
@@ -33,7 +35,9 @@ class BaseDaemon {
     let context = this.getPastContext(pastIdeas, commentsForPastIdeas);
 
     for (let i = 0; i < selectedIdeaIdx + 1; i++) {
-      context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
+      if (currentIdeas[i].isUser) {
+        context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
+      }
     }
 
     return context;

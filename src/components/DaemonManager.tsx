@@ -91,25 +91,49 @@ const DaemonManager = () => {
       return;
     }
 
-    if (currentIdeas.length >= minCurrentIdeas) {
-      if (chatDaemonActive) {
-        console.log('Chat daemon already active');
+    if (chatDaemonActive) {
+      console.log('Chat daemon already active');
+    }
+    else {
+      // Handle direcly prompted comments
+      var daemonExplicitlyMentioned = false;
+      if (currentIdeas.length >= 0) {
+        for (const idea of currentIdeas) {
+          for (const daemon of chatDaemons) {
+            if (idea.text.toLowerCase().includes(daemon.config.name.toLowerCase())) {
+              daemonExplicitlyMentioned = true;
+              const currentIdeaIndex = currentIdeas.findIndex(i => i.id === idea.id);
+              const newPastIdeas = [...pastIdeas, ...currentIdeas.slice(0, currentIdeaIndex)];
+              let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+              let column = lastCommentColumn === 'left' ? 'right' : 'left';
+              await dispatchComment(newPastIdeas, idea, daemon, column);
+              return;
+            }
+          }
+        }
       }
-      else {
 
-        // randomly select a chat daemon
-        const chatDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-        if (chatDaemon) {
-          const currentIdea = await selectCurrentIdea(pastIdeas, currentIdeas, chatDaemon);
+      // Handle unprompted comments
+      if (!daemonExplicitlyMentioned && currentIdeas.length >= minCurrentIdeas) {
+        if (chatDaemonActive) {
+          console.log('Chat daemon already active');
+        }
+        else {
 
-          if (currentIdea) {
-            const currentIdeaIndex = currentIdeas.findIndex(idea => idea.id === currentIdea.id);
-            const newPastIdeas = [...pastIdeas, ...currentIdeas.slice(0, currentIdeaIndex)];
+          // randomly select a chat daemon
+          const chatDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+          if (chatDaemon) {
+            const currentIdea = await selectCurrentIdea(pastIdeas, currentIdeas, chatDaemon);
 
-            let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
-            let column = lastCommentColumn === 'left' ? 'right' : 'left';
+            if (currentIdea) {
+              const currentIdeaIndex = currentIdeas.findIndex(idea => idea.id === currentIdea.id);
+              const newPastIdeas = [...pastIdeas, ...currentIdeas.slice(0, currentIdeaIndex)];
 
-            dispatchComment(newPastIdeas, currentIdea, chatDaemon, column);
+              let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+              let column = lastCommentColumn === 'left' ? 'right' : 'left';
+
+              dispatchComment(newPastIdeas, currentIdea, chatDaemon, column);
+            }
           }
         }
       }

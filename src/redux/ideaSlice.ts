@@ -110,7 +110,7 @@ export const selectActivePastIdeas = createSelector(
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
       const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
-      const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
+      const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea) && idea.isUser);
       return ideasUpToMaxCommented;
     } catch (e) {
       if (e instanceof TypeError) {

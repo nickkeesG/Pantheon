@@ -3,8 +3,9 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea } from '../redux/models';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
-import {dispatchError} from '../errorHandler';
+import { dispatchError } from '../errorHandler';
 import { selectIdeasById, setSurprisalToIdea } from '../redux/ideaSlice';
+
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
@@ -57,18 +58,17 @@ const Synchronizer = () => {
   }, [baseDaemonConfig]);
 
   /*
-  Measure surprisal on user text. Runs every 500ms.
-  Surprisal is defined as a decrease in loglikelihood of a token after conditioning on the past context
+  Measure surprisal on user text. Runs every 1000ms.
+  Surprisal is defined as a decrease in loglikelihood of a token caused by conditioning on the past context
   */
- // TODO Disabled due to network and processing load. Enable later once improved.
   useEffect(() => {
     const interval = setInterval(() => {
       if (!currentlyRequestingSurprisal) {
-        if (baseDaemon && activeIdeas.length > 0) {   
-          if(!openAIKey) {
+        if (baseDaemon && activeIdeas.length > 0) {
+          if (!openAIKey) {
             dispatchError("OpenAI API key not set");
             return;
-          }      
+          }
           for (let i = 0; i < activeIdeas.length; i++) {
             if (activeIdeas[i].isUser && activeIdeas[i].textTokens.length === 0) {
               let targetString = activeIdeas[i].text;
@@ -85,15 +85,15 @@ const Synchronizer = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [activeIdeas, 
-      baseDaemon, 
-      baseModel, 
-      openAIKey, 
-      openAIOrgId, 
-      currentlyRequestingSurprisal,
-      getFullContext, 
-      getPartialContext, 
-      requestSurprisal]);
+  }, [activeIdeas,
+    baseDaemon,
+    baseModel,
+    openAIKey,
+    openAIOrgId,
+    currentlyRequestingSurprisal,
+    getFullContext,
+    getPartialContext,
+    requestSurprisal]);
 
   return null;
 }

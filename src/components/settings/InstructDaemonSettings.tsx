@@ -1,9 +1,10 @@
-import {useEffect, useRef, useState} from 'react';
-import {updateInstructDaemon} from '../../redux/daemonSlice';
-import {InstructDaemonConfig} from '../../redux/models';
+import { useEffect, useRef, useState } from 'react';
+import { updateInstructDaemon } from '../../redux/daemonSlice';
+import { InstructDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
-import {useAppDispatch} from '../../hooks';
-import {ButtonSmall, TextArea, TextButton} from '../../styles/sharedStyles';
+import { useAppDispatch } from '../../hooks';
+import { ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
+
 
 const InstructDaemonSettingsContainer = styled.div`
   text-align: left;
@@ -13,7 +14,7 @@ type InstructDaemonSettingsProps = {
   config: InstructDaemonConfig;
 };
 
-const InstructDaemonSettings: React.FC<InstructDaemonSettingsProps> = ({config}) => {
+const InstructDaemonSettings: React.FC<InstructDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEdited, setIsEdited] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt || '');
@@ -40,7 +41,7 @@ const InstructDaemonSettings: React.FC<InstructDaemonSettingsProps> = ({config})
 
   const updateDaemonConfig = () => {
     try {
-      const updatedConfig = {...config, systemPrompt, userPrompt};
+      const updatedConfig = { ...config, systemPrompt, userPrompt };
       dispatch(updateInstructDaemon(updatedConfig));
       setIsEdited(false);
     } catch (error) {
@@ -63,7 +64,7 @@ const InstructDaemonSettings: React.FC<InstructDaemonSettingsProps> = ({config})
       </span>
       {!isCollapsed && (
         <>
-          <br/>
+          <br />
           <label>
             System Prompt:
             <TextArea
@@ -90,7 +91,7 @@ const InstructDaemonSettings: React.FC<InstructDaemonSettingsProps> = ({config})
               style={{ width: '100%' }}
             />
           </label>
-        </> 
+        </>
       )}
     </InstructDaemonSettingsContainer>
   );

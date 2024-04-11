@@ -27,7 +27,7 @@ const DaemonManager = () => {
   const chatModel = useAppSelector(state => state.config.chatModel);
 
   const maxTimeInactive = 3; // seconds
-  const minCurrentIdeas = 3;
+  const minCurrentIdeas = 3; // minimum number of ideas required to dispatch a comment
 
   useEffect(() => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));
@@ -41,11 +41,11 @@ const DaemonManager = () => {
       console.log('Generating chat comment');
       const response = await daemon.generateComment(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
-      if(response) {
+      if (response) {
         dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: column }));
       }
       else {
-        console.error('No chat comment generated');
+        console.error('Failed to generate chat comment');
       }
 
     } catch (error) {
@@ -61,7 +61,7 @@ const DaemonManager = () => {
   const selectCurrentIdea = useCallback((pastIdeas: Idea[], currentIdeas: Idea[], daemon: ChatDaemon) => {
     let highestSurprisalIdea: Idea | null = null;
     let highestSurprisalScore = 0;
-  
+
     for (const currentIdea of currentIdeas) {
       const maxSurprisalScore = Math.max(...currentIdea.tokenSurprisals);
       if (maxSurprisalScore > highestSurprisalScore) {
@@ -69,13 +69,13 @@ const DaemonManager = () => {
         highestSurprisalIdea = currentIdea;
       }
     }
-  
+
     return highestSurprisalScore > 0 ? highestSurprisalIdea : null;
   }, []);
 
 
-  const handleDaemonDispatch = useCallback(async() => {
-    if(!openAIKey) {
+  const handleDaemonDispatch = useCallback(async () => {
+    if (!openAIKey) {
       dispatchError('OpenAI API key not set');
       return;
     }
@@ -84,13 +84,14 @@ const DaemonManager = () => {
       console.log('Chat daemon already active');
     }
     else {
+
       // Handle directly prompted comments
-      var daemonExplicitlyMentioned = false;
+      var daemonExplicitlyMentionedByUser = false;
       if (currentIdeas.length >= 0) {
         for (const idea of currentIdeas) {
           for (const daemon of chatDaemons) {
             if (idea.text.toLowerCase().includes(daemon.config.name.toLowerCase())) {
-              daemonExplicitlyMentioned = true;
+              daemonExplicitlyMentionedByUser = true;
               const currentIdeaIndex = currentIdeas.findIndex(i => i.id === idea.id);
               const newPastIdeas = [...pastIdeas, ...currentIdeas.slice(0, currentIdeaIndex)];
               let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
@@ -103,7 +104,7 @@ const DaemonManager = () => {
       }
 
       // Handle unprompted comments
-      if (!daemonExplicitlyMentioned && currentIdeas.length >= minCurrentIdeas) {
+      if (!daemonExplicitlyMentionedByUser && currentIdeas.length >= minCurrentIdeas) {
         if (chatDaemonActive) {
           console.log('Chat daemon already active');
         }

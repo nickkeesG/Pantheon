@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+
 export interface ConfigState {
   openAIKey: string;
   openAIOrgId: string;

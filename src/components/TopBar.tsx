@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { setCreatingSection } from '../redux/uiSlice';
 import { selectSectionContentAsMarkdown } from '../redux/sectionSlice';
 
+
 const StyledTopBar = styled.div`
   position: fixed;
   top: 0;
@@ -100,7 +101,7 @@ const TopBar = () => {
           onClick={upButtonClicked}
         />
       )}
-      
+
       <ButtonContainer>
         <IconButtonMedium
           title="Copy context"

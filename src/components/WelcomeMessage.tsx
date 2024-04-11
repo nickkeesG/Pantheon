@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import Modal from './common/Modal';
 
+
 const WelcomePanel = styled.div`
   background-color: var(--bg-color);
   color: var(--text-color);

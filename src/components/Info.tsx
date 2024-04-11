@@ -4,6 +4,10 @@ import styled from "styled-components";
 import { useState } from "react";
 import Modal from "./common/Modal";
 
+/*
+  Button to get a menu with general tool instructions. (TODO: Add info/instructions)
+*/
+
 const InfoButton = styled(IconButtonMedium).attrs({
   as: FaQuestionCircle
 })`
@@ -35,7 +39,7 @@ const Info = () => {
 
   return (
     <div>
-      <InfoButton title="Info" onClick={toggleInfo}/>
+      <InfoButton title="Info" onClick={toggleInfo} />
       {isInfoOpen && (
         <Modal toggleVisibility={toggleInfo} zIndex={100}>
           <InfoPanel>

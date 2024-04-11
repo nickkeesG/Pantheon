@@ -8,6 +8,7 @@ import { fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
 import BaseDaemon from '../../../daemons/baseDaemon';
 
+
 const TopLevelContainer = styled.div`
   width: 100%;
   height: auto;
@@ -63,6 +64,8 @@ const CompletionsContainer = () => {
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
 
+  const maxTimeInactive = 3; // seconds
+
   useEffect(() => {
     const daemon = new BaseDaemon(baseDaemonConfig);
     setBaseDaemon(daemon);
@@ -72,8 +75,7 @@ const CompletionsContainer = () => {
     setAlreadyGettingCompletions(true);
     try {
       if (baseDaemon && openAIKey && baseModel) {
-        const context = baseDaemon.getContext(currentBranchIdeas);
-        const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, baseDaemon.config.temperature);
+        const completions = await baseDaemon.getCompletions(currentBranchIdeas, openAIKey, openAIOrgId, baseModel);
         setCompletions(completions);
       }
       else {
@@ -106,7 +108,6 @@ const CompletionsContainer = () => {
   }, [currentBranchIdeas]);
 
   useEffect(() => {
-    const maxTimeInactive = 3; // seconds
     const interval = setInterval(() => {
       if (!alreadyGettingCompletions) {
         if (!contextUpToDate && (Date.now() - lastTimeActive) > maxTimeInactive * 1000) {

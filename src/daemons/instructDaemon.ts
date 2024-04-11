@@ -1,6 +1,10 @@
 import { Idea, InstructDaemonConfig } from '../redux/models';
 import { CallChatModel } from '../llmHandler';
 
+/*
+  Used to respond directly to instructions, for performing simple tasks (e.g. summarization)
+  Called by InputBox component
+*/
 class InstructDaemon {
   config: InstructDaemonConfig;
 

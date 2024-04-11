@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
 import { ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 
+
 const ChatDaemonSettingsContainer = styled.div`
   text-align: left;
 `;
@@ -48,7 +49,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
       setUserPrompts(updatedPrompts);
       setIsEdited(true);
     }
-  };   
+  };
 
   const resizeTextArea = (textArea: HTMLTextAreaElement | null) => {
     if (textArea) {
@@ -88,7 +89,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
   return (
     <ChatDaemonSettingsContainer>
       <span>
-        <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} /> 
+        <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} />
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
           {isNewDaemon && (<>New daemon</>)}

@@ -1,10 +1,8 @@
-import { Comment, Idea, BaseDaemonConfig } from '../redux/models';
-//import { GenerateBaseComments } from '../llmHandler';
-//import { dispatchError } from '../errorHandler';
-
+import { Idea, BaseDaemonConfig } from '../redux/models';
+import { GenerateBaseCompletions } from '../llmHandler';
 
 /*
-  Behavior mirroring existing comments. Using base model for higher variance behavior
+  Used to generate base model completions of the user text
 */
 class BaseDaemon {
   config: BaseDaemonConfig;
@@ -34,30 +32,11 @@ class BaseDaemon {
     return context;
   }
 
-  getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
-    let context = "";
+  getCompletions = async (currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, baseModel: string) => {
+    const context = this.getContext(currentIdeas);
+    const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, this.config.temperature);
 
-    for (let i = 0; i < pastIdeas.length; i++) {
-      if (pastIdeas[i].isUser) {
-        context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
-      }
-    }
-
-    context = this.mainTemplate.replace("{}", context);
-
-    return context;
-  }
-
-  getFullContext(pastIdeas: Idea[], currentIdeas: Idea[], selectedIdeaIdx: number, commentsForPastIdeas: Record<number, Comment[]>): string {
-    let context = this.getPastContext(pastIdeas, commentsForPastIdeas);
-
-    for (let i = 0; i < selectedIdeaIdx + 1; i++) {
-      if (currentIdeas[i].isUser) {
-        context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
-      }
-    }
-
-    return context;
+    return completions;
   }
 }
 

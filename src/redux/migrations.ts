@@ -9,6 +9,7 @@ import { initialConfigState } from "./configSlice";
 import { initialUiState } from "./uiSlice";
 import { initialErrorState } from "./errorSlice";
 
+
 const migrations: MigrationManifest = {
   0: (state: PersistedState | undefined): RootState => {
     const persistState = state?._persist || { version: 0, rehydrated: true };

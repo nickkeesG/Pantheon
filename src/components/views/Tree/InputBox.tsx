@@ -8,6 +8,7 @@ import InstructDaemon from '../../../daemons/instructDaemon';
 import { dispatchError } from '../../../errorHandler';
 import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;

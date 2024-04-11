@@ -93,55 +93,6 @@ export async function GenerateChatComments(systemPrompt: string, userPrompts: st
     return data.messages[data.messages.length - 1].content;
 }
 
-export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, evaluationTemplate: string) {
-    var data = {
-        model: baseModel,
-        prompt: prompt,
-        max_tokens: 128,
-        stop: ["\n", " {", "{"],
-        n: 6,
-    };
-
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openAIKey}`,
-            'OpenAI-Organization': openAIOrgId
-        }
-    };
-
-    var response = await CallBaseAPI(data, config);
-    var responsesWithScores = [];
-    var evaluationString = evaluationTemplate.split("{}")[0] + " y";
-
-    var evaluationData = {
-        model: baseModel,
-        prompt: "",
-        max_tokens: 0,
-        logprobs: 0,
-        echo: true,
-    };
-
-    for (let i = 0; i < response.length; i++) {
-        let evaluationPrompt = response[i] + evaluationString;
-        evaluationData.prompt = evaluationPrompt;
-        try {
-            var responseWithLogprobs = await CallBaseAPIForLogprobs(evaluationData, config);
-        } catch (error) {
-            console.error("Error calling base API for logprobs")
-            console.error(error)
-            return [];
-        }
-        let logprobList = responseWithLogprobs.token_logprobs;
-        let finalLogprob = logprobList[logprobList.length - 1];
-
-        //Score is the likelihood of the response being a "yes"
-        responsesWithScores.push({ content: response[i], score: finalLogprob });
-    }
-
-    return responsesWithScores;
-}
-
 export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {
     prompt = prompt.trim(); //remove trailing whitespace
     var data = {

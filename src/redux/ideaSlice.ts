@@ -3,6 +3,7 @@ import { RootState } from './store';
 import { Idea } from './models';
 import { getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
 
+
 export interface IdeaState {
   ideas: { [id: number]: Idea };
 }
@@ -88,6 +89,7 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   (ideas, activeIdeaIds, comments) => {
     try {
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
+      // filter out ideas that are not user ideas
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
       return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
@@ -110,6 +112,7 @@ export const selectActivePastIdeas = createSelector(
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
       const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
+      // filter out ideas that are not user ideas
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea) && idea.isUser);
       return ideasUpToMaxCommented;
     } catch (e) {

@@ -2,6 +2,7 @@ import React from "react";
 import { Idea } from "../../../redux/models";
 import { useAppSelector } from "../../../hooks";
 
+
 const IdeaText: React.FC<{ idea: Idea }> = ({ idea }) => {
   const hasSurprisals = idea.textTokens
     && idea.tokenSurprisals

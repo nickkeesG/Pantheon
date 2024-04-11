@@ -12,6 +12,7 @@ import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, createMigrate } from 'redux-persist';
 import migrations from './migrations';
 
+
 const persistConfig = {
   key: 'root',
   version: 0,

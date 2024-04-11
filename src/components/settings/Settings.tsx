@@ -11,6 +11,7 @@ import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { resetState } from '../../redux/thunks';
 import { resetDaemonSlice } from '../../redux/daemonSlice';
 
+
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
 })`

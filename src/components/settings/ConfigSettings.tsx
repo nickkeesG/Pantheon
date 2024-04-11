@@ -68,9 +68,9 @@ const ConfigSettings = () => {
         />
       </TextSettingContainer>
       <CheckboxSettingContainer>
-        <input type="checkbox" checked={isSynchronizerVisible} onChange={(e) => { dispatch(setSynchronizerVisible(e.target.checked))}} />
+        <input type="checkbox" checked={isSynchronizerVisible} onChange={(e) => { dispatch(setSynchronizerVisible(e.target.checked)) }} />
         <p>Show surprisal highlighting</p>
-      </CheckboxSettingContainer> 
+      </CheckboxSettingContainer>
     </div>
   )
 }

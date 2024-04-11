@@ -3,7 +3,7 @@ import { GenerateChatComments } from '../llmHandler';
 import { dispatchError } from '../errorHandler';
 
 /*
-  Behavior hardcoded from config. Using chat model for predictable behavior
+  Used to generate chat comments, using prompt pipeline defined by config
 */
 class ChatDaemon {
   config: ChatDaemonConfig;

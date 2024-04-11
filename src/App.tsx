@@ -5,6 +5,7 @@ import Synchronizer from './components/Synchronizer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CollectionView from './components/views/Collection/CollectionView';
 
+
 function App() {
   return (
     <BrowserRouter>

@@ -142,11 +142,13 @@ export async function GenerateBaseComments(prompt: string, openAIKey: string, op
     return responsesWithScores;
 }
 
-export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string) {
+export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {
+    prompt = prompt.trim(); //remove trailing whitespace
     var data = {
         model: baseModel,
         prompt: prompt,
         max_tokens: 64,
+        temperature: temperature,
         stop: ["\n"],
         n: 6,
     };

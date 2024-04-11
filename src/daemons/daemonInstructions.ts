@@ -71,9 +71,10 @@ Finally, keep your sentence very short, ideally under 15 words or so.`,],
   ],
   baseDaemon: {
     mainTemplate:
-      `# Brainstorming Session (Active)
+      `# Brainstorming Notes
 {}`,
     ideaTemplate: '- {}',
+    temperature: 0.7,
   },
   instructDaemon: {
     systemPrompt: `You are Instruct. You have been designed to follow the instructions provided by the user as quickly and accurately as possible.

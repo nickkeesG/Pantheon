@@ -6,7 +6,7 @@ import { GenerateBaseCompletions } from '../../../llmHandler';
 import { dispatchError } from '../../../errorHandler';
 import { fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
-
+import BaseDaemon from '../../../daemons/baseDaemon';
 
 const TopLevelContainer = styled.div`
   width: 100%;
@@ -49,12 +49,6 @@ const StyledIndividualCompletion = styled.div`
   ${fadeInAnimation};
 `;
 
-const getContext = (currentBranchIdeas: { text: string, isUser: boolean }[]) => {
-  var context = currentBranchIdeas.filter(idea => idea.isUser).map(idea => idea.text).join('\n');
-  context += '\n';
-  return context;
-}
-
 const CompletionsContainer = () => {
   const [completions, setCompletions] = useState<string[]>([]);
   const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
@@ -66,19 +60,32 @@ const CompletionsContainer = () => {
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const baseModel = useAppSelector(state => state.config.baseModel);
 
+  const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
+  const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
+
+  useEffect(() => {
+    const daemon = new BaseDaemon(baseDaemonConfig);
+    setBaseDaemon(daemon);
+  }, [baseDaemonConfig]);
+
   const getNewCompletions = useCallback(async () => {
     setAlreadyGettingCompletions(true);
     try {
-      const context = getContext(currentBranchIdeas);
-      const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel);
-      setCompletions(completions);
+      if (baseDaemon && openAIKey && baseModel) {
+        const context = baseDaemon.getContext(currentBranchIdeas);
+        const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, baseDaemon.config.temperature);
+        setCompletions(completions);
+      }
+      else {
+        throw new Error('Base daemon not initialized');
+      }
     } catch (error) {
       dispatchError(error);
     }
 
     setAlreadyGettingCompletions(false);
     setContextUpToDate(true);
-  }, [currentBranchIdeas, openAIKey, openAIOrgId, baseModel]);
+  }, [currentBranchIdeas, openAIKey, openAIOrgId, baseModel, baseDaemon]);
 
   const handleContainerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const emptyCompletions: string[] = [];
@@ -103,9 +110,7 @@ const CompletionsContainer = () => {
     const interval = setInterval(() => {
       if (!alreadyGettingCompletions) {
         if (!contextUpToDate && (Date.now() - lastTimeActive) > maxTimeInactive * 1000) {
-          if (openAIKey && baseModel) {
-            getNewCompletions();
-          }
+          getNewCompletions();
         }
       }
     }, 1000);

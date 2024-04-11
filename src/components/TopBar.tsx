@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Settings from './settings/Settings';
+import Info from './Info';
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { IconButtonMedium } from '../styles/sharedStyles';
@@ -99,6 +100,7 @@ const TopBar = () => {
           onClick={upButtonClicked}
         />
       )}
+      
       <ButtonContainer>
         <IconButtonMedium
           title="Copy context"
@@ -107,6 +109,7 @@ const TopBar = () => {
         >
           {isCopied ? <FiCheckCircle /> : <FiCopy />}
         </IconButtonMedium>
+        <Info />
         <Settings />
       </ButtonContainer>
     </StyledTopBar>

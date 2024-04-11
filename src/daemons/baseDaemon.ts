@@ -17,6 +17,23 @@ class BaseDaemon {
     this.ideaTemplate = config.ideaTemplate;
   }
 
+  getContext(currentIdeas: Idea[]): string {
+    let context = "";
+
+    for (let i = 0; i < currentIdeas.length; i++) {
+      if (currentIdeas[i].isUser) {
+        context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);
+      }
+    }
+
+    context = this.mainTemplate.replace("{}", context);
+
+    let ideaPrefix = this.ideaTemplate.split("{}")[0];
+    context += '\n' + ideaPrefix;
+
+    return context;
+  }
+
   getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
     let context = "";
 

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Idea } from '../redux/models';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
-//import BaseDaemon from '../daemons/baseDaemon';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
@@ -17,9 +16,7 @@ const DaemonManager = () => {
   const [alreadyWasInactive, setAlreadyWasInactive] = useState(false);
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
-  //const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
-  //const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const currentIdeas = useAppSelector(selectActiveIdeasEligibleForComments);
   const pastIdeas = useAppSelector(selectActivePastIdeas);
 
@@ -28,17 +25,9 @@ const DaemonManager = () => {
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
-  //const baseModel = useAppSelector(state => state.config.baseModel);
 
   const maxTimeInactive = 3; // seconds
   const minCurrentIdeas = 3;
-
-  /*
-  useEffect(() => {
-    const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
-    setBaseDaemon(daemon);
-  }, [baseDaemonConfig]);
-  */
 
   useEffect(() => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));
@@ -95,7 +84,7 @@ const DaemonManager = () => {
       console.log('Chat daemon already active');
     }
     else {
-      // Handle direcly prompted comments
+      // Handle directly prompted comments
       var daemonExplicitlyMentioned = false;
       if (currentIdeas.length >= 0) {
         for (const idea of currentIdeas) {

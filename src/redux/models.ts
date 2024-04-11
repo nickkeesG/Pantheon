@@ -48,6 +48,7 @@ export interface ChatDaemonConfig {
 export interface BaseDaemonConfig {
   mainTemplate: string;
   ideaTemplate: string;
+  temperature: number;
 }
 
 export interface InstructDaemonConfig {

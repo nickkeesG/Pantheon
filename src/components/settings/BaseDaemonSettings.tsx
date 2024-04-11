@@ -27,6 +27,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
 
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
+  const [temperature, setTemperature] = useState(config.temperature || 1.0);
 
   const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
   const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
@@ -64,6 +65,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
         ...config,
         mainTemplate: mainTemplate,
         ideaTemplate: ideaTemplate,
+        temperature: temperature,
       };
       dispatch(updateBaseDaemon(newConfig));
       setIsEdited(false);
@@ -111,6 +113,22 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
                 setIdeaTemplate(e.target.value);
                 setIsEdited(true);
                 resizeTextArea(e.target);
+              }}
+              style={{ width: '100%' }}
+            />
+          </label>
+          <br/>
+          <label>
+            Temperature: <span>{temperature.toFixed(2)}</span>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.05"
+              value={temperature}
+              onChange={(e) => {
+                setTemperature(parseFloat(e.target.value));
+                setIsEdited(true);
               }}
               style={{ width: '100%' }}
             />

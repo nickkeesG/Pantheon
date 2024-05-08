@@ -53,5 +53,5 @@ export interface BaseDaemonConfig {
 
 export interface InstructDaemonConfig {
   systemPrompt: string;
-  contextTemplate: string;
+  userPrompt: string;
 }

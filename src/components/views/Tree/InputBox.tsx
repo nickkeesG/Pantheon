@@ -147,9 +147,9 @@ const InputBox = () => {
               resizeTextArea(); // Resize the text area
             }
           }}
-          title="Press Ctrl + Enter to send text as instruction"
+          title="Press Ctrl + Enter to send text to instruct daemon"
         >
-          Send idea as instruction
+          Send idea as to instruct daemon
         </InstructButton>
       </ButtonRow>
     </Container>

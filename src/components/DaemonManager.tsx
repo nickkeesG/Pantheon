@@ -4,7 +4,7 @@ import { Idea } from '../redux/models';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
-import { addComment } from '../redux/commentSlice';
+import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
 import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
 
 /*
@@ -20,6 +20,8 @@ const DaemonManager = () => {
   const ideasEligbleForComments = useAppSelector(selectActiveIdeasEligibleForComments);
   const pastIdeas = useAppSelector(selectActivePastIdeas);
 
+  const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
+
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
@@ -31,14 +33,14 @@ const DaemonManager = () => {
     setChatDaemons(daemons);
   }, [chatDaemonConfigs]);
 
-  const dispatchChatComment = useCallback(async (pastIdeas: Idea[], currentIdea: Idea, daemon: ChatDaemon) => {
+  const dispatchChatComment = useCallback(async (pastIdeas: Idea[], currentIdea: Idea, daemon: ChatDaemon, column: string) => {
     setChatDaemonActive(true);
     try {
       // Returns a single comment
       const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
       if(response) {
-        dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: "chat" }));
+        dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: column }));
       }
       else {
         console.error('No chat comment generated');
@@ -76,7 +78,10 @@ const DaemonManager = () => {
           const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
 
           if (currentIdea) {
-            dispatchChatComment(pastIdeas, currentIdea, chatDaemon);
+            let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+            let column = lastCommentColumn === 'base' ? 'chat' : 'base';
+
+            dispatchChatComment(pastIdeas, currentIdea, chatDaemon, column);
           }
         }
       }
@@ -86,6 +91,7 @@ const DaemonManager = () => {
     chatDaemonActive,
     chatDaemons,
     openAIKey,
+    mostRecentComment,
     dispatchChatComment,
     selectCurrentIdea]);
 

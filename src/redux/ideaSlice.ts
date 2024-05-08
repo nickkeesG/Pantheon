@@ -131,7 +131,9 @@ export const selectCurrentBranchIdeas = createSelector(
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
-    return activeIdeaIds.map(id => ideas[id]);
+    // filter out ideas that are not user ideas
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+    return activeIdeas;
   }
 )
 

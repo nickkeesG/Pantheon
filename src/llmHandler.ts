@@ -92,6 +92,8 @@ export async function GenerateChatComment(systemPrompt: string, userPrompts: str
 }
 
 export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {
+    prompt = prompt.trim();
+
     var data = {
         model: baseModel,
         prompt: prompt,
@@ -100,6 +102,8 @@ export async function GenerateBaseCompletions(prompt: string, openAIKey: string,
         stop: ["\n"],
         n: 6,
     };
+
+    console.log(prompt);
 
     const config = {
         headers: {

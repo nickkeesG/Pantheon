@@ -38,7 +38,7 @@ class BaseDaemon {
   }
 
   getCompletions = async (currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, baseModel: string) => {
-    const context = this.getContext(currentIdeas);
+    const context = this.getContextWithPrefix(currentIdeas);
     const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, this.config.temperature);
 
     return completions;

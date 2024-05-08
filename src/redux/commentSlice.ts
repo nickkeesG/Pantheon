@@ -47,7 +47,21 @@ export const selectCommentsForIdea = createSelector(
     (_: RootState, ideaId: number) => ideaId,
     (_: RootState, __: number, daemonType: string = '') => daemonType
   ],
-  (comments, ideaId, daemonType) => Object.values(comments).filter((comment: Comment) => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
+  (comments, ideaId, daemonType) => {
+
+    // Added backwards compatibility for old daemon types
+    let filterCondition: (comment: Comment) => boolean;
+
+    if (daemonType === 'left') {
+      filterCondition = (comment: Comment) => comment.daemonType === 'left' || comment.daemonType === 'base';
+    } else if (daemonType === 'right') {
+      filterCondition = (comment: Comment) => comment.daemonType === 'right' || comment.daemonType === 'chat';
+    } else {
+      filterCondition = (comment: Comment) => comment.daemonType === daemonType;
+    }
+
+    return Object.values(comments).filter((comment: Comment) => comment.ideaId === ideaId && filterCondition(comment));
+  }
 );
 
 export const selectCommentsGroupedByIdeaIds = createSelector(

@@ -79,7 +79,12 @@ const DaemonManager = () => {
 
           if (currentIdea) {
             let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
-            let column = lastCommentColumn === 'base' ? 'chat' : 'base';
+
+            // To maintain backwards compatibility with base/chat naming
+            if (lastCommentColumn === 'base') { lastCommentColumn = 'left';}
+            if (lastCommentColumn === 'chat') { lastCommentColumn = 'right';}
+
+            let column = lastCommentColumn === 'left' ? 'right' : 'left';
 
             dispatchChatComment(pastIdeas, currentIdea, chatDaemon, column);
           }

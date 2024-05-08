@@ -88,30 +88,30 @@ const PlusButton = styled(IconButtonLarge).attrs({
 
 interface IdeaContainerProps {
   idea: Idea;
-  baseCommentOffset: number;
-  chatCommentOffset: number;
-  setCommentOverflow: (isChatComment: boolean, ideaId: number, height: number) => void;
+  leftCommentOffset: number;
+  rightCommentOffset: number;
+  setCommentOverflow: (isRightComment: boolean, ideaId: number, height: number) => void;
 }
 
-const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, chatCommentOffset, setCommentOverflow }) => {
+const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, rightCommentOffset, setCommentOverflow }) => {
   const dispatch = useAppDispatch();
   const branchingIdeas = useAppSelector(state => selectIdeaBranches(state, idea.id));
   const hasBranches = branchingIdeas.length > 0;
   const branchingSectionsRootIdeas = useAppSelector(state => selectSectionBranchRootIdeas(state, idea.id));
-  const baseComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "base"));
-  const chatComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "chat"));
+  const leftComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "left"));
+  const rightComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "right"));
   const containerRef = useRef<HTMLDivElement>(null);
-  const baseCommentPanelRef = useRef<HTMLDivElement>(null);
-  const chatCommentPanelRef = useRef<HTMLDivElement>(null);
+  const leftCommentPanelRef = useRef<HTMLDivElement>(null);
+  const rightCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [showPlusButton, setShowPlusButton] = useState(false);
 
-  const commentListHeightChanged = (isChat: boolean, newHeight: number, offset: number) => {
+  const commentListHeightChanged = (isRight: boolean, newHeight: number, offset: number) => {
     // Get the height of the idea object
     const containerHeight = containerRef.current?.getBoundingClientRect().height || 0;
     // Calculate how far past the idea object the comments go
     const commentOverflow = (offset || 0) + newHeight - containerHeight;
-    setCommentOverflow(isChat, idea.id, Math.max(0, commentOverflow));
+    setCommentOverflow(isRight, idea.id, Math.max(0, commentOverflow));
   };
 
   const newBranch = () => {
@@ -132,13 +132,13 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
     >
       <SidePanel>
         <div
-          ref={baseCommentPanelRef}
+          ref={leftCommentPanelRef}
           onMouseEnter={() => setIsHighlighted(true)}
           onMouseLeave={() => setIsHighlighted(false)}>
           <CommentList
-            offset={baseCommentOffset}
-            comments={baseComments}
-            onHeightChanged={(newHeight) => commentListHeightChanged(false, newHeight, baseCommentOffset)} />
+            offset={leftCommentOffset}
+            comments={leftComments}
+            onHeightChanged={(newHeight) => commentListHeightChanged(false, newHeight, leftCommentOffset)} />
         </div>
       </SidePanel>
       <CenterPanel>
@@ -184,13 +184,13 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, baseCommentOffset, 
       </CenterPanel>
       <SidePanel>
         <div
-          ref={chatCommentPanelRef}
+          ref={rightCommentPanelRef}
           onMouseEnter={() => setIsHighlighted(true)}
           onMouseLeave={() => setIsHighlighted(false)}>
           <CommentList
-            offset={chatCommentOffset}
-            comments={chatComments}
-            onHeightChanged={(newHeight) => commentListHeightChanged(true, newHeight, chatCommentOffset)} />
+            offset={rightCommentOffset}
+            comments={rightComments}
+            onHeightChanged={(newHeight) => commentListHeightChanged(true, newHeight, rightCommentOffset)} />
         </div>
       </SidePanel>
     </Container>

@@ -17,8 +17,8 @@ const HistoryContainer = () => {
   const ideas = useAppSelector(state => selectIdeasById(state, activeIdeaIds))
 
   // Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
-  const [baseCommentOverflows, setBaseCommentOverflows] = useState<{ [key: number]: number }>({});
-  const [chatCommentOverflows, setChatCommentOverflows] = useState<{ [key: number]: number }>({});
+  const [leftCommentOverflows, setLeftCommentOverflows] = useState<{ [key: number]: number }>({});
+  const [rightCommentOverflows, setRightCommentOverflows] = useState<{ [key: number]: number }>({});
 
   const setCommentOverflow = useCallback((isChat: boolean, ideaId: number, height: number) => {
     const updater = (prevHeights: { [key: number]: number }) => {
@@ -26,8 +26,8 @@ const HistoryContainer = () => {
       return { ...prevHeights, [ideaId]: height };
     };
 
-    if (isChat) setChatCommentOverflows(updater);
-    else setBaseCommentOverflows(updater);
+    if (isChat) setRightCommentOverflows(updater);
+    else setLeftCommentOverflows(updater);
   }, []);
 
   return (
@@ -36,15 +36,15 @@ const HistoryContainer = () => {
         <StartingHints />
       }
       {!creatingSection && ideas.map((idea, index) => {
-        const baseOverflow = index === 0 ? 0 : baseCommentOverflows[ideas[index - 1].id];
-        const chatOverflow = index === 0 ? 0 : chatCommentOverflows[ideas[index - 1].id];
+        const baseOverflow = index === 0 ? 0 : leftCommentOverflows[ideas[index - 1].id];
+        const chatOverflow = index === 0 ? 0 : rightCommentOverflows[ideas[index - 1].id];
         return (
           <IdeaContainer
             key={idea.id}
             idea={idea}
-            chatCommentOffset={chatOverflow}
+            rightCommentOffset={chatOverflow}
             setCommentOverflow={setCommentOverflow}
-            baseCommentOffset={baseOverflow} />
+            leftCommentOffset={baseOverflow} />
         )
       })}
     </StyledHistoryContainer>

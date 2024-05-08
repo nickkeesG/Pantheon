@@ -10,8 +10,8 @@ function createEmptyChatDaemonConfig(): ChatDaemonConfig {
   return {
     id: Date.now(),
     name: '',
-    description: '',
-    rules: '',
+    systemPrompt: '',
+    userPrompts: ['Say something funny!'],
     enabled: false
   };
 }

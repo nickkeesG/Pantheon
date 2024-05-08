@@ -21,14 +21,35 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
   const [isEdited, setIsEdited] = useState(false);
 
   const [name, setName] = useState(config.name) || '';
-  const [description, setDescription] = useState(config.description || '');
-  const [rules, setRules] = useState(config.rules || '');
+  const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt || '');
+  const [userPrompts, setUserPrompts] = useState(config.userPrompts || []);
 
   const dispatch = useAppDispatch();
 
   const nameRef = useRef<HTMLTextAreaElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-  const rulesRef = useRef<HTMLTextAreaElement>(null);
+  const systemPromptRef = useRef<HTMLTextAreaElement>(null);
+  const userPromptRefs = useRef<HTMLTextAreaElement[]>([]);
+
+  const handleUserPromptChange = (index: number, value: string, textArea: HTMLTextAreaElement) => {
+    const newUserPrompts = [...userPrompts];
+    newUserPrompts[index] = value;
+    setUserPrompts(newUserPrompts);
+    setIsEdited(true);
+    resizeTextArea(textArea);
+  }
+
+  const addUserPrompt = () => {
+    setUserPrompts([...userPrompts, '']);
+    setIsEdited(true);
+  }
+
+  const deleteUserPrompt = (index: number) => {
+    if (userPrompts.length > 1) {
+      const updatedPrompts = [...userPrompts.slice(0, index), ...userPrompts.slice(index + 1)];
+      setUserPrompts(updatedPrompts);
+      setIsEdited(true);
+    }
+  };
 
   const resizeTextArea = (textArea: HTMLTextAreaElement | null) => {
     if (textArea) {
@@ -38,20 +59,18 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
   };
 
   useEffect(() => {
-    // Adjust the height of the text areas
     if (!isCollapsed) {
-      resizeTextArea(descriptionRef.current);
-      resizeTextArea(rulesRef.current);
+      resizeTextArea(systemPromptRef.current);
+      userPromptRefs.current.forEach((ref) => resizeTextArea(ref));
     }
-  }, [description, rules, isCollapsed]);
+  }, [systemPrompt, userPrompts, isCollapsed]);
 
   const updateDaemonConfig = () => {
     try {
       const newConfig = {
         ...config,
         name: name,
-        description: description,
-        rules: rules,
+        systemPrompt: systemPrompt,
         enabled: isEnabled,
       };
       if (isNewDaemon) {
@@ -70,7 +89,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
   return (
     <ChatDaemonSettingsContainer>
       <span>
-        <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} /> 
+        <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} />
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
           {isNewDaemon && (<>New daemon</>)}
@@ -99,31 +118,36 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
           </label>
           <br />
           <label>
-            Description:
+            System Prompt:
             <TextArea
-              ref={descriptionRef}
-              value={description}
+              ref={systemPromptRef}
+              value={systemPrompt}
               onChange={(e) => {
-                setDescription(e.target.value);
+                setSystemPrompt(e.target.value);
                 setIsEdited(true);
                 resizeTextArea(e.target);
               }}
               style={{ width: '100%' }}
             />
           </label>
-          <label>
-            Rules:
-            <TextArea
-              ref={rulesRef}
-              value={rules}
-              onChange={(e) => {
-                setRules(e.target.value);
-                setIsEdited(true);
-                resizeTextArea(e.target);
-              }}
-              style={{ width: '100%'}}
-            />
-          </label>
+          <br />
+          <label>User Prompts:</label>
+          {userPrompts.map((prompt, index) => (
+            <div key={index}>
+              <TextArea
+                ref={(el) => userPromptRefs.current[index] = el as HTMLTextAreaElement}
+                value={prompt}
+                onChange={(e) => handleUserPromptChange(index, e.target.value, e.target)}
+                style={{ width: '100%' }}
+              />
+              <ButtonSmall onClick={() => deleteUserPrompt(index)}>
+                Delete
+              </ButtonSmall>
+            </div>
+          ))}
+          <ButtonSmall onClick={addUserPrompt}>
+            Add Prompt
+          </ButtonSmall>
         </>
       )}
     </ChatDaemonSettingsContainer>

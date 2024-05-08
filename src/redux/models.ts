@@ -40,8 +40,8 @@ export interface Comment {
 export interface ChatDaemonConfig {
   id: number;
   name: string;
-  description: string;
-  rules: string;
+  systemPrompt: string;
+  userPrompts: string[];
   enabled: boolean;
 }
 

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Idea } from '../redux/models';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
 import {dispatchError} from '../errorHandler';
@@ -18,6 +17,11 @@ const Synchronizer = () => {
   const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
   const synchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
+  useEffect(() => {
+    const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
+    setBaseDaemon(daemon);
+  }, [baseDaemonConfig]);
+
   // Gets surprisal for a single idea, and dispatches it to redux
   const requestSurprisal = useCallback(async (fullContext: string, partialContext: string, targetString: string, ideaId: number) => {
     setCurrentlyRequestingSurprisal(true);
@@ -31,26 +35,6 @@ const Synchronizer = () => {
     }
     setCurrentlyRequestingSurprisal(false);
   }, [openAIKey, openAIOrgId, baseModel, dispatch]);
-
-  // Currently surprisal is measured by only showing the model user generated ideas
-  const getFullContext = useCallback((pastIdeas: Idea[], ideaId: number, daemon: BaseDaemon) => {
-    let fullContext = "";
-    for (let i = 0; i < ideaId; i++) {
-      fullContext += '\n' + daemon.ideaTemplate.replace("{}", pastIdeas[i].text);
-    }
-
-    fullContext = daemon.mainTemplate.replace("{}", fullContext);
-    const ideaPrefix = daemon.ideaTemplate.substring(0, daemon.ideaTemplate.indexOf("{}"));
-    fullContext += "\n" + ideaPrefix;
-    return fullContext;
-  }, []);
-
-  // Partial context is just the idea prefix (and implicity, any previous tokens in the same idea)
-  const getPartialContext = useCallback((pastIdeas: Idea[], ideaId: number, daemon: BaseDaemon) => {
-    const ideaPrefix = daemon.ideaTemplate.substring(0, daemon.ideaTemplate.indexOf("{}"));
-    let partialContext = ideaPrefix;
-    return partialContext;
-  }, []);
 
   useEffect(() => {
     const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
@@ -74,8 +58,10 @@ const Synchronizer = () => {
               }
 
               let targetString = activeIdeas[i].text;
-              let fullContext = getFullContext(activeIdeas, i, baseDaemon);
-              let partialContext = getPartialContext(activeIdeas, i, baseDaemon);
+              let pastIdeas = activeIdeas.slice(0, i);
+
+              let fullContext = baseDaemon.getContextWithPrefix(pastIdeas);
+              let partialContext = baseDaemon.getPrefix();
               requestSurprisal(fullContext, partialContext, targetString, activeIdeas[i].id);
               break;
             }
@@ -94,8 +80,6 @@ const Synchronizer = () => {
       openAIOrgId, 
       currentlyRequestingSurprisal, 
       synchronizerActive, 
-      getFullContext, 
-      getPartialContext, 
       requestSurprisal]);
 
   return null;

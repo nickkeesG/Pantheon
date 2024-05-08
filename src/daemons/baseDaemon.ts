@@ -32,6 +32,17 @@ class BaseDaemon {
 
     return context;
   }
+
+  getPrefix(): string {
+    return this.ideaTemplate.substring(0, this.ideaTemplate.indexOf("{}"));
+  }
+
+  getContextWithPrefix(pastIdeas: Idea[]): string {
+    let context = this.getContext(pastIdeas);
+    context += "\n" + this.getPrefix();
+    return context;
+  }
+  
 }
 
 export default BaseDaemon;

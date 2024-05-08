@@ -54,7 +54,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const getRawContext = () => {
     try {
       const daemon = new BaseDaemon(config);
-      setRawContext(daemon.getPastContext(pastIdeas, commentsForPastIdeas));
+      setRawContext(daemon.getContextWithComments(pastIdeas, commentsForPastIdeas));
     }
     catch (error) {
       console.error("Failed to get raw context:", error); // TODO show an error to the user

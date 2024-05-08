@@ -23,7 +23,19 @@ class BaseDaemon {
     this.evaluationTemplate = hardcodedEvaluationTemplate;
   }
 
-  getPastContext(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
+  getContext(pastIdeas: Idea[]): string {
+    let context = "";
+
+    for (let i = 0; i < pastIdeas.length; i++) {
+      context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
+    }
+
+    context = this.mainTemplate.replace("{}", context);
+
+    return context;
+  }
+
+  getContextWithComments(pastIdeas: Idea[], commentsForPastIdeas: Record<number, Comment[]>): string {
     let context = "";
 
     for (let i = 0; i < pastIdeas.length; i++) {
@@ -44,7 +56,7 @@ class BaseDaemon {
   }
 
   getFullContext(pastIdeas: Idea[], currentIdeas: Idea[], selectedIdeaIdx: number, commentsForPastIdeas: Record<number, Comment[]>): string {
-    let context = this.getPastContext(pastIdeas, commentsForPastIdeas);
+    let context = this.getContextWithComments(pastIdeas, commentsForPastIdeas);
 
     for (let i = 0; i < selectedIdeaIdx + 1; i++) {
       context += '\n' + this.ideaTemplate.replace("{}", currentIdeas[i].text);

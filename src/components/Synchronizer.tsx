@@ -3,12 +3,11 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
 import {dispatchError} from '../errorHandler';
-import { selectIdeasById, setSurprisalToIdea } from '../redux/ideaSlice';
+import { selectCurrentBranchIdeas, setSurprisalToIdea } from '../redux/ideaSlice';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
-  const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
-  const activeIdeas = useAppSelector(state => selectIdeasById(state, activeIdeaIds));
+  const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const baseModel = useAppSelector(state => state.config.baseModel);
@@ -49,20 +48,20 @@ const Synchronizer = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!currentlyRequestingSurprisal && synchronizerActive) {
-        if (baseDaemon && activeIdeas.length > 0) {         
-          for (let i = 0; i < activeIdeas.length; i++) {
-            if (activeIdeas[i].textTokens.length === 0) {
+        if (baseDaemon && currentBranchIdeas.length > 0) {         
+          for (let i = 0; i < currentBranchIdeas.length; i++) {
+            if (currentBranchIdeas[i].textTokens.length === 0) {
               if(!openAIKey) {
                 dispatchError("OpenAI API key not set");
                 return;
               }
 
-              let targetString = activeIdeas[i].text;
-              let pastIdeas = activeIdeas.slice(0, i);
+              let targetString = currentBranchIdeas[i].text;
+              let pastIdeas = currentBranchIdeas.slice(0, i);
 
               let fullContext = baseDaemon.getContextWithPrefix(pastIdeas);
               let partialContext = baseDaemon.getPrefix();
-              requestSurprisal(fullContext, partialContext, targetString, activeIdeas[i].id);
+              requestSurprisal(fullContext, partialContext, targetString, currentBranchIdeas[i].id);
               break;
             }
           }
@@ -73,7 +72,7 @@ const Synchronizer = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [activeIdeas, 
+  }, [currentBranchIdeas, 
       baseDaemon, 
       baseModel, 
       openAIKey, 

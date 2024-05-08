@@ -91,11 +91,12 @@ export async function GenerateChatComment(systemPrompt: string, userPrompts: str
     return data.messages[data.messages.length - 1].content;
 }
 
-export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string) {
+export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {
     var data = {
         model: baseModel,
         prompt: prompt,
         max_tokens: 64,
+        temperature: temperature,
         stop: ["\n"],
         n: 6,
     };

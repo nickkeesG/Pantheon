@@ -1,24 +1,18 @@
 import { Idea, BaseDaemonConfig } from '../redux/models';
-
-// TODO - make this configurable
-const hardcodedEvaluationTemplate = ` {Comment accepted (y/n):{}}`;
+import { GenerateBaseCompletions } from '../llmHandler';
 
 /*
-  Behavior mirroring existing comments. Using base model for higher variance behavior
+  Used to generate base model completions of the user text
 */
 class BaseDaemon {
   config: BaseDaemonConfig;
   mainTemplate: string;
   ideaTemplate: string;
-  commentTemplate: string;
-  evaluationTemplate: string;
 
   constructor(config: BaseDaemonConfig) {
     this.config = config;
     this.mainTemplate = config.mainTemplate;
     this.ideaTemplate = config.ideaTemplate;
-    this.commentTemplate = config.commentTemplate;
-    this.evaluationTemplate = hardcodedEvaluationTemplate;
   }
 
   getContext(pastIdeas: Idea[]): string {
@@ -41,6 +35,13 @@ class BaseDaemon {
     let context = this.getContext(pastIdeas);
     context += "\n" + this.getPrefix();
     return context;
+  }
+
+  getCompletions = async (currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, baseModel: string) => {
+    const context = this.getContext(currentIdeas);
+    const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, this.config.temperature);
+
+    return completions;
   }
   
 }

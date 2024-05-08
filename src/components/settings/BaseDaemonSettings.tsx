@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectActivePastIdeas } from '../../redux/ideaSlice';
+import { dispatchError } from '../../errorHandler';
 
 
 const BaseDaemonSettingsContainer = styled.div`
@@ -24,11 +25,10 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
 
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
-  const [commentTemplate, setCommentTemplate] = useState(config.commentTemplate || '');
+  const [temperature, setTemperature] = useState(config.temperature !== undefined ? config.temperature : 0.7);
 
   const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
   const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
-  const commentTemplateRef = useRef<HTMLTextAreaElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -40,13 +40,11 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   };
 
   useEffect(() => {
-    // Adjust the height of the text areas
     if (!isCollapsed) {
       resizeTextArea(mainTemplateRef.current);
       resizeTextArea(ideaTemplateRef.current);
-      resizeTextArea(commentTemplateRef.current);
     }
-  }, [mainTemplate, ideaTemplate, commentTemplate, isCollapsed]);
+  }, [mainTemplate, ideaTemplate, isCollapsed]);
 
   const getRawContext = () => {
     try {
@@ -54,7 +52,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
       setRawContext(daemon.getContext(pastIdeas));
     }
     catch (error) {
-      console.error("Failed to get raw context:", error); // TODO show an error to the user
+      dispatchError('Failed to get raw context');
     }
   }
 
@@ -64,13 +62,12 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
         ...config,
         mainTemplate: mainTemplate,
         ideaTemplate: ideaTemplate,
-        commentTemplate: commentTemplate,
+        temperature: temperature,
       };
       dispatch(updateBaseDaemon(newConfig));
       setIsEdited(false);
     } catch (error) {
-      console.error("Failed to update config:", error);
-      // TODO: Handle the error state appropriately, e.g., show an error message to the user
+      dispatchError('Failed to update config' + error);
     }
   }
 
@@ -89,7 +86,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
       </span>
       {!isCollapsed && (
         <>
-          <br/>
+          <br />
           <label>
             Main template:
             <TextArea
@@ -116,15 +113,18 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
               style={{ width: '100%' }}
             />
           </label>
+          <br />
           <label>
-            Comment template:
-            <TextArea
-              ref={commentTemplateRef}
-              value={commentTemplate}
+            Temperature: <span>{temperature.toFixed(2)}</span>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.05"
+              value={temperature}
               onChange={(e) => {
-                setCommentTemplate(e.target.value);
+                setTemperature(parseFloat(e.target.value));
                 setIsEdited(true);
-                resizeTextArea(e.target);
               }}
               style={{ width: '100%' }}
             />

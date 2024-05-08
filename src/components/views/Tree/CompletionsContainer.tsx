@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
-import { GenerateBaseCompletions } from '../../../llmHandler';
 import { dispatchError } from '../../../errorHandler';
 import { fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
@@ -74,8 +73,7 @@ const CompletionsContainer = () => {
       if (!baseDaemon) {
         throw new Error('Base daemon not initialized');
       }
-      const context = baseDaemon.getContext(currentBranchIdeas);
-      const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel);
+      const completions = await baseDaemon.getCompletions(currentBranchIdeas, openAIKey, openAIOrgId, baseModel);
       setCompletions(completions);
     } catch (error) {
       dispatchError(error);

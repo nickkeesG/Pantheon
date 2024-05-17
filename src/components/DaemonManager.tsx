@@ -57,9 +57,15 @@ const DaemonManager = () => {
   }, [openAIKey, openAIOrgId, chatModel, dispatch]);
 
   const selectCurrentIdea = useCallback(async (ideasEligbleForComments: Idea[]) => {
+    // First try to find an idea with a mention
+    const ideaWithMention = ideasEligbleForComments.find(idea => idea.mention);
+    if (ideaWithMention) {
+      return ideaWithMention;
+    }
+
     // Ramdomly select an idea
-    const currentIdea = ideasEligbleForComments[Math.floor(Math.random() * ideasEligbleForComments.length)];
-    return currentIdea;
+    const randomIdea = ideasEligbleForComments[Math.floor(Math.random() * ideasEligbleForComments.length)];
+    return randomIdea;
   }, []);
 
 

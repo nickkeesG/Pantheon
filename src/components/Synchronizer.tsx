@@ -14,7 +14,6 @@ const Synchronizer = () => {
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
   const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
-  const synchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
   useEffect(() => {
     const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
@@ -47,7 +46,7 @@ const Synchronizer = () => {
  // TODO Disabled due to network and processing load. Enable later once improved.
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!currentlyRequestingSurprisal && synchronizerActive) {
+      if (!currentlyRequestingSurprisal) {
         if (baseDaemon && currentBranchIdeas.length > 0) {         
           for (let i = 0; i < currentBranchIdeas.length; i++) {
             if (currentBranchIdeas[i].textTokens.length === 0) {
@@ -77,8 +76,7 @@ const Synchronizer = () => {
       baseModel, 
       openAIKey, 
       openAIOrgId, 
-      currentlyRequestingSurprisal, 
-      synchronizerActive, 
+      currentlyRequestingSurprisal,
       requestSurprisal]);
 
   return null;

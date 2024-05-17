@@ -6,6 +6,7 @@ import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../../../hooks';
 import { approveComment } from '../../../redux/commentSlice';
 import { fadeInAnimation } from '../../../styles/mixins';
+import Modal from '../../common/Modal';
 
 
 const CommentName = styled.div`
@@ -55,19 +56,64 @@ position: relative;
   }
 `;
 
+const HistoryPanel = styled.div`
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 20px 44px 20px 20px;
+  border-radius: 10px;
+  border: 0.5px solid var(--line-color);
+  width: 50vw;
+  max-width: 1000px;
+  max-height: 80vh;
+  overflow-y: auto;
+`;
+
 
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
   const dispatch = useAppDispatch();
+  const [isCommentHistoryOpen, setIsCommentHistoryOpen] = React.useState(false);
+
+  const toggleCommentHistory = () => {
+    setIsCommentHistoryOpen(!isCommentHistoryOpen);
+  }
+
+  // This is copied from IdeaText. TODO - refactor to a shared location
+  const renderTextWithNewLines = (text: string) => {
+    return text.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index !== text.split('\n').length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
 
   return (
-    <StyledCommentContainer>
-      <CommentName>{comment.daemonName}</CommentName>
-      <CommentText>{comment.text}</CommentText>
-      <ThumbsUpButton
-        userApproved={comment.userApproved}
-        onClick={() => dispatch(approveComment(comment.id))}
-      />
-    </StyledCommentContainer>
+    <div>
+      <StyledCommentContainer onClick={toggleCommentHistory}>
+        <CommentName>{comment.daemonName}</CommentName>
+        <CommentText>{comment.text}</CommentText>
+        <ThumbsUpButton
+          userApproved={comment.userApproved}
+          onClick={() => dispatch(approveComment(comment.id))}
+        />
+      </StyledCommentContainer>
+      {isCommentHistoryOpen && (
+        <Modal toggleVisibility={toggleCommentHistory} zIndex={100}>
+          <HistoryPanel>
+            <h2>Comment History</h2>
+            {comment.history.map(([author, text], index) => (
+              <div key={index}>
+                <h3>{author.toUpperCase()}</h3> 
+                <br />
+                {renderTextWithNewLines(text)}
+                <br />
+                <br />
+              </div>
+            ))}
+          </HistoryPanel>
+        </Modal>
+      )}
+    </div>
   );
 };
 

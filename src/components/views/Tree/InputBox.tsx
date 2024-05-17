@@ -149,7 +149,7 @@ const InputBox = () => {
           }}
           title="Press Ctrl + Enter to send text to instruct daemon"
         >
-          Send idea as to instruct daemon
+          Send idea to instruct daemon
         </InstructButton>
       </ButtonRow>
     </Container>

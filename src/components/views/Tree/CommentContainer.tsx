@@ -63,7 +63,7 @@ const HistoryPanel = styled.div`
   border-radius: 10px;
   border: 0.5px solid var(--line-color);
   width: 50vw;
-  max-width: 1000px;
+  max-width: 800px;
   max-height: 80vh;
   overflow-y: auto;
 `;

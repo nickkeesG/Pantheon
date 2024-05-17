@@ -27,7 +27,6 @@ const commentSlice = createSlice({
         userApproved: false
       };
       state.comments[newId] = newComment;
-      console.log("history: ", action.payload.history)
     },
     approveComment(state, action: PayloadAction<number>) {
       const comment = state.comments[action.payload]

@@ -15,17 +15,19 @@ const commentSlice = createSlice({
   name: 'comment',
   initialState,
   reducers: {
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, history: [string, string][], daemonName: string, daemonType: string }>) {
       const newId = Date.now();
       const newComment: Comment = {
         id: newId,
         ideaId: action.payload.ideaId,
         text: action.payload.text,
+        history: action.payload.history,
         daemonName: action.payload.daemonName,
         daemonType: action.payload.daemonType,
         userApproved: false
       };
       state.comments[newId] = newComment;
+      console.log("history: ", action.payload.history)
     },
     approveComment(state, action: PayloadAction<number>) {
       const comment = state.comments[action.payload]

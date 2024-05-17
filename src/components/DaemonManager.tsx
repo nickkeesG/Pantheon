@@ -5,7 +5,7 @@ import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
-import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
+import { selectActiveThoughtsEligibleForComments, selectActivePastThoughts } from '../redux/ideaSlice';
 
 /*
 Central controller for the deployment of daemons.
@@ -17,8 +17,10 @@ const DaemonManager = () => {
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
-  const ideasEligbleForComments = useAppSelector(selectActiveIdeasEligibleForComments);
-  const pastIdeas = useAppSelector(selectActivePastIdeas);
+
+  // Only gets ideas which are "thoughts" (as opposed to instructions or responses to instructions)
+  const ideasEligbleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
+  const pastIdeas = useAppSelector(selectActivePastThoughts);
 
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
 

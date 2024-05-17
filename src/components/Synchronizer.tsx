@@ -3,12 +3,12 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
 import {dispatchError} from '../errorHandler';
-import { selectCurrentBranchIdeas, setSurprisalToIdea, setMentionToIdea } from '../redux/ideaSlice';
+import { selectCurrentBranchThoughts, setSurprisalToIdea, setMentionToIdea } from '../redux/ideaSlice';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
-  const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
+  const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const baseModel = useAppSelector(state => state.config.baseModel);

@@ -6,7 +6,7 @@ import { createIdea } from '../../../redux/thunks';
 import { setCreatingSection, setLastTimeActive } from '../../../redux/uiSlice';
 import InstructDaemon from '../../../daemons/instructDaemon';
 import { dispatchError } from '../../../errorHandler';
-import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
+import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
 
 
 const Container = styled.div`
@@ -55,7 +55,9 @@ const InputBox = () => {
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const instructModel = useAppSelector(state => state.config.chatModel); // using the chat model
-  const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
+
+  // Instuct daemon can only see thoughts, and the most recent instruction (no past instructions or responses)
+  const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
 
   useEffect(() => {
     const daemon = instructDaemonConfig ? new InstructDaemon(instructDaemonConfig) : null;

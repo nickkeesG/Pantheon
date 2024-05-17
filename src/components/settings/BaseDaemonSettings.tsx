@@ -5,7 +5,7 @@ import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
 import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectActivePastIdeas } from '../../redux/ideaSlice';
+import { selectActivePastThoughts } from '../../redux/ideaSlice';
 import { dispatchError } from '../../errorHandler';
 
 
@@ -21,7 +21,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEdited, setIsEdited] = useState(false);
   const [rawContext, setRawContext] = useState('');
-  const pastIdeas = useAppSelector(selectActivePastIdeas);
+
+  // Base daemon can only see "thoughts" (as opposed to instructions or responses to instructions)
+  const pastIdeas = useAppSelector(selectActivePastThoughts);
 
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');

@@ -123,7 +123,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
   }
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
-  if (!(idea.type === "user")) { ideaContainerStyle.borderColor = 'transparent' }
+  if (!(idea.type === "thought")) { ideaContainerStyle.borderColor = 'transparent' }
 
   return (
     <Container

@@ -133,7 +133,7 @@ export const finishCreatingSection = (newSectionId: number): AppThunk => (dispat
   dispatch(setCreatingSection(false));
 };
 
-export const createIdea = (text: string, type: string = "user"): AppThunk => (dispatch, getState) => {
+export const createIdea = (text: string, type: string = "thought"): AppThunk => (dispatch, getState) => {
   const state = getState();
   
   let sectionId = state.ui.activeSectionId;

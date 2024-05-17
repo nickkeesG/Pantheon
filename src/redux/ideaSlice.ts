@@ -86,14 +86,14 @@ export const selectSectionBranchRootIdeas = createSelector(
 )
 
 // TODO Probably ideas should also have references to their comments
-export const selectActiveIdeasEligibleForComments = createSelector(
+export const selectActiveThoughtsEligibleForComments = createSelector(
   [(state: RootState) => state.idea.ideas,
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
-      // filter out ideas that are not user ideas
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "user"));
+      // filter out ideas that are not thoughts
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "thought"));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
@@ -107,14 +107,14 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   }
 )
 
-export const selectActivePastIdeas = createSelector(
+export const selectActivePastThoughts = createSelector(
   [(state: RootState) => state.idea.ideas,
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
-      // filter out ideas that are not user ideas
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "user"));
+      // filter out ideas that are not thoughts
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "thought"));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
@@ -130,13 +130,13 @@ export const selectActivePastIdeas = createSelector(
   }
 )
 
-export const selectCurrentBranchIdeas = createSelector(
+export const selectCurrentBranchThoughts = createSelector(
   [
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
-    // filter out ideas that are not user ideas
-    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "user"));
+    // filter out ideas that are not thoughts
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "thought"));
     return activeIdeas;
   }
 )

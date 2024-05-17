@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
+import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
 import { dispatchError } from '../../../errorHandler';
@@ -51,7 +51,7 @@ const StyledIndividualCompletion = styled.div`
 
 const CompletionsContainer = () => {
   const [completions, setCompletions] = useState<string[]>([]);
-  const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
+  const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
   const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
   const [contextUpToDate, setContextUpToDate] = useState(true);
   const [alreadyGettingCompletions, setAlreadyGettingCompletions] = useState(false);

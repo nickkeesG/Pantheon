@@ -14,7 +14,7 @@ export interface Section {
 
 export interface Idea {
   id: number;
-  isUser: boolean;
+  type: string;
   sectionId: number;
   parentIdeaId: number | null;
   text: string;

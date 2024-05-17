@@ -89,7 +89,7 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   (ideas, activeIdeaIds, comments) => {
     try {
       // filter out ideas that are not user ideas
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "user"));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
@@ -110,7 +110,7 @@ export const selectActivePastIdeas = createSelector(
   (ideas, activeIdeaIds, comments) => {
     try {
       // filter out ideas that are not user ideas
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "user"));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
@@ -132,7 +132,7 @@ export const selectCurrentBranchIdeas = createSelector(
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
     // filter out ideas that are not user ideas
-    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "user"));
     return activeIdeas;
   }
 )

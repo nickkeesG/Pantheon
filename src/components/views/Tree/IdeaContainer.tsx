@@ -123,7 +123,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
   }
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
-  if (!idea.isUser) { ideaContainerStyle.borderColor = 'transparent' }
+  if (!(idea.type === "user")) { ideaContainerStyle.borderColor = 'transparent' }
 
   return (
     <Container
@@ -150,7 +150,12 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
               onClick={() => switchBranches(false)}
               style={{ visibility: hasBranches ? 'visible' : 'hidden' }} />
           </ActionPanel>
-          <StyledIdeaContainer style={ideaContainerStyle}>
+          <StyledIdeaContainer
+            style={{
+              ...ideaContainerStyle,
+              marginLeft: idea.type === "response" ? '20px' : undefined, // Responses to instructions are indented
+            }}
+          >
             <IdeaText idea={idea} />
             <PlusButton
               title='New branch'

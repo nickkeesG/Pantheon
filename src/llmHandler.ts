@@ -103,8 +103,6 @@ export async function GenerateBaseCompletions(prompt: string, openAIKey: string,
         n: 6,
     };
 
-    console.log(prompt);
-
     const config = {
         headers: {
             'Content-Type': 'application/json',

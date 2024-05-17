@@ -21,6 +21,7 @@ class InstructDaemon {
     userPrompt = userPrompt.replace("{CURRENT}", instruction);
 
     let response = await CallChatModel(this.config.systemPrompt, userPrompt, openaiKey, openaiOrgId, instructModel);
+
     return response;
   }
 }

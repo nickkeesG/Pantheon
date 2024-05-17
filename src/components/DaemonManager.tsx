@@ -72,23 +72,30 @@ const DaemonManager = () => {
         console.log('Chat daemon already active');
       }
       else {
-        // Randomly select a chat daemon
-        const chatDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-        if (chatDaemon) {
-          const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
+        const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
 
-          if (currentIdea) {
-            let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+        if (currentIdea.textTokens.length > 0) { // Only comment if idea has been processed by Synchronizer
+          let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
 
-            // To maintain backwards compatibility with base/chat naming
-            if (lastCommentColumn === 'base') { lastCommentColumn = 'left';}
-            if (lastCommentColumn === 'chat') { lastCommentColumn = 'right';}
+          // To maintain backwards compatibility with base/chat naming
+          if (lastCommentColumn === 'base') { lastCommentColumn = 'left';}
+          if (lastCommentColumn === 'chat') { lastCommentColumn = 'right';}
 
-            let column = lastCommentColumn === 'left' ? 'right' : 'left';
+          let column = lastCommentColumn === 'left' ? 'right' : 'left';
 
-            dispatchChatComment(pastIdeas, currentIdea, chatDaemon, column);
+          if (currentIdea.mention) {
+            const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
+            if (mentionedDaemon) {
+              dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
+            }
+          }
+          else {
+            // Randomly select daemon
+            const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+            dispatchChatComment(pastIdeas, currentIdea, daemon, column);
           }
         }
+        
       }
     }
   }, [ideasEligbleForComments,

@@ -153,7 +153,8 @@ export const createIdea = (text: string, type: string = "user"): AppThunk => (di
     parentIdeaId,
     text,
     textTokens: [],
-    tokenSurprisals: []
+    tokenSurprisals: [],
+    mention: ""
   }
   const newActiveIdeaIds = [...state.ui.activeIdeaIds, id];
 

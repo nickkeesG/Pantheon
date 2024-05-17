@@ -26,6 +26,37 @@ const IdeaText: React.FC<{ idea: Idea }> = ({ idea }) => {
     ));
   };
 
+  const getMentionColoring = (tokens: string[], mentionText: string): { [tokenIndex: number]: [number, number] } => {
+    const mentions: { [tokenIndex: number]: [number, number] } = {};
+    const fullText = tokens.join('').toLowerCase();
+    mentionText = mentionText.toLowerCase();
+    const matchIndices: number[] = [];
+
+    let matchIndex = fullText.indexOf(mentionText);
+    while (matchIndex !== -1) {
+      matchIndices.push(matchIndex);
+      matchIndex = fullText.indexOf(mentionText, matchIndex + 1);
+    }
+
+    let stringIndex = 0;
+    let currentMatchIndex = 0;
+    tokens.forEach((token, tokenIndex) => {
+      if (currentMatchIndex >= matchIndices.length) return;
+      if (stringIndex + token.length > matchIndices[currentMatchIndex]) {
+        const startColoring = Math.max(0, matchIndices[currentMatchIndex] - stringIndex);
+        const endColoring = Math.min(token.length, matchIndices[currentMatchIndex] - stringIndex + mentionText.length);
+        mentions[tokenIndex] = [startColoring, endColoring];
+        if (matchIndices[currentMatchIndex] + mentionText.length <= stringIndex + token.length) {
+          currentMatchIndex++;
+        }
+      }
+      stringIndex += token.length;
+    });
+    return mentions;
+  };
+
+  const mentions = (idea.mention && idea.mention !== "") ? getMentionColoring(idea.textTokens, "@" + idea.mention) : {};
+
   return (
     <>
       {(hasSurprisals && isSynchronizerActive) ? (
@@ -35,7 +66,17 @@ const IdeaText: React.FC<{ idea: Idea }> = ({ idea }) => {
               style={{ backgroundColor: getBackgroundColor(idea.tokenSurprisals[index]) }}
               title={`Surprisal: ${idea.tokenSurprisals[index].toFixed(2)}`}
             >
-              {token}
+              {
+                mentions[index] ? (
+                  <>
+                    {token.slice(0, mentions[index][0])}
+                    <span style={{ color: 'var(--text-color-blue)' }}>
+                      {token.slice(mentions[index][0], mentions[index][1])}
+                    </span>
+                    {token.slice(mentions[index][1])}
+                  </>
+                ) : token
+              }
             </span>
             {token.endsWith('\n') && <br />}
           </React.Fragment>

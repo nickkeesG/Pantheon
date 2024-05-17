@@ -3,7 +3,8 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
 import {dispatchError} from '../errorHandler';
-import { selectCurrentBranchIdeas, setSurprisalToIdea } from '../redux/ideaSlice';
+import { selectCurrentBranchIdeas, setSurprisalToIdea, setMentionToIdea } from '../redux/ideaSlice';
+import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
@@ -12,13 +13,20 @@ const Synchronizer = () => {
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const baseModel = useAppSelector(state => state.config.baseModel);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
+  const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
+  const [chatDaemonNames, setChatDaemonNames] = useState<string[]>([]);
   const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
 
   useEffect(() => {
     const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
     setBaseDaemon(daemon);
   }, [baseDaemonConfig]);
+
+  useEffect(() => {
+    const daemonNames = chatDaemonConfigs.map(config => config.name);
+    setChatDaemonNames(daemonNames);
+  }, [chatDaemonConfigs]);
 
   // Gets surprisal for a single idea, and dispatches it to redux
   const requestSurprisal = useCallback(async (fullContext: string, partialContext: string, targetString: string, ideaId: number) => {
@@ -55,6 +63,17 @@ const Synchronizer = () => {
                 return;
               }
 
+              // Find first mention to a chat daemons in the text (ignore case)
+              const chatDaemonNamesWithAt = chatDaemonNames.map(name => '@' + name);
+              const firstMention = chatDaemonNamesWithAt.find(name => 
+                new RegExp(name, 'i').test(currentBranchIdeas[i].text)
+              );
+              if (firstMention) {
+                const daemonName = firstMention.slice(1); //remove the at sign
+                dispatch(setMentionToIdea({ ideaId: currentBranchIdeas[i].id, mention: daemonName}));
+              }
+
+              // Get surprisal for the first idea without surprisal
               let targetString = currentBranchIdeas[i].text;
               let pastIdeas = currentBranchIdeas.slice(0, i);
 
@@ -76,8 +95,10 @@ const Synchronizer = () => {
       baseModel, 
       openAIKey, 
       openAIOrgId, 
+      chatDaemonNames,
       currentlyRequestingSurprisal,
-      requestSurprisal]);
+      requestSurprisal,
+      dispatch]);
 
   return null;
 }

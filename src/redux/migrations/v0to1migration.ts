@@ -42,7 +42,10 @@ export const V0to1Migration = (state: PersistedState): RootState => {
             userPrompts: [daemon.rules]
           }
         }),
-        ...defaultDaemonState.chatDaemons
+        ...defaultDaemonState.chatDaemons.map((daemon, index) => ({
+          ...daemon,
+          id: daemon.id + daemonState.chatDaemons.length + index
+        }))
       ],
       baseDaemon: {
         mainTemplate: daemonState.baseDaemon.mainTemplate,

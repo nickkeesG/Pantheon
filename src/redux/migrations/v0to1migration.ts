@@ -44,7 +44,7 @@ export const V0to1Migration = (state: PersistedState): RootState => {
         }),
         ...defaultDaemonState.chatDaemons.map((daemon, index) => ({
           ...daemon,
-          id: daemon.id + daemonState.chatDaemons.length + index
+          id: daemon.id + daemonState.chatDaemons.length
         }))
       ],
       baseDaemon: {

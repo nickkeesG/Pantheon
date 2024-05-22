@@ -59,9 +59,10 @@ const Settings = () => {
         <Modal toggleVisibility={toggleSettings} zIndex={100}>
           <SettingsPanel>
             <SettingsHeader>SETTINGS</SettingsHeader>
-            <ImportExportButtons />
             <hr />
             <ConfigSettings />
+            <hr />
+            <ImportExportButtons />
             <hr />
             <DaemonSettings key={key} />
             <hr />

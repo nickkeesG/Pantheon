@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { Button, ButtonHighlighted } from "../../styles/sharedStyles";
+import { Button, ButtonHighlighted, ContainerVertical } from "../../styles/sharedStyles";
 import { LuImport } from "react-icons/lu";
 import { PiExportBold } from "react-icons/pi";
-import { RootState } from "../../redux/store";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { importTree } from "../../redux/thunks";
@@ -28,10 +27,12 @@ const StyledButton = styled(Button)`
 
 const ImportExportButtons = () => {
   const dispatch = useAppDispatch();
-  const treeState = useAppSelector((state: RootState) => state.tree);
-  const sectionState = useAppSelector((state: RootState) => state.section);
-  const ideaState = useAppSelector((state: RootState) => state.idea);
-  const commentState = useAppSelector((state: RootState) => state.comment);
+  const treeState = useAppSelector(state => state.tree);
+  const sectionState = useAppSelector(state => state.section);
+  const ideaState = useAppSelector(state => state.idea);
+  const commentState = useAppSelector(state => state.comment);
+  const daemonState = useAppSelector(state => state.daemon);
+  const configState = useAppSelector(state => state.config);
 
   const importStateFromJson = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -52,7 +53,9 @@ const ImportExportButtons = () => {
       tree: treeState,
       section: sectionState,
       idea: ideaState,
-      comment: commentState
+      comment: commentState,
+      daemon: daemonState,
+      config: configState
     });
     const blob = new Blob([serializedState], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -66,20 +69,26 @@ const ImportExportButtons = () => {
   }
 
   return (
-    <ButtonsContainer>
-      <StyledButtonHighlighted as="label">
-        Import
-        <input type="file"
-          accept=".json"
-          onChange={importStateFromJson}
-          style={{ display: 'none' }} />
-        <LuImport style={{ fontSize: '20px' }} />
-      </StyledButtonHighlighted>
-      <StyledButton onClick={exportStateToJson}>
-        Export
-        <PiExportBold style={{ fontSize: '18px' }} />
-      </StyledButton>
-    </ButtonsContainer>
+    <ContainerVertical>
+      <p style={{ color: 'var(--text-color-dark)' }}>
+        Import or export entire app state, including trees, comments, daemons and settings.
+        Importing will override the existing state and cannot be undone.
+      </p>
+      <ButtonsContainer>
+        <StyledButtonHighlighted as="label">
+          Import
+          <input type="file"
+            accept=".json"
+            onChange={importStateFromJson}
+            style={{ display: 'none' }} />
+          <LuImport style={{ fontSize: '20px' }} />
+        </StyledButtonHighlighted>
+        <StyledButton onClick={exportStateToJson}>
+          Export
+          <PiExportBold style={{ fontSize: '18px' }} />
+        </StyledButton>
+      </ButtonsContainer>
+    </ContainerVertical>
   )
 }
 

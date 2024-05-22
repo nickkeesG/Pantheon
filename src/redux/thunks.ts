@@ -2,9 +2,9 @@ import { resetTreeSlice, addSectionToTree, replaceTreeSlice, TreeState, addTree,
 import { SectionState, replaceSectionSlice, resetSectionSlice, addIdeaToParentSection, addSection, deleteSection } from "./sectionSlice";
 import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById, selectMostRecentIdeaInTree, deleteIdeas } from "./ideaSlice";
 import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentSlice";
-import { resetDaemonSlice } from "./daemonSlice";
-import { clearErrors } from './errorSlice';
-import { resetConfigSlice } from './configSlice';
+import { DaemonState, replaceDaemonSlice, resetDaemonSlice } from "./daemonSlice";
+import { addError, clearErrors } from './errorSlice';
+import { ConfigState, replaceConfigSlice, resetConfigSlice } from './configSlice';
 import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView, setCreatingSection } from "./uiSlice";
 import { Idea, Section, Tree } from "./models";
 import { AppThunk } from './store';
@@ -135,7 +135,7 @@ export const finishCreatingSection = (newSectionId: number): AppThunk => (dispat
 
 export const createIdea = (text: string, isUser: boolean = true): AppThunk => (dispatch, getState) => {
   const state = getState();
-  
+
   let sectionId = state.ui.activeSectionId;
   let parentIdeaId: number | null = state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1];
 
@@ -162,24 +162,36 @@ export const createIdea = (text: string, isUser: boolean = true): AppThunk => (d
   dispatch(setActiveIdeaIds(newActiveIdeaIds))
 }
 
-export const importTree = (json: string): AppThunk => (dispatch, getState) => {
+export const importAppState = (json: string): AppThunk => (dispatch) => {
+  // TODO Importing old states, with different redux models
   try {
-    const importedState = JSON.parse(json) as { tree: TreeState; section: SectionState; idea: IdeaState; comment: CommentState };
-    console.debug(importedState)
+    const importedState = JSON.parse(json) as {
+      tree: TreeState;
+      section: SectionState;
+      idea: IdeaState;
+      comment: CommentState;
+      daemon: DaemonState;
+      config: ConfigState;
+    };
+
     dispatch(replaceTreeSlice(importedState.tree))
     dispatch(replaceSectionSlice(importedState.section));
     dispatch(replaceIdeaSlice(importedState.idea));
     dispatch(replaceCommentSlice(importedState.comment));
+    dispatch(replaceDaemonSlice(importedState.daemon));
+    dispatch(replaceConfigSlice(importedState.config));
+
     const allImportedIdeas = Object.values(importedState.idea.ideas);
     const mostRecentIdea = allImportedIdeas.reduce((prev, current) => (prev.id > current.id) ? prev : current);
     const currentSection = importedState.section.sections[mostRecentIdea.sectionId];
-    console.debug(allImportedIdeas, mostRecentIdea)
     dispatch(setActiveTreeId(currentSection.treeId));
     dispatch(setActiveSectionId(currentSection.id));
     dispatch(setActiveIdeaIds(getAllAncestorIds(allImportedIdeas, mostRecentIdea.id)));
-    console.info("Import finished successfully")
+
     // TODO Notify the user that the import was successful
+    console.info("Import finished successfully")
   } catch (error) {
+    // TODO Show error to user
     console.error('Error parsing the imported file', error);
   }
 }

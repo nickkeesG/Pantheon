@@ -62,10 +62,11 @@ const Settings = () => {
         <Modal toggleVisibility={toggleSettings} zIndex={100}>
           <SettingsPanel>
             <SettingsHeader>SETTINGS</SettingsHeader>
-            <ImportExportButtons />
             <ToggleButton initialState={darkThemeActive ? darkThemeActive : false} onToggle={newValue => dispatch(setDarkTheme(newValue))} />
             <hr />
             <ConfigSettings />
+            <hr />
+            <ImportExportButtons />
             <hr />
             <DaemonSettings key={key} />
             <hr />

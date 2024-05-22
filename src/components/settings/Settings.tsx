@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
 import Modal from '../common/Modal';
 import ConfigSettings from './ConfigSettings';
@@ -10,6 +10,8 @@ import ImportExportButtons from './ImportExportButtons';
 import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { resetState } from '../../redux/thunks';
 import { resetDaemonSlice } from '../../redux/daemonSlice';
+import ToggleButton from '../common/ToggleButton';
+import { setDarkTheme } from '../../redux/uiSlice';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -37,6 +39,7 @@ const Settings = () => {
   const dispatch = useAppDispatch();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [key, setKey] = useState(Date.now()) // Key modifier for UI reset
+  const darkThemeActive = useAppSelector(state => state.ui.darkTheme)
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
@@ -60,6 +63,7 @@ const Settings = () => {
           <SettingsPanel>
             <SettingsHeader>SETTINGS</SettingsHeader>
             <ImportExportButtons />
+            <ToggleButton initialState={darkThemeActive ? darkThemeActive : false} onToggle={newValue => dispatch(setDarkTheme(newValue))} />
             <hr />
             <ConfigSettings />
             <hr />

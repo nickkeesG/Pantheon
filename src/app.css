@@ -8,6 +8,27 @@ body,
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: monospace;
+  --bg-color: #ffffff;
+  --bg-color-light: #f0f0f0;
+  --bg-color-lighter: #e0e0e0;
+  --bg-color-dark: #d0d0d0;
+  --bg-color-dark-transparent: #d0d0d099;
+  --text-color: #000000;
+  --text-color-dark: #333333;
+  --text-color-darker: #666666;
+  --text-color-darkest: #999999;
+  --line-color: #cccccc;
+  --line-color-light: #dddddd;
+  --line-color-dark: #bbbbbb;
+  --line-color-darker: #aaaaaa;
+  --highlight: #00000020;
+  --highlight-weak: #00000010;
+  --highlight-strong: #00000030;
+  --accent-color-coral: #ff7f50;
+  --accent-color-red: #ff4500;
+}
+
+.App.dark-theme {
   --bg-color: #1c2028;
   --bg-color-light: #232830;
   --bg-color-lighter: #3c4048;

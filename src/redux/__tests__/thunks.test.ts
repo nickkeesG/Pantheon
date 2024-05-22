@@ -1,8 +1,8 @@
-import { importTree } from '../thunks';
+import { importAppState } from '../thunks';
 import { configureStore } from '@reduxjs/toolkit';
 import { AppDispatch, rootReducer } from '../store';
 
-describe('importTree thunk', () => {
+describe('importAppState thunk', () => {
   it('should import app state and update the state correctly', async () => {
     const store = configureStore({ reducer: rootReducer });
 
@@ -20,7 +20,7 @@ describe('importTree thunk', () => {
     expect(state).not.toEqual(exportedState);
 
     const dispatch: AppDispatch = store.dispatch as AppDispatch;
-    dispatch(importTree(jsonString));
+    dispatch(importAppState(jsonString));
 
     state = store.getState();
     expect(state.tree).toEqual(exportedState.tree);

@@ -4,7 +4,7 @@ import { LuImport } from "react-icons/lu";
 import { PiExportBold } from "react-icons/pi";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { importTree } from "../../redux/thunks";
+import { importAppState } from "../../redux/thunks";
 
 
 const ButtonsContainer = styled.div`
@@ -41,7 +41,7 @@ const ImportExportButtons = () => {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const text = e.target?.result;
         if (typeof text === 'string') {
-          dispatch(importTree(text));
+          dispatch(importAppState(text));
         }
       }
       reader.readAsText(file);

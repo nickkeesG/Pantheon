@@ -92,7 +92,6 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
         <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} />
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
-          {isNewDaemon && (<>New daemon</>)}
           {config.name}
         </TextButton>
         {isEdited && (

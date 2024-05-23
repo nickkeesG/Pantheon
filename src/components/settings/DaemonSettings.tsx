@@ -9,9 +9,11 @@ import BaseDaemonSettings from "./BaseDaemonSettings";
 function createEmptyChatDaemonConfig(): ChatDaemonConfig {
   return {
     id: Date.now(),
-    name: '',
-    systemPrompt: '',
-    userPrompts: ['Say something funny!'],
+    name: 'New Daemon',
+    systemPrompt: 'You are daemon made to be a part of a collective intelligence system.',
+    userPrompts: [`The human user has failed to initialize your prompts.
+Please ask the user to go to the settings and initialize your prompts.
+Don't write more than one sentence.`],
     enabled: false
   };
 }

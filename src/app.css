@@ -28,7 +28,7 @@ body,
   --accent-color-red: #ff4500;
 }
 
-.App.dark-theme {
+.App.dark {
   --bg-color: #1c2028;
   --bg-color-light: #232830;
   --bg-color-lighter: #3c4048;

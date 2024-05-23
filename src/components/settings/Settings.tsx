@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
 import Modal from '../common/Modal';
 import ConfigSettings from './ConfigSettings';
@@ -10,8 +10,7 @@ import ImportExportButtons from './ImportExportButtons';
 import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { resetState } from '../../redux/thunks';
 import { resetDaemonSlice } from '../../redux/daemonSlice';
-import ToggleButton from '../common/ToggleButton';
-import { setDarkTheme } from '../../redux/uiSlice';
+import ThemeSettings from './ThemeSettings';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -39,7 +38,6 @@ const Settings = () => {
   const dispatch = useAppDispatch();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [key, setKey] = useState(Date.now()) // Key modifier for UI reset
-  const darkThemeActive = useAppSelector(state => state.ui.darkTheme)
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
@@ -62,13 +60,14 @@ const Settings = () => {
         <Modal toggleVisibility={toggleSettings} zIndex={100}>
           <SettingsPanel>
             <SettingsHeader>SETTINGS</SettingsHeader>
-            <ToggleButton initialState={darkThemeActive ? darkThemeActive : false} onToggle={newValue => dispatch(setDarkTheme(newValue))} />
             <hr />
             <ConfigSettings />
             <hr />
-            <ImportExportButtons />
-            <hr />
             <DaemonSettings key={key} />
+            <hr />
+            <ThemeSettings />
+            <hr />
+            <ImportExportButtons />
             <hr />
             <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
             <ButtonWithConfirmation

@@ -7,15 +7,13 @@ export interface UIState {
   activeSectionId: number;
   activeIdeaIds: number[];
   creatingSection?: boolean;
-  darkTheme?: boolean;
 }
 
 const initialState: UIState = {
   lastTimeActive: Date.now(),
   activeTreeId: 0,
   activeSectionId: 0,
-  activeIdeaIds: [],
-  darkTheme: false
+  activeIdeaIds: []
 }
 
 const uiSlice = createSlice({
@@ -49,14 +47,11 @@ const uiSlice = createSlice({
         state.activeIdeaIds = state.activeIdeaIds.slice(0, ideaIndex + 1);
       }
     },
-    setDarkTheme(state, action: PayloadAction<boolean>) {
-      state.darkTheme = action.payload
-    },
     resetUiSlice: (state) => initialState
   }
 })
 
 
-export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, setActiveView, setCreatingSection, createBranch, setDarkTheme, resetUiSlice } = uiSlice.actions;
+export const { setLastTimeActive, setActiveTreeId, setActiveSectionId, setActiveIdeaIds, setActiveView, setCreatingSection, createBranch, resetUiSlice } = uiSlice.actions;
 export const initialUiState = initialState;
 export default uiSlice.reducer;

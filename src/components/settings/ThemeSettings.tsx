@@ -1,12 +1,14 @@
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { Theme, setTheme } from "../../redux/configSlice";
+import { ContainerVertical } from "../../styles/sharedStyles";
 
 const ThemeSettings = () => {
   const dispatch = useAppDispatch();
   const theme = useAppSelector(state => state.config.theme)
 
   return (
-    <div>
+    <ContainerVertical>
+      <h4>Theme</h4>
       <label>
         <input
           type="radio"
@@ -37,7 +39,7 @@ const ThemeSettings = () => {
         />
         Dark
       </label>
-    </div>
+    </ContainerVertical>
   )
 }
 

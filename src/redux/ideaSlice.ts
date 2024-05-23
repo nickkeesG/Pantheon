@@ -3,6 +3,7 @@ import { RootState } from './store';
 import { Idea } from './models';
 import { getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
 
+
 export interface IdeaState {
   ideas: { [id: number]: Idea };
 }
@@ -87,8 +88,10 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
+      // filter out ideas that are not user ideas
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
-      return getIdeasSinceLastComment(activeBranchIdeas, comments);
+      const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
+      return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
       if (e instanceof TypeError) {
         // The active tree was probably deleted
@@ -106,8 +109,10 @@ export const selectActivePastIdeas = createSelector(
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]);
-      const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, comments);
+      // filter out ideas that are not user ideas
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+      const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
+      const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
       return ideasUpToMaxCommented;
     } catch (e) {
@@ -126,7 +131,9 @@ export const selectCurrentBranchIdeas = createSelector(
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
-    return activeIdeaIds.map(id => ideas[id]);
+    // filter out ideas that are not user ideas
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+    return activeIdeas;
   }
 )
 

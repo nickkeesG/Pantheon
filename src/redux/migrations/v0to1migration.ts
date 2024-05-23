@@ -43,7 +43,6 @@ export const V0to1Migration = (state: PersistedState): RootState => {
   if (state && 'daemon' in state) {
     const daemonState = state.daemon as V0DaemonState;
     const newDaemonState: DaemonState = {
-      // TODO (Niki) Fix - Decide how the DaemonState should look after a migration from v0
       chatDaemons: [
         ...daemonState.chatDaemons.map(daemon => {
           return {

@@ -3,7 +3,7 @@ import { SectionState, replaceSectionSlice, resetSectionSlice, addIdeaToParentSe
 import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById, selectMostRecentIdeaInTree, deleteIdeas } from "./ideaSlice";
 import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentSlice";
 import { DaemonState, replaceDaemonSlice, resetDaemonSlice } from "./daemonSlice";
-import { addError, clearErrors } from './errorSlice';
+import { clearErrors } from './errorSlice';
 import { ConfigState, replaceConfigSlice, resetConfigSlice } from './configSlice';
 import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView, setCreatingSection } from "./uiSlice";
 import { Idea, Section, Tree } from "./models";

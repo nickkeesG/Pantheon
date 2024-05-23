@@ -1,11 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export enum Theme {
+  System = 'system',
+  Light = 'light',
+  Dark = 'dark'
+}
+
 export interface ConfigState {
   openAIKey: string;
   openAIOrgId: string;
   baseModel: string;
   chatModel: string;
   isSynchronizerActive: boolean;
+  theme?: Theme;
 }
 
 const initialState: ConfigState = {
@@ -13,7 +20,8 @@ const initialState: ConfigState = {
   openAIOrgId: '',
   baseModel: 'davinci-002',
   chatModel: 'gpt-4-1106-preview',
-  isSynchronizerActive: false
+  isSynchronizerActive: false,
+  theme: Theme.System
 };
 
 const configSlice = createSlice({
@@ -35,11 +43,14 @@ const configSlice = createSlice({
     setSynchronizerActive(state, action: PayloadAction<boolean>) {
       state.isSynchronizerActive = action.payload;
     },
+    setTheme(state, action: PayloadAction<Theme>) {
+      state.theme = action.payload;
+    },
     replaceSlice: (_, action: PayloadAction<ConfigState>) => action.payload,
     resetSlice: (state) => initialState
   },
 });
 
-export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive, replaceSlice: replaceConfigSlice, resetSlice: resetConfigSlice } = configSlice.actions;
+export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive, setTheme, replaceSlice: replaceConfigSlice, resetSlice: resetConfigSlice } = configSlice.actions;
 export const initialConfigState = initialState;
 export default configSlice.reducer;

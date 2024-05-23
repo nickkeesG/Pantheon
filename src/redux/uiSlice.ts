@@ -32,7 +32,7 @@ const uiSlice = createSlice({
     setActiveIdeaIds(state, action: PayloadAction<number[]>) {
       state.activeIdeaIds = action.payload;
     },
-    setActiveView(state, action: PayloadAction<{treeId: number, sectionId: number, ideaIds: number[]}>) {
+    setActiveView(state, action: PayloadAction<{ treeId: number, sectionId: number, ideaIds: number[] }>) {
       state.activeTreeId = action.payload.treeId;
       state.activeSectionId = action.payload.sectionId;
       state.activeIdeaIds = action.payload.ideaIds;

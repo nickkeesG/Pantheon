@@ -10,6 +10,7 @@ import ImportExportButtons from './ImportExportButtons';
 import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { resetState } from '../../redux/thunks';
 import { resetDaemonSlice } from '../../redux/daemonSlice';
+import ThemeSettings from './ThemeSettings';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -62,9 +63,11 @@ const Settings = () => {
             <hr />
             <ConfigSettings />
             <hr />
-            <ImportExportButtons />
-            <hr />
             <DaemonSettings key={key} />
+            <hr />
+            <ThemeSettings />
+            <hr />
+            <ImportExportButtons />
             <hr />
             <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
             <ButtonWithConfirmation

@@ -29,6 +29,16 @@ export type V0StoreState = { [P in keyof Omit<RootState, 'daemon'>]: RootState[P
   daemon: V0DaemonState
 } & PersistedState;
 
+// The prompt will elicit a functional response
+const hardcodedMigrationUserPrompt = `First, read this history of thoughts from the user:
+{PAST}
+{CURRENT}
+
+Keeping in mind your rules, and considering everything the user has written, please give an original response to the most recent idea:
+{Current}
+
+Type only your response, and write no other text.`;
+
 export const V0to1Migration = (state: PersistedState): RootState => {
   if (state && 'daemon' in state) {
     const daemonState = state.daemon as V0DaemonState;
@@ -38,8 +48,8 @@ export const V0to1Migration = (state: PersistedState): RootState => {
         ...daemonState.chatDaemons.map(daemon => {
           return {
             ...daemon,
-            systemPrompt: daemon.description,
-            userPrompts: [daemon.rules]
+            systemPrompt: daemon.description + "\n" + daemon.rules,
+            userPrompts: [hardcodedMigrationUserPrompt]
           }
         }),
         ...defaultDaemonState.chatDaemons.map((daemon, index) => ({

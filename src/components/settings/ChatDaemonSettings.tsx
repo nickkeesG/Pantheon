@@ -130,22 +130,26 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
             />
           </label>
           <br />
-          <label>User Prompts:</label>
+          <h3>User Prompt List:</h3>
           {userPrompts.map((prompt, index) => (
             <div key={index}>
+              <label>Prompt {index + 1}:</label>
               <TextArea
                 ref={(el) => userPromptRefs.current[index] = el as HTMLTextAreaElement}
                 value={prompt}
                 onChange={(e) => handleUserPromptChange(index, e.target.value, e.target)}
                 style={{ width: '100%' }}
               />
-              <ButtonSmall onClick={() => deleteUserPrompt(index)}>
+              <ButtonSmall 
+                onClick={() => deleteUserPrompt(index)}
+                style={{ marginBottom: '10px' }}
+              >
                 Delete
               </ButtonSmall>
             </div>
           ))}
           <ButtonSmall onClick={addUserPrompt}>
-            Add Prompt
+            Add User Prompt
           </ButtonSmall>
         </>
       )}

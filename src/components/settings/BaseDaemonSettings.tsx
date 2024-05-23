@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { updateBaseDaemon } from "../../redux/daemonSlice"
 import { BaseDaemonConfig } from '../../redux/models';
 import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
 import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectCommentsGroupedByIdeaIds } from '../../redux/commentSlice';
 import { selectActivePastIdeas } from '../../redux/ideaSlice';
 
 
@@ -22,8 +21,6 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const [isEdited, setIsEdited] = useState(false);
   const [rawContext, setRawContext] = useState('');
   const pastIdeas = useAppSelector(selectActivePastIdeas);
-  const pastIdeaIds = useMemo(() => pastIdeas.map(idea => idea.id), [pastIdeas]);
-  const commentsForPastIdeas = useAppSelector(state => selectCommentsGroupedByIdeaIds(state, pastIdeaIds, 'chat'));
 
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
@@ -54,7 +51,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const getRawContext = () => {
     try {
       const daemon = new BaseDaemon(config);
-      setRawContext(daemon.getPastContext(pastIdeas, commentsForPastIdeas));
+      setRawContext(daemon.getContext(pastIdeas));
     }
     catch (error) {
       console.error("Failed to get raw context:", error); // TODO show an error to the user

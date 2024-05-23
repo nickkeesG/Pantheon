@@ -47,7 +47,21 @@ export const selectCommentsForIdea = createSelector(
     (_: RootState, ideaId: number) => ideaId,
     (_: RootState, __: number, daemonType: string = '') => daemonType
   ],
-  (comments, ideaId, daemonType) => Object.values(comments).filter((comment: Comment) => comment.ideaId === ideaId && (daemonType === '' || comment.daemonType === daemonType))
+  (comments, ideaId, daemonType) => {
+
+    // Added backwards compatibility for old daemon types
+    let filterCondition: (comment: Comment) => boolean;
+
+    if (daemonType === 'left') {
+      filterCondition = (comment: Comment) => comment.daemonType === 'left' || comment.daemonType === 'base';
+    } else if (daemonType === 'right') {
+      filterCondition = (comment: Comment) => comment.daemonType === 'right' || comment.daemonType === 'chat';
+    } else {
+      filterCondition = (comment: Comment) => comment.daemonType === daemonType;
+    }
+
+    return Object.values(comments).filter((comment: Comment) => comment.ideaId === ideaId && filterCondition(comment));
+  }
 );
 
 export const selectCommentsGroupedByIdeaIds = createSelector(
@@ -64,6 +78,19 @@ export const selectCommentsGroupedByIdeaIds = createSelector(
   }
 );
 
+export const selectMostRecentCommentForCurrentBranch = createSelector(
+  [
+    (state: RootState) => state.comment.comments,
+    (state: RootState) => state.ui.activeIdeaIds
+  ],
+  (comments, activeIdeaIds) => {
+    const commentsForActiveIdeas = Object.values(comments).filter((comment: Comment) => 
+      activeIdeaIds.includes(comment.ideaId)
+    );
+    const sortedComments = commentsForActiveIdeas.sort((a, b) => b.ideaId - a.ideaId);
+    return sortedComments.length > 0 ? sortedComments[0] : null;
+  }
+);
 
 export const { addComment, approveComment, removeComment, replaceSlice: replaceCommentSlice, resetSlice: resetCommentSlice } = commentSlice.actions;
 export const initialCommentState = initialState;

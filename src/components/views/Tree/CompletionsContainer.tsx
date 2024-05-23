@@ -6,6 +6,7 @@ import { GenerateBaseCompletions } from '../../../llmHandler';
 import { dispatchError } from '../../../errorHandler';
 import { fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
+import BaseDaemon from '../../../daemons/baseDaemon';
 
 
 const TopLevelContainer = styled.div`
@@ -49,27 +50,31 @@ const StyledIndividualCompletion = styled.div`
   ${fadeInAnimation};
 `;
 
-const getContext = (currentBranchIdeas: { text: string }[]) => {
-  var context = currentBranchIdeas.map(idea => idea.text).join('\n');
-  context += '\n';
-  return context;
-}
-
 const CompletionsContainer = () => {
   const [completions, setCompletions] = useState<string[]>([]);
   const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
   const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
   const [contextUpToDate, setContextUpToDate] = useState(true);
   const [alreadyGettingCompletions, setAlreadyGettingCompletions] = useState(false);
-
+  
+  const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
+  const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const baseModel = useAppSelector(state => state.config.baseModel);
 
+  useEffect(() => {
+    const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
+    setBaseDaemon(daemon);
+  }, [baseDaemonConfig]);
+
   const getNewCompletions = useCallback(async () => {
     setAlreadyGettingCompletions(true);
     try {
-      const context = getContext(currentBranchIdeas);
+      if (!baseDaemon) {
+        throw new Error('Base daemon not initialized');
+      }
+      const context = baseDaemon.getContext(currentBranchIdeas);
       const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel);
       setCompletions(completions);
     } catch (error) {
@@ -78,7 +83,7 @@ const CompletionsContainer = () => {
 
     setAlreadyGettingCompletions(false);
     setContextUpToDate(true);
-  }, [currentBranchIdeas, openAIKey, openAIOrgId, baseModel]);
+  }, [currentBranchIdeas, baseDaemon, openAIKey, openAIOrgId, baseModel]);
 
   const handleContainerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const emptyCompletions: string[] = [];

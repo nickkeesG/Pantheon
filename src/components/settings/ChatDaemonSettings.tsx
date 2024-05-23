@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { addChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
+import { updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
@@ -12,11 +12,10 @@ const ChatDaemonSettingsContainer = styled.div`
 
 type ChatDaemonSettingsProps = {
   config: ChatDaemonConfig;
-  isNewDaemon: boolean;
 };
 
-const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDaemon }) => {
-  const [isCollapsed, setIsCollapsed] = useState(!isNewDaemon);
+const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEnabled, setIsEnabled] = useState(config.enabled);
   const [isEdited, setIsEdited] = useState(false);
 
@@ -73,11 +72,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
         systemPrompt: systemPrompt,
         enabled: isEnabled,
       };
-      if (isNewDaemon) {
-        dispatch(addChatDaemon(newConfig));
-      } else {
-        dispatch(updateChatDaemon(newConfig));
-      }
+      dispatch(updateChatDaemon(newConfig));
       setIsEdited(false);
     } catch (error) {
       console.error("Failed to update config:", error);

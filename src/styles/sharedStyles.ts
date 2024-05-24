@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { highlightOnHover } from './mixins';
+import { FiX } from 'react-icons/fi';
 
 export const ContainerVertical = styled.div`
   display: flex;
@@ -105,6 +106,24 @@ export const IconButtonSmall = styled(IconButtonLarge)`
   width: 12px;
   height: 12px;
   padding: 4px;
+`;
+
+export const ExitButtonLarge = styled(IconButtonLarge).attrs({
+  as: FiX
+})`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+`;
+
+export const ExitButtonSmall = styled(IconButtonSmall).attrs({
+  as: FiX
+})`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
 `;
 
 export const TextArea = styled.textarea`

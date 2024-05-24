@@ -3,12 +3,19 @@ import { useAppSelector } from './hooks';
 import { store } from './redux/store';
 import { selectLatestError } from './redux/errorSlice';
 import styled from 'styled-components';
+import { ExitButtonSmall } from './styles/sharedStyles';
 
 const ErrorContainer = styled.div`
-  color: red;
   position: fixed;
+  z-index: 50;
+  color: var(--accent-color-red);
+  background-color: var(--bg-color-light);
   bottom: 0;
   left: 0;
+  border: 0.5px solid var(--line-color-dark);
+  border-radius: 4px;
+  padding: 10px 28px 10px 10px;
+  margin: 4px;
 `;
 
 export function dispatchError(error: any) {
@@ -41,6 +48,7 @@ const ErrorDisplay: React.FC = () => {
 
   return (
     <ErrorContainer>
+      <ExitButtonSmall onClick={() => setShowError(false)} />
       {latestError}
     </ErrorContainer>
   );

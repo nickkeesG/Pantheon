@@ -69,7 +69,7 @@ const CompletionsContainer = () => {
 
   useEffect(() => {
     getNewCompletions();
-  }, [currentBranchIdeas, baseDaemon, openAIKey, openAIOrgId, baseModel]);
+  }, [currentBranchIdeas, baseDaemon, openAIKey, openAIOrgId, baseModel, getNewCompletions]);
 
   return (
     <TopLevelContainer>

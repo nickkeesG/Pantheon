@@ -1,45 +1,44 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { GetSurprisal } from '../llmHandler';
-import BaseDaemon from '../daemons/baseDaemon';
-import { dispatchError } from '../errorHandler';
-import { selectIdeasById, setSurprisalToIdea } from '../redux/ideaSlice';
+// import { useCallback, useEffect, useState } from 'react';
+// import { useAppDispatch, useAppSelector } from '../hooks';
+// import { GetSurprisal } from '../llmHandler';
+// import BaseDaemon from '../daemons/baseDaemon';
+// import { dispatchError } from '../errorHandler';
+// import { selectCurrentBranchIdeas, setSurprisalToIdea } from '../redux/ideaSlice';
 
 const Synchronizer = () => {
-  const dispatch = useAppDispatch();
-  const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
-  const activeIdeas = useAppSelector(state => selectIdeasById(state, activeIdeaIds));
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const baseModel = useAppSelector(state => state.config.baseModel);
-  const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
-  const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
-  const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
-  const synchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
+  // const dispatch = useAppDispatch();
+  // const currentBranchIdeas = useAppSelector(selectCurrentBranchIdeas);
+  // const openAIKey = useAppSelector(state => state.config.openAIKey);
+  // const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
+  // const baseModel = useAppSelector(state => state.config.baseModel);
+  // const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
+  // const [baseDaemon, setBaseDaemon] = useState<BaseDaemon | null>(null);
+  // const [currentlyRequestingSurprisal, setCurrentlyRequestingSurprisal] = useState(false);
+  // const synchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
-  useEffect(() => {
-    const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
-    setBaseDaemon(daemon);
-  }, [baseDaemonConfig]);
+  // useEffect(() => {
+  //   const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
+  //   setBaseDaemon(daemon);
+  // }, [baseDaemonConfig]);
 
   // Gets surprisal for a single idea, and dispatches it to redux
-  const requestSurprisal = useCallback(async (fullContext: string, partialContext: string, targetString: string, ideaId: number) => {
-    setCurrentlyRequestingSurprisal(true);
-    try {
-      const surprisalData = await GetSurprisal(fullContext, partialContext, targetString, openAIKey, openAIOrgId, baseModel);
-      const tokenList = surprisalData.map(s => s.token);
-      const surprisalList = surprisalData.map(s => s.surprisal);
-      dispatch(setSurprisalToIdea({ ideaId: ideaId, textTokens: tokenList, tokenSurprisals: surprisalList }));
-    } catch (error) {
-      console.error(error);
-    }
-    setCurrentlyRequestingSurprisal(false);
-  }, [openAIKey, openAIOrgId, baseModel, dispatch]);
+  // const requestSurprisal = useCallback(async (fullContext: string, partialContext: string, targetString: string, ideaId: number) => {
+  //   setCurrentlyRequestingSurprisal(true);
+  //   try {
+  //     const surprisalData = await GetSurprisal(fullContext, partialContext, targetString, openAIKey, openAIOrgId, baseModel);
+  //     const tokenList = surprisalData.map(s => s.token);
+  //     const surprisalList = surprisalData.map(s => s.surprisal);
+  //     dispatch(setSurprisalToIdea({ ideaId: ideaId, textTokens: tokenList, tokenSurprisals: surprisalList }));
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  //   setCurrentlyRequestingSurprisal(false);
+  // }, [openAIKey, openAIOrgId, baseModel, dispatch]);
 
-  useEffect(() => {
-    const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
-    setBaseDaemon(daemon);
-  }, [baseDaemonConfig]);
+  // useEffect(() => {
+  //   const daemon = baseDaemonConfig ? new BaseDaemon(baseDaemonConfig) : null;
+  //   setBaseDaemon(daemon);
+  // }, [baseDaemonConfig]);
 
   /*
   Measure surprisal on user text. Runs every 500ms.

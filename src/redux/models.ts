@@ -40,18 +40,18 @@ export interface Comment {
 export interface ChatDaemonConfig {
   id: number;
   name: string;
-  description: string;
-  rules: string;
+  systemPrompt: string;
+  userPrompts: string[];
   enabled: boolean;
 }
 
 export interface BaseDaemonConfig {
   mainTemplate: string;
   ideaTemplate: string;
-  commentTemplate: string;
+  temperature: number;
 }
 
 export interface InstructDaemonConfig {
   systemPrompt: string;
-  contextTemplate: string;
+  userPrompt: string;
 }

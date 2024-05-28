@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { selectCurrentBranchIdeas } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
-import { GenerateBaseCompletions } from '../../../llmHandler';
 import { dispatchError } from '../../../errorHandler';
 import { fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
@@ -57,8 +56,7 @@ const CompletionsContainer = () => {
   const getNewCompletions = useCallback(async () => {
     if (currentBranchIdeas.length === 0 || !openAIKey) return;
     try {
-      const context = baseDaemon.getContext(currentBranchIdeas);
-      const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel);
+      const completions = await baseDaemon.getCompletions(currentBranchIdeas, openAIKey, openAIOrgId, baseModel);
       setCompletions(completions);
     } catch (error: unknown) {
       if (error instanceof Error) {

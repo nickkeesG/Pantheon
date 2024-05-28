@@ -65,13 +65,10 @@ export async function CallChatModel(systemPrompt: string, userPrompt: string, op
     return response[0];
 }
 
-export async function GenerateChatComments(systemPrompt: string, firstInstruction: string, lastInstruction: string, openAIKey: string, openAIOrgId: string, chatModel: string) {
+export async function GenerateChatComment(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string, chatModel: string) {
     var data = {
         model: chatModel,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: firstInstruction }
-        ]
+        messages: [{ role: "system", content: systemPrompt }]
     };
 
     const config = {
@@ -82,69 +79,26 @@ export async function GenerateChatComments(systemPrompt: string, firstInstructio
         }
     };
 
-    var intermediateResponse = await CallChatAPI(data, config);
-    data.messages.push({ role: "assistant", content: intermediateResponse[0] });
-    data.messages.push({ role: "user", content: lastInstruction });
+    for (const userPrompt of userPrompts) {
+        data.messages.push({ role: "user", content: userPrompt });
 
-    var finalResponse = await CallChatAPI(data, config);
-
-    return finalResponse[0];
-}
-
-export async function GenerateBaseComments(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, evaluationTemplate: string) {
-    var data = {
-        model: baseModel,
-        prompt: prompt,
-        max_tokens: 128,
-        stop: ["\n", " {", "{"],
-        n: 6,
-    };
-
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openAIKey}`,
-            'OpenAI-Organization': openAIOrgId
+        let intermediateResponse = await CallChatAPI(data, config);
+        if (intermediateResponse.length > 0) {
+            data.messages.push({ role: "assistant", content: intermediateResponse[0] });
         }
-    };
-
-    var response = await CallBaseAPI(data, config);
-    var responsesWithScores = [];
-    var evaluationString = evaluationTemplate.split("{}")[0] + " y";
-
-    var evaluationData = {
-        model: baseModel,
-        prompt: "",
-        max_tokens: 0,
-        logprobs: 0,
-        echo: true,
-    };
-
-    for (let i = 0; i < response.length; i++) {
-        let evaluationPrompt = response[i] + evaluationString;
-        evaluationData.prompt = evaluationPrompt;
-        try {
-            var responseWithLogprobs = await CallBaseAPIForLogprobs(evaluationData, config);
-        } catch (error) {
-            console.error("Error calling base API for logprobs")
-            console.error(error)
-            return [];
-        }
-        let logprobList = responseWithLogprobs.token_logprobs;
-        let finalLogprob = logprobList[logprobList.length - 1];
-
-        //Score is the likelihood of the response being a "yes"
-        responsesWithScores.push({ content: response[i], score: finalLogprob });
     }
 
-    return responsesWithScores;
+    return data.messages[data.messages.length - 1].content;
 }
 
-export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string) {
+export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {
+    prompt = prompt.trim();
+
     var data = {
         model: baseModel,
         prompt: prompt,
         max_tokens: 64,
+        temperature: temperature,
         stop: ["\n"],
         n: 6,
     };

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { GetSurprisal } from '../llmHandler';
 import BaseDaemon from '../daemons/baseDaemon';
-import {dispatchError} from '../errorHandler';
-import { selectCurrentBranchIdeas, setSurprisalToIdea } from '../redux/ideaSlice';
+import { dispatchError } from '../errorHandler';
+import { selectIdeasById, setSurprisalToIdea } from '../redux/ideaSlice';
 
 const Synchronizer = () => {
   const dispatch = useAppDispatch();
@@ -44,42 +44,42 @@ const Synchronizer = () => {
   Measure surprisal on user text. Runs every 500ms.
   Surprisal is defined as a decrease in loglikelihood of a token after conditioning on the past context
   */
- // TODO Disabled due to network and processing load. Enable later once improved.
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!currentlyRequestingSurprisal && synchronizerActive) {
-        if (baseDaemon && currentBranchIdeas.length > 0) {         
-          for (let i = 0; i < currentBranchIdeas.length; i++) {
-            if (currentBranchIdeas[i].textTokens.length === 0) {
-              if(!openAIKey) {
-                dispatchError("OpenAI API key not set");
-                return;
-              }
+  // TODO Disabled due to network and processing load. Enable later once improved.
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (!currentlyRequestingSurprisal && synchronizerActive) {
+  //       if (baseDaemon && activeIdeas.length > 0) {         
+  //         for (let i = 0; i < activeIdeas.length; i++) {
+  //           if (activeIdeas[i].textTokens.length === 0) {
+  //             if(!openAIKey) {
+  //               dispatchError("OpenAI API key not set");
+  //               return;
+  //             }
 
-              let targetString = currentBranchIdeas[i].text;
-              let pastIdeas = currentBranchIdeas.slice(0, i);
+  //             let targetString = activeIdeas[i].text;
+  //             let pastIdeas = activeIdeas.slice(0, i);
 
-              let fullContext = baseDaemon.getContextWithPrefix(pastIdeas);
-              let partialContext = baseDaemon.getPrefix();
-              requestSurprisal(fullContext, partialContext, targetString, currentBranchIdeas[i].id);
-              break;
-            }
-          }
-        }
-      }
-    }, 1000);
+  //             let fullContext = baseDaemon.getContextWithPrefix(pastIdeas);
+  //             let partialContext = baseDaemon.getPrefix();
+  //             requestSurprisal(fullContext, partialContext, targetString, activeIdeas[i].id);
+  //             break;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }, 1000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [currentBranchIdeas, 
-      baseDaemon, 
-      baseModel, 
-      openAIKey, 
-      openAIOrgId, 
-      currentlyRequestingSurprisal, 
-      synchronizerActive, 
-      requestSurprisal]);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [activeIdeas, 
+  //     baseDaemon, 
+  //     baseModel, 
+  //     openAIKey, 
+  //     openAIOrgId, 
+  //     currentlyRequestingSurprisal, 
+  //     synchronizerActive, 
+  //     requestSurprisal]);
 
   return null;
 }

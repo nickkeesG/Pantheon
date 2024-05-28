@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { highlightOnHover } from './mixins';
+import { FiX } from 'react-icons/fi';
 
 export const ContainerVertical = styled.div`
   display: flex;
@@ -107,6 +108,24 @@ export const IconButtonSmall = styled(IconButtonLarge)`
   padding: 4px;
 `;
 
+export const ExitButtonLarge = styled(IconButtonLarge).attrs({
+  as: FiX
+})`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+`;
+
+export const ExitButtonSmall = styled(IconButtonSmall).attrs({
+  as: FiX
+})`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+`;
+
 export const TextArea = styled.textarea`
   width: 100%;
   padding: 10px;
@@ -148,4 +167,25 @@ export const Hint = styled.div`
 
 export const Filler = styled.div`
   flex: 1;
+`;
+
+export const ToggleSwitch = styled.div<{ toggled: boolean }>`
+  width: 50px;
+  height: 25px;
+  background-color: ${({ toggled }) => (toggled ? '#4caf50' : '#ccc')};
+  border-radius: 25px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+`;
+
+export const ToggleKnob = styled.div<{ toggled: boolean }>`
+  width: 23px;
+  height: 23px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  left: ${({ toggled }) => (toggled ? '26px' : '1px')};
+  transition: left 0.3s;
 `;

@@ -19,7 +19,7 @@ const persistConfig = {
   migrate: createMigrate(migrations, { debug: true })
 };
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   tree: treeReducer,
   section: sectionReducer,
   idea: ideaReducer,

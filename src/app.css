@@ -1,13 +1,35 @@
-html,
-body,
-#root,
+body {
+  margin: 0;
+}
+
 .App {
-  height: 100%;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: monospace;
+  --bg-color: #ffffff;
+  --bg-color-light: #f0f0f0;
+  --bg-color-lighter: #e0e0e0;
+  --bg-color-dark: #d0d0d0;
+  --bg-color-dark-transparent: #d0d0d099;
+  --text-color: #000000;
+  --text-color-dark: #333333;
+  --text-color-darker: #666666;
+  --text-color-darkest: #999999;
+  --line-color: #cccccc;
+  --line-color-light: #dddddd;
+  --line-color-dark: #bbbbbb;
+  --line-color-darker: #aaaaaa;
+  --highlight: #00000020;
+  --highlight-weak: #00000010;
+  --highlight-strong: #00000030;
+  --accent-color-coral: #ff7f50;
+  --accent-color-red: #ff4500;
+}
+
+.App.dark {
   --bg-color: #1c2028;
   --bg-color-light: #232830;
   --bg-color-lighter: #3c4048;
@@ -25,7 +47,7 @@ body,
   --highlight-weak: #ffffff10;
   --highlight-strong: #ffffff30;
   --accent-color-coral: #D77073;
-  --accent-color-red: #a6453a;
+  --accent-color-red: #d25446;
 }
 
 hr {
@@ -33,4 +55,8 @@ hr {
   border-top: 0.5px solid var(--line-color);
   margin: 16px 0px;
   padding: 0;
+}
+
+input {
+  /* margin: 3px 3px 3px 5px; */
 }

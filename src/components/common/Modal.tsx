@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { IconButtonLarge } from "../../styles/sharedStyles";
-import { FiX } from "react-icons/fi";
+import { ExitButtonLarge } from "../../styles/sharedStyles";
 import { useEffect } from "react";
 
 const Backdrop = styled.div`
@@ -17,15 +16,6 @@ const StyledModal = styled.div`
  top: 10%;
  left: 50%;
  transform: translateX(-50%);
-`;
-
-const ExitButton = styled(IconButtonLarge).attrs({
-  as: FiX
-})`
-  position: fixed;
-  top: 4px;
-  right: 8px;
-  cursor: pointer;
 `;
 
 const Modal: React.FC<{
@@ -54,7 +44,7 @@ const Modal: React.FC<{
     <>
       <Backdrop onClick={toggleVisibility} style={{ zIndex: zIndex ? zIndex : 100 }} />
       <StyledModal style={{ zIndex: zIndex ? zIndex + 1 : 101 }}>
-        <ExitButton onClick={toggleVisibility} />
+        <ExitButtonLarge onClick={toggleVisibility} style={{ right: '8px' }} />
         {children}
       </StyledModal>
     </>

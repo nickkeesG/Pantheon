@@ -70,6 +70,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
         ...config,
         name: name,
         systemPrompt: systemPrompt,
+        userPrompts: userPrompts,
         enabled: isEnabled,
       };
       dispatch(updateChatDaemon(newConfig));

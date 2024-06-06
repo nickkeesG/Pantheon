@@ -9,7 +9,7 @@ const ErrorContainer = styled.div`
   position: fixed;
   z-index: 50;
   color: var(--accent-color-red);
-  background-color: var(--bg-color-light);
+  background-color: var(--bg-color-secondary);
   bottom: 0;
   left: 0;
   border: 0.5px solid var(--line-color-dark);

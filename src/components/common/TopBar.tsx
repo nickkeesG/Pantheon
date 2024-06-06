@@ -10,7 +10,7 @@ const StyledTopBar = styled.div`
   flex-direction: row;
   justify-content: space-between;
   gap: 4px;
-  background: var(--bg-color-light);
+  background: var(--bg-color-secondary);
   padding: 4px 12px;
   z-index: 1000;
   border-bottom: 0.5px solid var(--line-color-dark);

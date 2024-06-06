@@ -16,7 +16,7 @@ const TopLevelContainer = styled.div`
 `
 
 const BackgroundContainer = styled.div`
-  background-color: var(--bg-color-light);
+  background-color: var(--bg-color-secondary);
   width: 100%;
   height: auto;
   padding: 0px 12px 4px 12px;

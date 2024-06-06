@@ -136,7 +136,7 @@ export const TextArea = styled.textarea`
   height: 100%;
   margin: auto;
   display: block;
-  background-color: var(--bg-color-light);
+  background-color: var(--bg-color-secondary);
   color: var(--text-color);
   &:focus {
     outline: none;
@@ -150,7 +150,7 @@ export const TextInput = styled.input`
   padding: 8px;
   box-sizing: border-box;
   color: var(--text-color);
-  background-color: var(--bg-color-light);
+  background-color: var(--bg-color-secondary);
   border: 0.5px solid var(--line-color);
   border-radius: 4px;
   font-family: monospace;

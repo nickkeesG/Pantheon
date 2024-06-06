@@ -1,19 +1,14 @@
-body {
-  margin: 0;
-}
-
-.App {
+html {
   min-height: 100vh;
   margin: 0;
   padding: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: monospace;
+  scrollbar-color: var(--highlight) var(--highlight-weak);
+  scrollbar-width: thin;
   --bg-color: #ffffff;
-  --bg-color-light: #f0f0f0;
-  --bg-color-lighter: #e0e0e0;
-  --bg-color-dark: #d0d0d0;
-  --bg-color-dark-transparent: #d0d0d099;
+  --bg-color-secondary: #f0f0f0;
   --text-color: #000000;
   --text-color-dark: #333333;
   --text-color-darker: #666666;
@@ -29,12 +24,9 @@ body {
   --accent-color-red: #ff4500;
 }
 
-.App.dark {
+html.dark {
   --bg-color: #1c2028;
-  --bg-color-light: #232830;
-  --bg-color-lighter: #3c4048;
-  --bg-color-dark: #0e1014;
-  --bg-color-dark-transparent: #0e101499;
+  --bg-color-secondary: #232830;
   --text-color: #d7d8db;
   --text-color-dark: #9196a2;
   --text-color-darker: #7e838e;
@@ -48,6 +40,11 @@ body {
   --highlight-strong: #ffffff30;
   --accent-color-coral: #D77073;
   --accent-color-red: #d25446;
+}
+
+body {
+  margin: 0;
+  /* scrollbar-color: red orange; */
 }
 
 hr {

@@ -84,7 +84,7 @@ const CompletionsContainer = () => {
         }
         <StyledCompletionsContainer>
           {completions.map((completion, index) => (
-            <StyledIndividualCompletion key={index}>
+            <StyledIndividualCompletion key={index + completion}>
               {completion}
             </StyledIndividualCompletion>
           ))}

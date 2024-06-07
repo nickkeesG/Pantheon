@@ -21,7 +21,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const html = document.documentElement;
     if (configTheme === 'system') {
       const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       setTheme(darkModeMediaQuery.matches);
@@ -32,7 +31,7 @@ function App() {
     } else {
       setTheme(configTheme === 'dark');
     }
-  }, [configTheme]);
+  }, [configTheme, setTheme]);
 
   // TODO Uncomment the GitHub link once we've opened the repo
   return (

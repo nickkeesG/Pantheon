@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (configTheme === 'system') {
+    if (configTheme === 'system' || configTheme === undefined) {
       const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       setTheme(darkModeMediaQuery.matches);
       darkModeMediaQuery.addEventListener('change', (e) => setTheme(e.matches));

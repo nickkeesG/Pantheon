@@ -14,7 +14,7 @@ const ThemeSettings = () => {
           type="radio"
           name="theme"
           value="system"
-          checked={theme === Theme.System}
+          checked={theme === Theme.System || theme === undefined}
           onChange={() => dispatch(setTheme(Theme.System))}
         />
         Use system theme
@@ -24,7 +24,7 @@ const ThemeSettings = () => {
           type="radio"
           name="theme"
           value="light"
-          checked={theme === Theme.Light || theme === undefined}
+          checked={theme === Theme.Light}
           onChange={() => dispatch(setTheme(Theme.Light))}
         />
         Light

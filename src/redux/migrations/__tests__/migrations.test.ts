@@ -112,7 +112,13 @@ describe('Migrations', () => {
           contextTemplate: 'legacyContextTemplate'
         }
       },
-      config: initialConfigState,
+      config: {
+        openAIKey: "legacyOpenAIKey",
+        openAIOrgId: "legacyOpenAIOrgId",
+        baseModel: "legacyBaseModel",
+        chatModel: "legacyChatModel",
+        isSynchronizerActive: true
+      },
       ui: initialUiState,
       error: initialErrorState,
       _persist: {

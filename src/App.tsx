@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CollectionView from './components/views/Collection/CollectionView';
 import { useAppSelector } from './hooks';
 import { useCallback, useEffect } from 'react';
+import { Filler } from './styles/sharedStyles';
 
 function App() {
   const configTheme = useAppSelector(state => state.config.theme);
@@ -33,6 +34,7 @@ function App() {
     }
   }, [configTheme]);
 
+  // TODO Uncomment the GitHub link once we've opened the repo
   return (
     <BrowserRouter>
       <div className={`App`} >
@@ -43,6 +45,14 @@ function App() {
         </Routes>
         <DaemonManager />
         <Synchronizer />
+        <Filler />
+        <footer>
+          <p>
+            © {new Date().getFullYear()} Niki Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
+            <br />
+            {/* Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>. */}
+          </p>
+        </footer>
       </div>
     </BrowserRouter>
   );

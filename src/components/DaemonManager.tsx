@@ -41,7 +41,7 @@ const DaemonManager = () => {
       // Returns a single comment
       const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
-      if(response) {
+      if (response) {
         dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: column }));
       }
       else {
@@ -69,8 +69,8 @@ const DaemonManager = () => {
   }, []);
 
 
-  const handleDaemonDispatch = useCallback(async() => {
-    if(!openAIKey) {
+  const handleDaemonDispatch = useCallback(async () => {
+    if (!openAIKey) {
       dispatchError('OpenAI API key not set');
       return;
     }
@@ -86,8 +86,8 @@ const DaemonManager = () => {
           let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
 
           // To maintain backwards compatibility with base/chat naming
-          if (lastCommentColumn === 'base') { lastCommentColumn = 'left';}
-          if (lastCommentColumn === 'chat') { lastCommentColumn = 'right';}
+          if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
+          if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
 
           let column = lastCommentColumn === 'left' ? 'right' : 'left';
 
@@ -103,7 +103,7 @@ const DaemonManager = () => {
             dispatchChatComment(pastIdeas, currentIdea, daemon, column);
           }
         }
-        
+
       }
     }
   }, [ideasEligbleForComments,
@@ -119,12 +119,12 @@ const DaemonManager = () => {
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
       if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
-        console.log('User became inactive');
+        // console.log('User became inactive');
         setAlreadyWasInactive(true);
         handleDaemonDispatch();
       }
       if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
-        console.log('User became active');
+        // console.log('User became active');
         setAlreadyWasInactive(false);
       }
     }, 1000);

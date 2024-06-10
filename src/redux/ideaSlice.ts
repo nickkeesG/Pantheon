@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { Idea } from './models';
+import { Idea, IdeaType } from './models';
 import { getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
 
 
@@ -93,7 +93,7 @@ export const selectActiveThoughtsEligibleForComments = createSelector(
   (ideas, activeIdeaIds, comments) => {
     try {
       // filter out ideas that are not thoughts
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "thought"));
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
@@ -114,7 +114,7 @@ export const selectActivePastThoughts = createSelector(
   (ideas, activeIdeaIds, comments) => {
     try {
       // filter out ideas that are not thoughts
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "thought"));
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
@@ -136,7 +136,7 @@ export const selectCurrentBranchThoughts = createSelector(
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
     // filter out ideas that are not thoughts
-    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === "thought"));
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
     return activeIdeas;
   }
 )

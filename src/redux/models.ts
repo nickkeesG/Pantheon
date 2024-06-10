@@ -12,9 +12,15 @@ export interface Section {
   ideaIds: number[];
 }
 
+export enum IdeaType {
+  User = 'user',
+  InstructionToAi = 'instruction',
+  ResponseFromAi = 'response'
+}
+
 export interface Idea {
   id: number;
-  type: string;
+  type: IdeaType;
   sectionId: number;
   parentIdeaId: number | null;
   text: string;

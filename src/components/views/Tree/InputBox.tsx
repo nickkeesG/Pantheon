@@ -7,6 +7,7 @@ import { setCreatingSection, setLastTimeActive } from '../../../redux/uiSlice';
 import InstructDaemon from '../../../daemons/instructDaemon';
 import { dispatchError } from '../../../errorHandler';
 import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
+import { IdeaType } from '../../../redux/models';
 
 
 const Container = styled.div`
@@ -77,7 +78,7 @@ const InputBox = () => {
 
   const dispatchInstruction = useCallback(async (instruction: string) => {
     // dispatch instruction as idea but set type to "instruction"
-    dispatch(createIdea(instruction, "instruction"));
+    dispatch(createIdea(instruction, IdeaType.InstructionToAi));
 
     if (instructDaemon) {
       try {
@@ -88,7 +89,7 @@ const InputBox = () => {
           openAIOrgId,
           instructModel);
         if (response) {
-          dispatch(createIdea(response, "response")); // flag idea as response to instruction
+          dispatch(createIdea(response, IdeaType.ResponseFromAi)); // flag idea as response to instruction
         } else {
           dispatchError('Instruct daemon failed to generate response');
         }

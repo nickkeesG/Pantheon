@@ -26,7 +26,7 @@ export interface Idea {
   text: string;
   textTokens: string[];
   tokenSurprisals: number[];
-  mention: string;
+  mention?: string;
 }
 
 export interface IdeaExport {

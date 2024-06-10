@@ -1,6 +1,7 @@
 import { MigrationManifest } from "redux-persist";
 import { V0to1Migration } from "./v0to1migration";
 import { V0InitialMigration } from "./v0InitialMigration";
+import { V1to2Migration } from "./v1to2migration";
 
 // Steps to create a new migration for Redux changes:
 // 1. Create a file for the migration, following the naming convention
@@ -11,7 +12,8 @@ import { V0InitialMigration } from "./v0InitialMigration";
 
 const migrations: MigrationManifest = {
   0: V0InitialMigration,
-  1: V0to1Migration
+  1: V0to1Migration,
+  2: V1to2Migration
 }
 
 export default migrations;

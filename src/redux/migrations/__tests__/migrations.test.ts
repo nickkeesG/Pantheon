@@ -10,6 +10,8 @@ import { initialConfigState } from "../../configSlice";
 import { initialUiState } from "../../uiSlice";
 import { initialErrorState } from "../../errorSlice";
 import { V0StoreState, V0to1Migration, V0to1UserPrompt } from "../v0to1migration";
+import { V1StoreState, V1to2Migration } from "../v1to2migration";
+import { IdeaType } from "../../models";
 
 describe('Migrations', () => {
   it('should migrate state correctly', () => {
@@ -127,7 +129,7 @@ describe('Migrations', () => {
       }
     };
 
-    const expectedV1State: RootState = {
+    const expectedV1State: V1StoreState = {
       ...v0State,
       daemon: {
         chatDaemons: [
@@ -153,5 +155,93 @@ describe('Migrations', () => {
     migratedState._persist.version = 1;
 
     expect(migratedState).toEqual(expectedV1State);
+  });
+
+  describe('V1to2Migration', () => {
+    it('should correctly migrate V1 ideas state to V2', () => {
+      const v1State: V1StoreState = {
+        tree: initialTreeState,
+        section: initialSectionState,
+        idea: {
+          ideas: {
+            1: {
+              id: 1,
+              isUser: true,
+              sectionId: 101,
+              parentIdeaId: null,
+              text: "User's first idea",
+              textTokens: ["User's", "first", "idea"],
+              tokenSurprisals: [0.1, 0.2, 0.3]
+            },
+            2: {
+              id: 2,
+              isUser: false,
+              sectionId: 101,
+              parentIdeaId: 1,
+              text: "User instructs AI",
+              textTokens: ["User", "instructs", "AI"],
+              tokenSurprisals: [0.2, 0.3, 0.4]
+            },
+            3: {
+              id: 3,
+              isUser: false,
+              sectionId: 101,
+              parentIdeaId: 2,
+              text: "AI's response",
+              textTokens: ["AI's", "response"],
+              tokenSurprisals: [0.4, 0.5]
+            }
+          }
+        },
+        comment: initialCommentState,
+        daemon: defaultDaemonState,
+        config: initialConfigState,
+        ui: initialUiState,
+        error: initialErrorState,
+        _persist: {
+          version: 1,
+          rehydrated: true
+        }
+      };
+
+      const expectedV2State: RootState = {
+        ...v1State,
+        idea: {
+          ideas: {
+            1: {
+              id: 1,
+              type: IdeaType.User,
+              sectionId: 101,
+              parentIdeaId: null,
+              text: "User's first idea",
+              textTokens: ["User's", "first", "idea"],
+              tokenSurprisals: [0.1, 0.2, 0.3]
+            },
+            2: {
+              id: 2,
+              type: IdeaType.InstructionToAi,
+              sectionId: 101,
+              parentIdeaId: 1,
+              text: "User instructs AI",
+              textTokens: ["User", "instructs", "AI"],
+              tokenSurprisals: [0.2, 0.3, 0.4]
+            },
+            3: {
+              id: 3,
+              type: IdeaType.InstructionToAi,
+              sectionId: 101,
+              parentIdeaId: 2,
+              text: "AI's response",
+              textTokens: ["AI's", "response"],
+              tokenSurprisals: [0.4, 0.5]
+            }
+          }
+        }
+      };
+
+      const migratedState = V1to2Migration(v1State);
+
+      expect(migratedState).toEqual(expectedV2State);
+    });
   });
 });

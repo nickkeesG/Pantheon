@@ -2,7 +2,6 @@ import { PersistedState } from "redux-persist";
 import { V0StoreState } from "./v0to1migration";
 import { initialTreeState } from "../treeSlice";
 import { initialSectionState } from "../sectionSlice";
-import { initialIdeaState } from "../ideaSlice";
 import { initialCommentState } from "../commentSlice";
 import { initialConfigState } from "../configSlice";
 import { initialUiState } from "../uiSlice";
@@ -15,7 +14,9 @@ export const V0InitialMigration = (state: PersistedState): V0StoreState => {
     ...state,
     tree: initialTreeState,
     section: initialSectionState,
-    idea: initialIdeaState,
+    idea: {
+      ideas: {}
+    },
     comment: initialCommentState,
     daemon: {
       chatDaemons: [],

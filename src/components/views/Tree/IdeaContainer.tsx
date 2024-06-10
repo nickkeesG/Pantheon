@@ -122,7 +122,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
     dispatch(switchBranch(idea, moveForward))
   }
 
-  const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
+  const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-secondary)' } : {};
   if (!(idea.type === "thought")) { ideaContainerStyle.borderColor = 'transparent' }
 
   return (

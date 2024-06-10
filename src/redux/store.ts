@@ -10,16 +10,16 @@ import uiReducer from './uiSlice';
 import errorReducer from './errorSlice';
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, createMigrate } from 'redux-persist';
-import migrations from './migrations';
+import migrations from './migrations/migrations';
 
 const persistConfig = {
   key: 'root',
-  version: 0,
+  version: Object.keys(migrations).length - 1,
   storage,
   migrate: createMigrate(migrations, { debug: true })
 };
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   tree: treeReducer,
   section: sectionReducer,
   idea: ideaReducer,

@@ -81,29 +81,25 @@ const DaemonManager = () => {
       }
       else {
         const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
+        let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
 
-        if (currentIdea.textTokens.length > 0) { // Only comment if idea has been processed by Synchronizer
-          let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+        // To maintain backwards compatibility with base/chat naming
+        if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
+        if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
 
-          // To maintain backwards compatibility with base/chat naming
-          if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
-          if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
+        let column = lastCommentColumn === 'left' ? 'right' : 'left';
 
-          let column = lastCommentColumn === 'left' ? 'right' : 'left';
-
-          if (currentIdea.mention) {
-            const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
-            if (mentionedDaemon) {
-              dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
-            }
-          }
-          else {
-            // Randomly select daemon
-            const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-            dispatchChatComment(pastIdeas, currentIdea, daemon, column);
+        if (currentIdea.mention) {
+          const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
+          if (mentionedDaemon) {
+            dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
           }
         }
-
+        else {
+          // Randomly select daemon
+          const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+          dispatchChatComment(pastIdeas, currentIdea, daemon, column);
+        }
       }
     }
   }, [ideasEligbleForComments,
@@ -119,12 +115,10 @@ const DaemonManager = () => {
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
       if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
-        // console.log('User became inactive');
         setAlreadyWasInactive(true);
         handleDaemonDispatch();
       }
       if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
-        // console.log('User became active');
         setAlreadyWasInactive(false);
       }
     }, 1000);

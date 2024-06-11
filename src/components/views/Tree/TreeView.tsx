@@ -1,4 +1,3 @@
-import InputBox from './InputBox';
 import HistoryContainer from './HistoryContainer';
 import CompletionsContainer from './CompletionsContainer';
 import ErrorDisplay from '../../../errorHandler';
@@ -9,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { useEffect, useState } from 'react';
 import { openTree } from '../../../redux/thunks';
 import TreeViewTopBar from './TreeViewTopBar';
+import InputArea from './InputArea';
 
 
 const TreeView = () => {
@@ -40,7 +40,7 @@ const TreeView = () => {
         <>
           <TreeViewTopBar />
           <HistoryContainer />
-          <InputBox />
+          <InputArea />
           <CompletionsContainer />
           <ErrorDisplay />
           <WelcomeMessage />

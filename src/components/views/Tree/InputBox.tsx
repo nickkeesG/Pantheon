@@ -1,17 +1,28 @@
-import React, { useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useCallback, forwardRef, useImperativeHandle, useState } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch } from '../../../hooks';
-import { TextArea } from '../../../styles/sharedStyles';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { Hint, TextArea } from '../../../styles/sharedStyles';
 import { createIdea } from '../../../redux/thunks';
 import { setLastTimeActive } from '../../../redux/uiSlice';
+import TextWithHighlights from '../../common/TextWithHighlights';
+import { findDaemonMention } from '../../../redux/storeUtils';
+import { fadeInAnimation } from '../../../styles/mixins';
 
 
 const TextAreaField = styled(TextArea)`
-  width: 46%;
+  width: 100%;
   font-size: 16px;
   overflow: hidden;
   resize: none;
-  margin-bottom: 12px;
+  margin: 0px 0px 12px 0px;
+  padding-bottom: 20px;
+`;
+
+const MentionHint = styled(Hint)`
+  position: absolute;
+  bottom: 16px;
+  left: 10px;
+  ${fadeInAnimation};
 `;
 
 interface InputBoxProps {
@@ -27,6 +38,8 @@ export interface InputBoxHandle {
 const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstruction }, ref) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
+  const [mentionedDaemon, setMentionedDaemon] = useState<string | null>(null);
+  const enabledDaemons = useAppSelector((state) => state.daemon.chatDaemons.filter((daemon) => daemon.enabled));
 
   const resize = useCallback(() => {
     if (textAreaRef.current) {
@@ -38,6 +51,7 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
   const clearAndScrollToView = useCallback(() => {
     if (textAreaRef.current) {
       textAreaRef.current.value = '';
+      setMentionedDaemon(null);
       resize();
       textAreaRef.current.scrollIntoView();
     }
@@ -50,10 +64,19 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
     clearAndScrollToView: clearAndScrollToView
   }));
 
+  const checkForMentions = () => {
+    if (textAreaRef.current) {
+      if (textAreaRef.current.value.trim() === '') {
+        setMentionedDaemon(null);
+      } else {
+        setMentionedDaemon(findDaemonMention(textAreaRef.current.value, enabledDaemons));
+      }
+    }
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     dispatch(setLastTimeActive())
-    if (event.key === 'Enter') {
-      // TODO Allow line breaks with Shift+Enter
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault(); // Prevents the addition of a new line
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
         if (event.ctrlKey) { // Treat text as instruction
@@ -64,15 +87,26 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
         clearAndScrollToView();
       }
     }
+
   };
 
   return (
-    <TextAreaField
-      ref={textAreaRef}
-      placeholder="Enter text here..."
-      onChange={resize}
-      onKeyDown={handleKeyDown}
-    />
+    <div style={{ position: 'relative', width: '46%' }}>
+      <TextAreaField
+        ref={textAreaRef}
+        placeholder="Enter text here..."
+        onChange={() => {
+          resize();
+          checkForMentions();
+        }}
+        onKeyDown={handleKeyDown}
+      />
+      {mentionedDaemon && (
+        <MentionHint>
+          <TextWithHighlights text={`Pings ${mentionedDaemon}.`} highlights={[[6, 6 + mentionedDaemon.length]]} />
+        </MentionHint>
+      )}
+    </div>
   );
 });
 

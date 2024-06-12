@@ -59,7 +59,7 @@ const InputArea = () => {
   }, [instructDaemon, openAIKey, openAIOrgId, instructModel, currentBranchIdeas, dispatch]);
 
   return (
-    <ContainerVertical>
+    <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>
       <InputBox ref={textAreaRef} dispatchInstruction={dispatchInstruction} />
       <ButtonRow>
         <Button

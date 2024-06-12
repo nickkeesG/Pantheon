@@ -5,24 +5,33 @@ interface TextWithHighlightsProps {
   highlights: [number, number][];
 }
 
-const TextWithHighlights: React.FC<TextWithHighlightsProps> = ({ text, highlights }) => {
-  // TODO This file could be optimized
-  const highlightedText = highlights.reduce((acc, [start, end], index) => {
-    const previousEnd = index === 0 ? 0 : highlights[index - 1][1];
-    return acc.concat(
-      text.slice(previousEnd, start),
-      <span key={index} style={{ color: 'var(--accent-color-coral)' }}>
+const generateHighlightedText = (text: string, highlights: [number, number][]) => {
+  const textParts: React.ReactNode[] = [];
+  let lastEnd = 0;
+
+  highlights.forEach(([start, end], index) => {
+    // Add non-highlighted text
+    textParts.push(text.slice(lastEnd, start));
+    // Add highlighted text
+    textParts.push(
+      <span key={`${start}-${end}`} style={{ color: 'var(--accent-color-coral)' }}>
         {text.slice(start, end)}
       </span>
     );
-  }, [] as React.ReactNode[]);
+    lastEnd = end;
+  });
 
-  if (highlights.length > 0) {
-    const lastHighlightEnd = highlights[highlights.length - 1][1];
-    highlightedText.push(text.slice(lastHighlightEnd));
+  // Add any remaining text after the last highlight
+  if (lastEnd < text.length) {
+    textParts.push(text.slice(lastEnd));
   }
 
-  return <span>{highlightedText.length > 0 ? highlightedText : text}</span>;
+  return textParts;
 };
+
+const TextWithHighlights: React.FC<TextWithHighlightsProps> = React.memo(({ text, highlights }) => {
+  const highlightedText = generateHighlightedText(text, highlights);
+  return <span>{highlightedText.length > 0 ? highlightedText : text}</span>;
+});
 
 export default TextWithHighlights;

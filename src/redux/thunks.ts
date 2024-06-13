@@ -6,9 +6,9 @@ import { DaemonState, replaceDaemonSlice, resetDaemonSlice } from "./daemonSlice
 import { clearErrors } from './errorSlice';
 import { ConfigState, replaceConfigSlice, resetConfigSlice } from './configSlice';
 import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView, setCreatingSection } from "./uiSlice";
-import { Idea, Section, Tree } from "./models";
+import { Idea, IdeaType, Section, Tree } from "./models";
 import { AppThunk } from './store';
-import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
+import { findDaemonMention, getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
@@ -133,7 +133,7 @@ export const finishCreatingSection = (newSectionId: number): AppThunk => (dispat
   dispatch(setCreatingSection(false));
 };
 
-export const createIdea = (text: string, isUser: boolean = true): AppThunk => (dispatch, getState) => {
+export const createIdea = (text: string, type: IdeaType = IdeaType.User): AppThunk => (dispatch, getState) => {
   const state = getState();
 
   let sectionId = state.ui.activeSectionId;
@@ -146,14 +146,20 @@ export const createIdea = (text: string, isUser: boolean = true): AppThunk => (d
   }
 
   const id = Date.now();
+  let mention: string | null = null;
+  if (type === IdeaType.User) {
+    const activeDaemons = state.daemon.chatDaemons.filter(daemon => daemon.enabled);
+    mention = findDaemonMention(text, activeDaemons);
+  }
   const newIdea: Idea = {
     id,
-    isUser,
+    type,
     sectionId,
     parentIdeaId,
     text,
     textTokens: [],
-    tokenSurprisals: []
+    tokenSurprisals: [],
+    mention: mention || undefined
   }
   const newActiveIdeaIds = [...state.ui.activeIdeaIds, id];
 

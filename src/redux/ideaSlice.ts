@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { Idea } from './models';
+import { Idea, IdeaType } from './models';
 import { getIdeasSinceLastComment, getMostRecentDescendent } from './storeUtils';
 
 
@@ -35,6 +35,10 @@ const ideaSlice = createSlice({
       const idea = state.ideas[action.payload.ideaId]!;
       idea.textTokens = action.payload.textTokens;
       idea.tokenSurprisals = action.payload.tokenSurprisals;
+    },
+    setMentionToIdea(state, action: PayloadAction<{ ideaId: number, mention: string }>) {
+      const idea = state.ideas[action.payload.ideaId]!;
+      idea.mention = action.payload.mention;
     },
     replaceSlice: (_, action: PayloadAction<IdeaState>) => action.payload,
     resetSlice: (_) => initialState
@@ -82,14 +86,14 @@ export const selectSectionBranchRootIdeas = createSelector(
 )
 
 // TODO Probably ideas should also have references to their comments
-export const selectActiveIdeasEligibleForComments = createSelector(
+export const selectActiveThoughtsEligibleForComments = createSelector(
   [(state: RootState) => state.idea.ideas,
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
-      // filter out ideas that are not user ideas
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+      // filter out ideas that are not thoughts
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
     } catch (e) {
@@ -103,14 +107,14 @@ export const selectActiveIdeasEligibleForComments = createSelector(
   }
 )
 
-export const selectActivePastIdeas = createSelector(
+export const selectActivePastThoughts = createSelector(
   [(state: RootState) => state.idea.ideas,
   (state: RootState) => state.ui.activeIdeaIds,
   (state: RootState) => state.comment.comments],
   (ideas, activeIdeaIds, comments) => {
     try {
-      // filter out ideas that are not user ideas
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+      // filter out ideas that are not thoughts
+      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
       const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
       const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
@@ -126,13 +130,13 @@ export const selectActivePastIdeas = createSelector(
   }
 )
 
-export const selectCurrentBranchIdeas = createSelector(
+export const selectCurrentBranchThoughts = createSelector(
   [
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
-    // filter out ideas that are not user ideas
-    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea.isUser);
+    // filter out ideas that are not thoughts
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
     return activeIdeas;
   }
 )
@@ -170,6 +174,6 @@ export const selectMostRecentIdeaInTree = createSelector(
   }
 )
 
-export const { addIdea, updateIdea, deleteIdeas, setSurprisalToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
+export const { addIdea, updateIdea, deleteIdeas, setSurprisalToIdea, setMentionToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
 export const initialIdeaState = initialState;
 export default ideaSlice.reducer;

@@ -5,7 +5,7 @@ import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
-import { selectActiveIdeasEligibleForComments, selectActivePastIdeas } from '../redux/ideaSlice';
+import { selectActiveThoughtsEligibleForComments, selectActivePastThoughts } from '../redux/ideaSlice';
 
 /*
 Central controller for the deployment of daemons.
@@ -17,8 +17,10 @@ const DaemonManager = () => {
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
-  const ideasEligbleForComments = useAppSelector(selectActiveIdeasEligibleForComments);
-  const pastIdeas = useAppSelector(selectActivePastIdeas);
+
+  // Only gets ideas which are "thoughts" (as opposed to instructions or responses to instructions)
+  const ideasEligbleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
+  const pastIdeas = useAppSelector(selectActivePastThoughts);
 
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
 
@@ -39,7 +41,7 @@ const DaemonManager = () => {
       // Returns a single comment
       const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
-      if(response) {
+      if (response) {
         dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: column }));
       }
       else {
@@ -55,14 +57,20 @@ const DaemonManager = () => {
   }, [openAIKey, openAIOrgId, chatModel, dispatch]);
 
   const selectCurrentIdea = useCallback(async (ideasEligbleForComments: Idea[]) => {
+    // First try to find an idea with a mention
+    const ideaWithMention = ideasEligbleForComments.find(idea => idea.mention);
+    if (ideaWithMention) {
+      return ideaWithMention;
+    }
+
     // Ramdomly select an idea
-    const currentIdea = ideasEligbleForComments[Math.floor(Math.random() * ideasEligbleForComments.length)];
-    return currentIdea;
+    const randomIdea = ideasEligbleForComments[Math.floor(Math.random() * ideasEligbleForComments.length)];
+    return randomIdea;
   }, []);
 
 
-  const handleDaemonDispatch = useCallback(async() => {
-    if(!openAIKey) {
+  const handleDaemonDispatch = useCallback(async () => {
+    if (!openAIKey) {
       dispatchError('OpenAI API key not set');
       return;
     }
@@ -72,22 +80,25 @@ const DaemonManager = () => {
         console.log('Chat daemon already active');
       }
       else {
-        // Randomly select a chat daemon
-        const chatDaemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-        if (chatDaemon) {
-          const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
+        const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
+        let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
 
-          if (currentIdea) {
-            let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+        // To maintain backwards compatibility with base/chat naming
+        if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
+        if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
 
-            // To maintain backwards compatibility with base/chat naming
-            if (lastCommentColumn === 'base') { lastCommentColumn = 'left';}
-            if (lastCommentColumn === 'chat') { lastCommentColumn = 'right';}
+        let column = lastCommentColumn === 'left' ? 'right' : 'left';
 
-            let column = lastCommentColumn === 'left' ? 'right' : 'left';
-
-            dispatchChatComment(pastIdeas, currentIdea, chatDaemon, column);
+        if (currentIdea.mention) {
+          const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
+          if (mentionedDaemon) {
+            dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
           }
+        }
+        else {
+          // Randomly select daemon
+          const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+          dispatchChatComment(pastIdeas, currentIdea, daemon, column);
         }
       }
     }
@@ -104,12 +115,10 @@ const DaemonManager = () => {
     const interval = setInterval(() => {
       const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
       if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
-        console.log('User became inactive');
         setAlreadyWasInactive(true);
         handleDaemonDispatch();
       }
       if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
-        console.log('User became active');
         setAlreadyWasInactive(false);
       }
     }, 1000);

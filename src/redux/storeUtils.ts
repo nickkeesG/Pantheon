@@ -1,4 +1,4 @@
-import { Comment, Idea, IdeaExport } from "./models";
+import { ChatDaemonConfig, Comment, Idea, IdeaExport } from "./models";
 
 /**
  * Retrieves all direct descendants of a given idea within the ideas array.
@@ -98,3 +98,29 @@ export function prepareIdeasForExport(ideas: Idea[], selectedIdea: Idea): IdeaEx
 
   return ideaExports;
 }
+
+/**
+ * Searches for the first mention of any active daemon's name in a given text.
+ * 
+ * This function iterates over a list of active daemons and checks if their names are mentioned in the text.
+ * It uses a regular expression to find the first occurrence of each daemon's name preceded by an '@' symbol.
+ * The mentions are then sorted by their position in the text, and the name of the first mentioned daemon is returned.
+ * If no mentions are found, the function returns null.
+ * 
+ * @param text - The text in which to search for daemon mentions.
+ * @param activeDaemons - An array of ChatDaemonConfig objects representing the active daemons.
+ * @returns The name of the first mentioned daemon or null if no mentions are found.
+ */
+export function findDaemonMention(text: string, activeDaemons: ChatDaemonConfig[]): string | null {
+  const mentions = activeDaemons
+    .map(daemon => {
+      const regex = new RegExp(`@${daemon.name}`, 'i');
+      const match = text.match(regex);
+      return match && match.index !== undefined ? { name: daemon.name, index: match.index } : null;
+    })
+    .filter(mention => mention !== null)
+    .sort((a, b) => a!.index - b!.index);
+
+  return mentions.length > 0 && mentions[0] ? mentions[0].name : null;
+}
+

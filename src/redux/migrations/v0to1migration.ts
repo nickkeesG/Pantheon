@@ -1,7 +1,7 @@
 import { PersistedState } from "redux-persist";
-import { RootState } from "../store";
 import { DaemonState } from "../daemonSlice";
 import { defaultDaemonState } from "../../daemons/daemonInstructions";
+import { V1StoreState } from "./v1to2migration";
 
 interface V0ChatDaemonConfig {
   id: number;
@@ -25,7 +25,7 @@ interface V0DaemonState {
   instructDaemon: V0InstructDaemonConfig;
 }
 
-export type V0StoreState = { [P in keyof Omit<RootState, 'daemon'>]: RootState[P]; } & {
+export type V0StoreState = { [P in keyof Omit<V1StoreState, 'daemon'>]: V1StoreState[P]; } & {
   daemon: V0DaemonState
 } & PersistedState;
 
@@ -39,7 +39,7 @@ Keeping in mind your rules, and considering everything the user has written, ple
 
 Type only your response, and write no other text.`;
 
-export const V0to1Migration = (state: PersistedState): RootState => {
+export const V0to1Migration = (state: PersistedState): V1StoreState => {
   if (state && 'daemon' in state) {
     const daemonState = state.daemon as V0DaemonState;
     const newDaemonState: DaemonState = {
@@ -64,11 +64,11 @@ export const V0to1Migration = (state: PersistedState): RootState => {
     return {
       ...state,
       daemon: newDaemonState
-    } as RootState
+    } as V1StoreState
   }
 
   return {
     ...state,
     daemon: defaultDaemonState
-  } as RootState
+  } as V1StoreState
 }

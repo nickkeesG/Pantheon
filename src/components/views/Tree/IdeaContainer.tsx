@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea } from '../../../redux/models';
+import { Idea, IdeaType } from '../../../redux/models';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import CommentList from './CommentList';
 import { IconButtonLarge, TextButton } from '../../../styles/sharedStyles';
@@ -123,7 +123,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
   }
 
   const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-secondary)' } : {};
-  if (!idea.isUser) { ideaContainerStyle.borderColor = 'transparent' }
+  if (!(idea.type === IdeaType.User)) { ideaContainerStyle.borderColor = 'transparent' }
 
   return (
     <Container
@@ -150,7 +150,12 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
               onClick={() => switchBranches(false)}
               style={{ visibility: hasBranches ? 'visible' : 'hidden' }} />
           </ActionPanel>
-          <StyledIdeaContainer style={ideaContainerStyle}>
+          <StyledIdeaContainer
+            style={{
+              ...ideaContainerStyle,
+              marginLeft: idea.type === IdeaType.ResponseFromAi ? '20px' : undefined, // Responses to instructions are indented
+            }}
+          >
             <IdeaText idea={idea} />
             <PlusButton
               title='New branch'

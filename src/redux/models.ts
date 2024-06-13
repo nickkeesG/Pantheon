@@ -12,14 +12,21 @@ export interface Section {
   ideaIds: number[];
 }
 
+export enum IdeaType {
+  User = 'user',
+  InstructionToAi = 'instruction',
+  ResponseFromAi = 'response'
+}
+
 export interface Idea {
   id: number;
-  isUser: boolean;
+  type: IdeaType;
   sectionId: number;
   parentIdeaId: number | null;
   text: string;
   textTokens: string[];
   tokenSurprisals: number[];
+  mention?: string;
 }
 
 export interface IdeaExport {

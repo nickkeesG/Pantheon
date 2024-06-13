@@ -20,6 +20,7 @@ class InstructDaemon {
     userPrompt = ChatDaemon.fillInPrompt(userPrompt, pastIdeasText, instruction);
 
     let response = await CallChatModel(this.config.systemPrompt, userPrompt, openaiKey, openaiOrgId, instructModel);
+
     return response;
   }
 }

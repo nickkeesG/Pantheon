@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, forwardRef, useImperativeHandle, useState } from 'react';
+import React, { useRef, useCallback, forwardRef, useImperativeHandle, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { Hint, TextArea } from '../../../styles/sharedStyles';
@@ -39,7 +39,8 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const [mentionedDaemon, setMentionedDaemon] = useState<string | null>(null);
-  const enabledDaemons = useAppSelector((state) => state.daemon.chatDaemons.filter((daemon) => daemon.enabled));
+  const chatDaemons = useAppSelector((state) => state.daemon.chatDaemons);
+  const enabledDaemons = useMemo(() => chatDaemons.filter((daemon) => daemon.enabled), [chatDaemons]);
 
   const resize = useCallback(() => {
     if (textAreaRef.current) {

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TextInput } from "../../styles/sharedStyles";
+import { Hint, TextInput } from "../../styles/sharedStyles";
 import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setSynchronizerActive } from "../../redux/configSlice";
@@ -68,9 +68,12 @@ const ConfigSettings = () => {
         />
       </TextSettingContainer>
       <CheckboxSettingContainer>
-        <input type="checkbox" checked={isSynchronizerActive} onChange={(e) => { dispatch(setSynchronizerActive(e.target.checked))}} />
+        <input type="checkbox" checked={isSynchronizerActive} onChange={(e) => { dispatch(setSynchronizerActive(e.target.checked)) }} disabled />
         <p>Surprisal metric active</p>
-      </CheckboxSettingContainer> 
+      </CheckboxSettingContainer>
+      <Hint>
+        The surprisal metric measuring is temporarily disabled
+      </Hint>
     </div>
   )
 }

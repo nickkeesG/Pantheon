@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Idea } from '../../../redux/models';
+import { Idea, IdeaType } from '../../../redux/models';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import CommentList from './CommentList';
 import { IconButtonLarge, TextButton } from '../../../styles/sharedStyles';
@@ -122,8 +122,8 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
     dispatch(switchBranch(idea, moveForward))
   }
 
-  const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-light)' } : {};
-  if (!(idea.type === "thought")) { ideaContainerStyle.borderColor = 'transparent' }
+  const ideaContainerStyle = isHighlighted ? { borderColor: 'var(--line-color)', backgroundColor: 'var(--bg-color-secondary)' } : {};
+  if (!(idea.type === IdeaType.User)) { ideaContainerStyle.borderColor = 'transparent' }
 
   return (
     <Container
@@ -153,7 +153,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
           <StyledIdeaContainer
             style={{
               ...ideaContainerStyle,
-              marginLeft: idea.type === "response" ? '20px' : undefined, // Responses to instructions are indented
+              marginLeft: idea.type === IdeaType.ResponseFromAi ? '20px' : undefined, // Responses to instructions are indented
             }}
           >
             <IdeaText idea={idea} />

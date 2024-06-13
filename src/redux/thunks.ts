@@ -2,13 +2,13 @@ import { resetTreeSlice, addSectionToTree, replaceTreeSlice, TreeState, addTree,
 import { SectionState, replaceSectionSlice, resetSectionSlice, addIdeaToParentSection, addSection, deleteSection } from "./sectionSlice";
 import { IdeaState, replaceIdeaSlice, resetIdeaSlice, addIdea, selectIdeasById, selectMostRecentIdeaInTree, deleteIdeas } from "./ideaSlice";
 import { CommentState, replaceCommentSlice, resetCommentSlice } from "./commentSlice";
-import { resetDaemonSlice } from "./daemonSlice";
+import { DaemonState, replaceDaemonSlice, resetDaemonSlice } from "./daemonSlice";
 import { clearErrors } from './errorSlice';
-import { resetConfigSlice } from './configSlice';
+import { ConfigState, replaceConfigSlice, resetConfigSlice } from './configSlice';
 import { setActiveIdeaIds, setActiveSectionId, resetUiSlice, setActiveTreeId, setActiveView, setCreatingSection } from "./uiSlice";
-import { Idea, Section, Tree } from "./models";
+import { Idea, IdeaType, Section, Tree } from "./models";
 import { AppThunk } from './store';
-import { getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
+import { findDaemonMention, getAllAncestorIds, getChildren, getMostRecentDescendent } from "./storeUtils";
 
 
 export const switchBranch = (parentIdea: Idea, moveForward: boolean): AppThunk => (dispatch, getState) => {
@@ -133,9 +133,9 @@ export const finishCreatingSection = (newSectionId: number): AppThunk => (dispat
   dispatch(setCreatingSection(false));
 };
 
-export const createIdea = (text: string, type: string = "thought"): AppThunk => (dispatch, getState) => {
+export const createIdea = (text: string, type: IdeaType = IdeaType.User): AppThunk => (dispatch, getState) => {
   const state = getState();
-  
+
   let sectionId = state.ui.activeSectionId;
   let parentIdeaId: number | null = state.ui.activeIdeaIds[state.ui.activeIdeaIds.length - 1];
 
@@ -146,6 +146,11 @@ export const createIdea = (text: string, type: string = "thought"): AppThunk => 
   }
 
   const id = Date.now();
+  let mention: string | null = null;
+  if (type === IdeaType.User) {
+    const activeDaemons = state.daemon.chatDaemons.filter(daemon => daemon.enabled);
+    mention = findDaemonMention(text, activeDaemons);
+  }
   const newIdea: Idea = {
     id,
     type,
@@ -154,7 +159,7 @@ export const createIdea = (text: string, type: string = "thought"): AppThunk => 
     text,
     textTokens: [],
     tokenSurprisals: [],
-    mention: ""
+    mention: mention || undefined
   }
   const newActiveIdeaIds = [...state.ui.activeIdeaIds, id];
 
@@ -163,24 +168,36 @@ export const createIdea = (text: string, type: string = "thought"): AppThunk => 
   dispatch(setActiveIdeaIds(newActiveIdeaIds))
 }
 
-export const importTree = (json: string): AppThunk => (dispatch, getState) => {
+export const importAppState = (json: string): AppThunk => (dispatch) => {
+  // TODO Importing old states, with different redux models
   try {
-    const importedState = JSON.parse(json) as { tree: TreeState; section: SectionState; idea: IdeaState; comment: CommentState };
-    console.debug(importedState)
+    const importedState = JSON.parse(json) as {
+      tree: TreeState;
+      section: SectionState;
+      idea: IdeaState;
+      comment: CommentState;
+      daemon: DaemonState;
+      config: ConfigState;
+    };
+
     dispatch(replaceTreeSlice(importedState.tree))
     dispatch(replaceSectionSlice(importedState.section));
     dispatch(replaceIdeaSlice(importedState.idea));
     dispatch(replaceCommentSlice(importedState.comment));
+    dispatch(replaceDaemonSlice(importedState.daemon));
+    dispatch(replaceConfigSlice(importedState.config));
+
     const allImportedIdeas = Object.values(importedState.idea.ideas);
     const mostRecentIdea = allImportedIdeas.reduce((prev, current) => (prev.id > current.id) ? prev : current);
     const currentSection = importedState.section.sections[mostRecentIdea.sectionId];
-    console.debug(allImportedIdeas, mostRecentIdea)
     dispatch(setActiveTreeId(currentSection.treeId));
     dispatch(setActiveSectionId(currentSection.id));
     dispatch(setActiveIdeaIds(getAllAncestorIds(allImportedIdeas, mostRecentIdea.id)));
-    console.info("Import finished successfully")
+
     // TODO Notify the user that the import was successful
+    console.info("Import finished successfully")
   } catch (error) {
+    // TODO Show error to user
     console.error('Error parsing the imported file', error);
   }
 }

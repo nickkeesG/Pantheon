@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { addChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
+import { updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
@@ -12,11 +12,10 @@ const ChatDaemonSettingsContainer = styled.div`
 
 type ChatDaemonSettingsProps = {
   config: ChatDaemonConfig;
-  isNewDaemon: boolean;
 };
 
-const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDaemon }) => {
-  const [isCollapsed, setIsCollapsed] = useState(!isNewDaemon);
+const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEnabled, setIsEnabled] = useState(config.enabled);
   const [isEdited, setIsEdited] = useState(false);
 
@@ -71,13 +70,10 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
         ...config,
         name: name,
         systemPrompt: systemPrompt,
+        userPrompts: userPrompts,
         enabled: isEnabled,
       };
-      if (isNewDaemon) {
-        dispatch(addChatDaemon(newConfig));
-      } else {
-        dispatch(updateChatDaemon(newConfig));
-      }
+      dispatch(updateChatDaemon(newConfig));
       setIsEdited(false);
     } catch (error) {
       console.error("Failed to update config:", error);
@@ -92,7 +88,6 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
         <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} />
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
-          {isNewDaemon && (<>New daemon</>)}
           {config.name}
         </TextButton>
         {isEdited && (
@@ -131,22 +126,26 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config, isNewDa
             />
           </label>
           <br />
-          <label>User Prompts:</label>
+          <h3>User Prompt List:</h3>
           {userPrompts.map((prompt, index) => (
             <div key={index}>
+              <label>Prompt {index + 1}:</label>
               <TextArea
                 ref={(el) => userPromptRefs.current[index] = el as HTMLTextAreaElement}
                 value={prompt}
                 onChange={(e) => handleUserPromptChange(index, e.target.value, e.target)}
                 style={{ width: '100%' }}
               />
-              <ButtonSmall onClick={() => deleteUserPrompt(index)}>
+              <ButtonSmall 
+                onClick={() => deleteUserPrompt(index)}
+                style={{ marginBottom: '10px' }}
+              >
                 Delete
               </ButtonSmall>
             </div>
           ))}
           <ButtonSmall onClick={addUserPrompt}>
-            Add Prompt
+            Add User Prompt
           </ButtonSmall>
         </>
       )}

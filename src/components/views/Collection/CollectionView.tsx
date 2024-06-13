@@ -4,6 +4,8 @@ import { ContainerVertical, TextButton } from '../../../styles/sharedStyles';
 import TreeListItem from './TreeListItem';
 import { createTree } from '../../../redux/thunks';
 import { selectTreesWithMostRecentEdit } from '../../../redux/treeSlice';
+import TopBar from '../../common/TopBar';
+import Settings from '../../settings/Settings';
 
 
 const List = styled.ul`
@@ -24,11 +26,15 @@ const CollectionView = () => {
   }
 
   return (
-    <ContainerVertical style={{alignItems: 'center'}}>
+    <ContainerVertical style={{ alignItems: 'center' }}>
+      <TopBar>
+        <div></div>
+        <div><Settings /></div>
+      </TopBar>
       <ContainerVertical style={{
         maxWidth: '700px',
         alignItems: 'center',
-        padding: '0px 16px'
+        padding: '40px 16px'
       }}>
         <h1>Trees</h1>
         <TextButton style={{ alignSelf: 'end' }} onClick={handleCreateTree}>+ New tree</TextButton>

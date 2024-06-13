@@ -12,6 +12,14 @@ class ChatDaemon {
     this.config = config;
   }
 
+  static fillInPrompt(prompt: string, pastIdeasText: string, currentIdeaText: string) {
+
+    let filledPrompt = prompt.replace('{PAST}', pastIdeasText);
+    filledPrompt = filledPrompt.replace('{CURRENT}', currentIdeaText);
+
+    return filledPrompt;
+  }
+
   async generateComments(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
     // Generate prompts
     let userPrompts = [...this.config.userPrompts];
@@ -20,8 +28,7 @@ class ChatDaemon {
     let currentIdeaText = currentIdea.text;
 
     for (let i = 0; i < userPrompts.length; i++) {
-      userPrompts[i] = userPrompts[i].replace('{PAST}', pastIdeasText);
-      userPrompts[i] = userPrompts[i].replace('{CURRENT}', currentIdeaText);
+      userPrompts[i] = ChatDaemon.fillInPrompt(userPrompts[i], pastIdeasText, currentIdeaText);
     }
 
     try {

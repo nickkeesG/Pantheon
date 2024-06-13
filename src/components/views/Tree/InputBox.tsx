@@ -1,158 +1,113 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useCallback, forwardRef, useImperativeHandle, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { Button, TextArea } from '../../../styles/sharedStyles';
+import { Hint, TextArea } from '../../../styles/sharedStyles';
 import { createIdea } from '../../../redux/thunks';
-import { setCreatingSection, setLastTimeActive } from '../../../redux/uiSlice';
-import InstructDaemon from '../../../daemons/instructDaemon';
-import { dispatchError } from '../../../errorHandler';
-import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
+import { setLastTimeActive } from '../../../redux/uiSlice';
+import TextWithHighlights from '../../common/TextWithHighlights';
+import { findDaemonMention } from '../../../redux/storeUtils';
+import { fadeInAnimation } from '../../../styles/mixins';
 
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
 
 const TextAreaField = styled(TextArea)`
-  width: 46%;
+  width: 100%;
   font-size: 16px;
   overflow: hidden;
   resize: none;
-  margin-bottom: 12px;
+  margin: 0px 0px 12px 0px;
+  padding-bottom: 20px;
 `;
 
-const ButtonRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px; // Adjust the gap between buttons as needed
+const MentionHint = styled(Hint)`
+  position: absolute;
+  bottom: 16px;
+  left: 10px;
+  ${fadeInAnimation};
 `;
 
-const NewSectionButton = styled(Button)`
-  padding-left: 20px;
-  padding-right: 20px;
-  color: var(--text-color-dark);
-  border-color: var(--line-color-dark);
-`;
+interface InputBoxProps {
+  // TODO This should be a thunk that InputBox dispatches directly
+  dispatchInstruction: (instruction: string) => void;
+}
 
-const InstructButton = styled(Button)`
-  padding-left: 20px;
-  padding-right: 20px;
-  color: var(--text-color-dark);
-  border-color: var(--line-color-dark);
-`;
+export interface InputBoxHandle {
+  getText: () => string;
+  clearAndScrollToView: () => void;
+}
 
-const InputBox = () => {
-  const dispatch = useAppDispatch();
-  const newSectionButtonDisabled = useAppSelector(state => state.ui.activeIdeaIds.length === 0)
+const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstruction }, ref) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
-  const [instructDaemon, setInstructDaemon] = useState<InstructDaemon | null>(null);
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const instructModel = useAppSelector(state => state.config.chatModel); // using the chat model
+  const dispatch = useAppDispatch();
+  const [mentionedDaemon, setMentionedDaemon] = useState<string | null>(null);
+  const enabledDaemons = useAppSelector((state) => state.daemon.chatDaemons.filter((daemon) => daemon.enabled));
 
-  // Instuct daemon can only see thoughts, and the most recent instruction (no past instructions or responses)
-  const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
-
-  useEffect(() => {
-    const daemon = instructDaemonConfig ? new InstructDaemon(instructDaemonConfig) : null;
-    setInstructDaemon(daemon);
-  }, [instructDaemonConfig]);
-
-  const resizeTextArea = () => {
+  const resize = useCallback(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
-  };
+  }, [textAreaRef]);
 
-  const handleTextChange = () => {
-    resizeTextArea();
-  };
+  const clearAndScrollToView = useCallback(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.value = '';
+      setMentionedDaemon(null);
+      resize();
+      textAreaRef.current.scrollIntoView();
+    }
+  }, [textAreaRef, resize]);
 
-  const dispatchInstruction = useCallback(async (instruction: string) => {
-    // dispatch instruction as idea but set type to "instruction"
-    dispatch(createIdea(instruction, "instruction"));
+  useImperativeHandle(ref, () => ({
+    getText: () => {
+      return textAreaRef.current ? textAreaRef.current.value : '';
+    },
+    clearAndScrollToView: clearAndScrollToView
+  }));
 
-    if (instructDaemon) {
-      try {
-        const response = await instructDaemon.handleInstruction(
-          currentBranchIdeas,
-          instruction,
-          openAIKey,
-          openAIOrgId,
-          instructModel);
-        if (response) {
-          dispatch(createIdea(response, "response")); // flag idea as response to instruction
-        } else {
-          dispatchError('Instruct daemon failed to generate response');
-        }
-      } catch (error) {
-        console.error(error);
+  const checkForMentions = () => {
+    if (textAreaRef.current) {
+      if (textAreaRef.current.value.trim() === '') {
+        setMentionedDaemon(null);
+      } else {
+        setMentionedDaemon(findDaemonMention(textAreaRef.current.value, enabledDaemons));
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, currentBranchIdeas, dispatch]);
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     dispatch(setLastTimeActive())
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault(); // Prevents the addition of a new line
-
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
         if (event.ctrlKey) { // Treat text as instruction
           dispatchInstruction(textAreaRef.current.value);
         } else { // Save the text to the history
           dispatch(createIdea(textAreaRef.current.value));
         }
-        textAreaRef.current.scrollIntoView();
-      }
-
-      if (textAreaRef.current) {
-        textAreaRef.current.value = '';
-        resizeTextArea();
+        clearAndScrollToView();
       }
     }
+
   };
 
-  useEffect(() => {
-    resizeTextArea();
-  }, []);
-
   return (
-    <Container>
+    <div style={{ position: 'relative', width: '46%' }}>
       <TextAreaField
         ref={textAreaRef}
         placeholder="Enter text here..."
-        onChange={handleTextChange}
+        onChange={() => {
+          resize();
+          checkForMentions();
+        }}
         onKeyDown={handleKeyDown}
       />
-      <ButtonRow>
-        <NewSectionButton
-          onClick={() => dispatch(setCreatingSection(true))}
-          disabled={newSectionButtonDisabled}
-        >
-          + New section
-        </NewSectionButton>
-        <InstructButton
-          onClick={() => {
-            if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
-              dispatchInstruction(textAreaRef.current.value);
-              textAreaRef.current.value = ''; // Clear the text area
-              resizeTextArea(); // Resize the text area
-            }
-          }}
-          title="Press Ctrl + Enter to send text to instruct daemon"
-        >
-          Send idea to instruct daemon
-        </InstructButton>
-      </ButtonRow>
-    </Container>
+      {mentionedDaemon && (
+        <MentionHint>
+          <TextWithHighlights text={`Pings ${mentionedDaemon}.`} highlights={[[6, 6 + mentionedDaemon.length]]} />
+        </MentionHint>
+      )}
+    </div>
   );
-};
+});
 
 export default InputBox;

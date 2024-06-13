@@ -1,9 +1,9 @@
 import { Idea, InstructDaemonConfig } from '../redux/models';
 import { CallChatModel } from '../llmHandler';
+import ChatDaemon from './chatDaemon';
 
 /*
   Used to respond directly to instructions, for performing simple tasks (e.g. summarization)
-  Called by InputBox component
 */
 class InstructDaemon {
   config: InstructDaemonConfig;
@@ -16,9 +16,8 @@ class InstructDaemon {
 
     let userPrompt = this.config.userPrompt;
 
-    let pastIdeaText = pastIdeas.map(idea => idea.text).join('\n');
-    userPrompt = userPrompt.replace("{PAST}", pastIdeaText);
-    userPrompt = userPrompt.replace("{CURRENT}", instruction);
+    let pastIdeasText = pastIdeas.map(idea => idea.text).join('\n');
+    userPrompt = ChatDaemon.fillInPrompt(userPrompt, pastIdeasText, instruction);
 
     let response = await CallChatModel(this.config.systemPrompt, userPrompt, openaiKey, openaiOrgId, instructModel);
 

@@ -1,15 +1,9 @@
 import styled from "styled-components";
-import { Hint, TextInput } from "../../styles/sharedStyles";
+import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
 import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setSynchronizerActive } from "../../redux/configSlice";
 
-
-const SettingLabel = styled.p`
-  font-size: 0.8em;
-  margin-bottom: 5px;
-  color: var(--text-color-dark);
-`;
 
 const TextSettingContainer = styled.div`
   display: flex;

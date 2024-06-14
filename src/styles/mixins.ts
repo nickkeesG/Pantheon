@@ -1,6 +1,11 @@
 import { css } from 'styled-components';
 
 
+export const styledBackground = css`
+  background-color: var(--bg-color-secondary);
+  border-radius: 4px;
+`;
+
 export const transition02 = css`
   transition: 
     background-color 0.2s, 

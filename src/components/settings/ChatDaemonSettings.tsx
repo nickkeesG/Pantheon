@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import { updateChatDaemon } from "../../redux/daemonSlice"
+import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
+import { Button, ButtonDangerous, ButtonSmall, SettingLabel, TextArea, TextButton, TextInput } from '../../styles/sharedStyles';
+import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
+import { styledBackground } from '../../styles/mixins';
 
 
 const ChatDaemonSettingsContainer = styled.div`
   text-align: left;
+`;
+
+const StyledDiv = styled.div`
+  padding: 8px;
+  ${styledBackground};
 `;
 
 type ChatDaemonSettingsProps = {
@@ -25,7 +32,6 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 
   const dispatch = useAppDispatch();
 
-  const nameRef = useRef<HTMLTextAreaElement>(null);
   const systemPromptRef = useRef<HTMLTextAreaElement>(null);
   const userPromptRefs = useRef<HTMLTextAreaElement[]>([]);
 
@@ -97,23 +103,20 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
         )}
       </span>
       {!isCollapsed && (
-        <>
-          <br />
+        <StyledDiv>
           <label>
-            Name:
-            <TextArea
-              ref={nameRef}
+            <SettingLabel>Name</SettingLabel>
+            <TextInput
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
                 setIsEdited(true);
               }}
-              style={{ width: '100%', height: 'min-content' }}
             />
           </label>
           <br />
           <label>
-            System Prompt:
+            <SettingLabel>System prompt</SettingLabel>
             <TextArea
               ref={systemPromptRef}
               value={systemPrompt}
@@ -122,21 +125,22 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
                 setIsEdited(true);
                 resizeTextArea(e.target);
               }}
-              style={{ width: '100%' }}
             />
           </label>
           <br />
-          <h3>User Prompt List:</h3>
+          <h4>Chain-of-thought prompts</h4>
           {userPrompts.map((prompt, index) => (
             <div key={index}>
-              <label>Prompt {index + 1}:</label>
+              <label>
+                <SettingLabel>Prompt {index + 1}</SettingLabel>
+              </label>
               <TextArea
                 ref={(el) => userPromptRefs.current[index] = el as HTMLTextAreaElement}
                 value={prompt}
                 onChange={(e) => handleUserPromptChange(index, e.target.value, e.target)}
                 style={{ width: '100%' }}
               />
-              <ButtonSmall 
+              <ButtonSmall
                 onClick={() => deleteUserPrompt(index)}
                 style={{ marginBottom: '10px' }}
               >
@@ -144,10 +148,15 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
               </ButtonSmall>
             </div>
           ))}
-          <ButtonSmall onClick={addUserPrompt}>
+          <Button onClick={addUserPrompt}>
             Add User Prompt
-          </ButtonSmall>
-        </>
+          </Button>
+          <ButtonWithConfirmation
+            confirmationText="Are you sure you want to delete this daemon? This cannot be undone."
+            onConfirm={() => dispatch(removeChatDaemon(config.id))}>
+            <ButtonDangerous>Delete daemon</ButtonDangerous>
+          </ButtonWithConfirmation>
+        </StyledDiv>
       )}
     </ChatDaemonSettingsContainer>
   );

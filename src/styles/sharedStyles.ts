@@ -128,6 +128,8 @@ export const ExitButtonSmall = styled(IconButtonSmall).attrs({
 
 export const TextArea = styled.textarea`
   width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   padding: 10px;
   box-sizing: border-box;
   border: 0.5px solid var(--line-color);
@@ -163,6 +165,12 @@ export const TextInput = styled.input`
 export const Hint = styled.div`
   font-size: 0.8em;
   color: var(--text-color-darkest);
+`;
+
+export const SettingLabel = styled.p`
+  font-size: 0.8em;
+  margin-bottom: 5px;
+  color: var(--text-color-dark);
 `;
 
 export const Filler = styled.div`

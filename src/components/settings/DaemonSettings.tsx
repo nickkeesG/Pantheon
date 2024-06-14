@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { TextButton } from "../../styles/sharedStyles";
+import { Hint, TextButton } from "../../styles/sharedStyles";
 import ChatDaemonSettings from "./ChatDaemonSettings";
 import { ChatDaemonConfig } from "../../redux/models";
 import BaseDaemonSettings from "./BaseDaemonSettings";
@@ -20,6 +20,8 @@ Don't write more than one sentence.`],
 const DaemonSettings = () => {
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
+  const chatModel = useAppSelector(state => state.config.chatModel);
+  const baseModel = useAppSelector(state => state.config.baseModel);
 
   const dispatch = useAppDispatch();
 
@@ -30,14 +32,20 @@ const DaemonSettings = () => {
 
   return (
     <div>
-      <h4>Chat daemons</h4>
+      <h4>Daemons</h4>
+      <Hint style={{ paddingBottom: '8px' }}>
+        Daemons are the characters leaving comments on what you write. They are powered by the given <i>chat model</i> (currently <b>{chatModel}</b>).
+      </Hint>
       {chatDaemonConfigs.map((config) => (
         <ChatDaemonSettings key={config.id} config={config} />
       ))}
       <TextButton onClick={() => addNewDaemon()}>
         + New daemon
       </TextButton>
-      <h4>Base daemons</h4>
+      <h4>Completions</h4>
+      <Hint style={{ paddingBottom: '8px' }}>
+        Completions are ideas that the AI suggests to the user. They are powered by the given <i>base model</i> (currently <b>{baseModel}</b>).
+      </Hint>
       <BaseDaemonSettings config={baseDaemonConfig} />
     </div>
   )

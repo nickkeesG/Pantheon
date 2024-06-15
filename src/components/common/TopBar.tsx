@@ -13,7 +13,8 @@ const StyledTopBar = styled.div`
   background: var(--bg-color-secondary);
   padding: 4px 12px;
   z-index: 1000;
-  border-bottom: 0.5px solid var(--line-color-dark);
+  border-top: 0.5px solid var(--line-color);
+  border-bottom: 0.5px solid var(--line-color-strong);
 `;
 
 const TopBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {

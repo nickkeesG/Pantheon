@@ -6,6 +6,11 @@ export const styledBackground = css`
   border-radius: 4px;
 `;
 
+export const aiFont = css`
+  font-family: 'Monaspace Neon';
+  font-size: 0.8em;
+`;
+
 export const transition02 = css`
   transition: 
     background-color 0.2s, 

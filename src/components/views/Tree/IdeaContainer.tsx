@@ -71,7 +71,7 @@ const StyledIdeaContainer = styled.div`
   flex: 1;
   padding: 10px 28px 10px 10px;
   margin: 2px 0px;
-  border: 0.5px solid var(--line-color-dark);
+  border: 0.5px solid var(--line-color-strong);
   border-radius: 4px;
   transition: background-color 0.3s, border-color 0.3s;
 `;

@@ -1,22 +1,28 @@
+@font-face {
+  font-family: 'Monaspace Neon';
+  src: url('./fonts/MonaspaceNeon-Regular.woff') format('woff');
+}
+
 html {
   min-height: 100vh;
   margin: 0;
   padding: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: monospace;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 100%;
+  font-weight: 300;
   scrollbar-color: var(--highlight) var(--highlight-weak);
   scrollbar-width: thin;
   --bg-color: #ffffff;
   --bg-color-secondary: #f0f0f0;
   --text-color: #000000;
   --text-color-dark: #333333;
-  --text-color-darker: #666666;
   --text-color-darkest: #999999;
   --line-color: #cccccc;
   --line-color-light: #dddddd;
-  --line-color-dark: #bbbbbb;
-  --line-color-darker: #aaaaaa;
+  --line-color-strong: #bbbbbb;
+  --line-color-stronger: #aaaaaa;
   --highlight: #00000020;
   --highlight-weak: #00000010;
   --highlight-strong: #00000030;
@@ -30,13 +36,12 @@ html.dark {
   --bg-color-secondary: #232830;
   --text-color: #d7d8db;
   --text-color-dark: #9196a2;
-  --text-color-darker: #7e838e;
   --text-color-darkest: #585c65;
   --text-color-blue: #4f8df9;
   --line-color: #707070;
-  --line-color-light: #b7b7b7;
-  --line-color-dark: #4e4e4e;
-  --line-color-darker: #3e3e3e;
+  --line-color-light: #818181;
+  --line-color-strong: #4e4e4e;
+  --line-color-stronger: #3e3e3e;
   --highlight: #ffffff20;
   --highlight-weak: #ffffff10;
   --highlight-strong: #ffffff30;
@@ -64,7 +69,7 @@ footer {
   align-items: center;
   text-align: center;
   line-height: 1.5;
-  border-top: 0.5px solid var(--line-color-dark);
+  border-top: 0.5px solid var(--line-color-strong);
   font-size: 0.9em;
 }
 
@@ -72,9 +77,20 @@ a {
   color: var(--url-color);
 }
 
+button {
+  font-weight: 400;
+}
+
 hr {
   border: none;
   border-top: 0.5px solid var(--line-color);
   margin: 16px 0px;
   padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 200;
 }

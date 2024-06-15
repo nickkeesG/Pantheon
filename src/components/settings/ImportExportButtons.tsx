@@ -75,7 +75,7 @@ const ImportExportButtons = () => {
         Importing will override the existing state and cannot be undone.
       </p>
       <ButtonsContainer>
-        <StyledButtonHighlighted as="label">
+        <StyledButtonHighlighted>
           Import
           <input type="file"
             accept=".json"

@@ -5,12 +5,12 @@ import { IconButtonSmall } from '../../../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../../../hooks';
 import { approveComment } from '../../../redux/commentSlice';
-import { fadeInAnimation } from '../../../styles/mixins';
+import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 
 
 const CommentName = styled.div`
   text-align: right;
-  font-weight: bold;
+  color: var(--accent-color-coral);
 `;
 
 const CommentText = styled.div`
@@ -38,18 +38,17 @@ const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ us
 `;
 
 const StyledCommentContainer = styled.div`
-position: relative;
+  position: relative;
   padding: 6px 12px;
   color: var(--text-color-dark);
+  ${aiFont};
   ${fadeInAnimation};
 
-  // Initially set the ThumbsUpButton to be fully transparent
   ${ThumbsUpButton} {
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
-  // Change the opacity to make the ThumbsUpButton visible when hovering over the container
   &:hover ${ThumbsUpButton} {
     opacity: 1;
   }

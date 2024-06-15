@@ -3,7 +3,7 @@ import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
 import { dispatchError } from '../../../errorHandler';
-import { fadeInAnimation } from '../../../styles/mixins';
+import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
 import BaseDaemon from '../../../daemons/baseDaemon';
 import { Idea } from '../../../redux/models';
@@ -40,8 +40,11 @@ const StyledIndividualCompletion = styled.div`
   flex: 1;
   padding: 8px;
   margin: 8px 0px;
-  border: 0.5px solid var(--line-color-dark);
+  border: 0.5px solid var(--line-color-strong);
   border-radius: 4px;
+  white-space: normal;
+  word-break: break-word;
+  ${aiFont};
   ${fadeInAnimation};
 `;
 

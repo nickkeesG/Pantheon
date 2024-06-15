@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { highlightOnHover } from './mixins';
+import { aiFont, highlightOnHover } from './mixins';
 import { FiX } from 'react-icons/fi';
 
 export const ContainerVertical = styled.div`
@@ -22,7 +22,7 @@ export const Button = styled.button`
   font-size: 0.9em;
   background: none;
   color: var(--text-color-dark);
-  border: 0.5px solid var(--line-color-dark);
+  border: 0.5px solid var(--line-color-strong);
   border-radius: 50px;
   padding: 8px 16px;
   margin: 4px;
@@ -34,7 +34,7 @@ export const Button = styled.button`
 
   &:disabled {
     color: var(--text-color-darkest);
-    border-color: var(--line-color-darker);
+    border-color: var(--line-color-stronger);
     cursor: default;
   }
 `;
@@ -140,9 +140,10 @@ export const TextArea = styled.textarea`
   display: block;
   background-color: var(--bg-color-secondary);
   color: var(--text-color);
+  ${aiFont};
   &:focus {
     outline: none;
-    border-color: var(--line-color-light); 
+    border-color: var(--text-color); 
   }
   overflow: hidden;
 `;
@@ -155,10 +156,10 @@ export const TextInput = styled.input`
   background-color: var(--bg-color-secondary);
   border: 0.5px solid var(--line-color);
   border-radius: 4px;
-  font-family: monospace;
+  ${aiFont};
   &:focus {
     outline: none;
-    border-color: var(--line-color-light); 
+    border-color: var(--text-color); 
   }
 `;
 

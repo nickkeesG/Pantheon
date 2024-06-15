@@ -59,7 +59,7 @@ const Settings = () => {
       {isSettingsOpen && (
         <Modal toggleVisibility={toggleSettings} zIndex={100}>
           <SettingsPanel>
-            <SettingsHeader>SETTINGS</SettingsHeader>
+            <SettingsHeader>Settings</SettingsHeader>
             <hr />
             <ConfigSettings />
             <hr />

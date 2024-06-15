@@ -82,10 +82,12 @@ const CompletionsContainer = () => {
   return (
     <TopLevelContainer>
       <BackgroundContainer>
-        <ContainerHorizontal>
+        <ContainerHorizontal style={{ alignItems: 'center' }}>
           <h4>Base model completions</h4>
           <Filler />
-          <TextButton onClick={() => getNewCompletions(currentBranchIdeas)}>Refresh</TextButton>
+          <TextButton onClick={() => getNewCompletions(currentBranchIdeas)}>
+            Refresh
+          </TextButton>
         </ContainerHorizontal>
         {completions.length === 0 &&
           <Hint>Here you will see how the base model would continue your train of thought</Hint>

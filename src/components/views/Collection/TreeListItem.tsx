@@ -34,6 +34,7 @@ const ButtonContainer = styled(ContainerHorizontal)`
 `;
 
 const Header = styled.div`
+  color: var(--text-color);
   min-height: 33px;
   font-size: 1.1em;
   box-sizing: border-box;

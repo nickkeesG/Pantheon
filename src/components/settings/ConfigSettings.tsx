@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
+import { SettingLabel, TextInput } from "../../styles/sharedStyles";
 import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { setSynchronizerActive } from "../../redux/configSlice";
 
 
 const TextSettingContainer = styled.div`
@@ -12,20 +11,12 @@ const TextSettingContainer = styled.div`
   margin: 0 auto;
 `;
 
-const CheckboxSettingContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: 10px auto;
-`;
-
 const ConfigSettings = () => {
   const dispatch = useAppDispatch();
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
   const baseModel = useAppSelector(state => state.config.baseModel);
-  const isSynchronizerActive = useAppSelector(state => state.config.isSynchronizerActive);
 
   return (
     <div>
@@ -61,13 +52,6 @@ const ConfigSettings = () => {
           onChange={(event) => dispatch(updateBaseModel(event.target.value))}
         />
       </TextSettingContainer>
-      <CheckboxSettingContainer>
-        <input type="checkbox" checked={isSynchronizerActive} onChange={(e) => { dispatch(setSynchronizerActive(e.target.checked)) }} disabled />
-        <p>Surprisal metric active</p>
-      </CheckboxSettingContainer>
-      <Hint>
-        The surprisal metric measuring is temporarily disabled
-      </Hint>
     </div>
   )
 }

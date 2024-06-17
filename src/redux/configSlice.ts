@@ -11,7 +11,7 @@ export interface ConfigState {
   openAIOrgId: string;
   baseModel: string;
   chatModel: string;
-  isSynchronizerActive: boolean;
+  isSynchronizerActive: boolean; // TODO Remove this field
   theme?: Theme;
 }
 
@@ -47,7 +47,7 @@ const configSlice = createSlice({
       state.theme = action.payload;
     },
     replaceSlice: (_, action: PayloadAction<ConfigState>) => action.payload,
-    resetSlice: (state) => initialState
+    resetSlice: (_) => initialState
   },
 });
 

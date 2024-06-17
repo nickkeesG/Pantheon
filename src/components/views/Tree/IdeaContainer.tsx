@@ -6,12 +6,13 @@ import CommentList from './CommentList';
 import { IconButtonLarge, TextButton } from '../../../styles/sharedStyles';
 import { SlArrowLeft } from "react-icons/sl";
 import { HiPlus } from "react-icons/hi2";
-import IdeaText from './IdeaText';
 import { selectCommentsForIdea } from '../../../redux/commentSlice';
 import { createBranch } from '../../../redux/uiSlice';
 import { navigateToChildSection, switchBranch } from '../../../redux/thunks';
 import { selectIdeaBranches, selectSectionBranchRootIdeas } from '../../../redux/ideaSlice';
 import { emergeAnimation } from '../../../styles/mixins';
+import TextWithHighlights from '../../common/TextWithHighlights';
+import { getHighlightsArray } from '../../../styles/uiUtils.ts';
 
 // TODO Massively cleanup this file, it's way too big
 // TODO Also restructure files into folders based on view
@@ -105,6 +106,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
   const rightCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [showPlusButton, setShowPlusButton] = useState(false);
+  const [highlights] = useState<[number, number][]>(getHighlightsArray(idea));
 
   const commentListHeightChanged = (isRight: boolean, newHeight: number, offset: number) => {
     // Get the height of the idea object
@@ -156,7 +158,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
               marginLeft: idea.type === IdeaType.ResponseFromAi ? '20px' : undefined, // Responses to instructions are indented
             }}
           >
-            <IdeaText idea={idea} />
+            <TextWithHighlights text={idea.text} highlights={highlights} />
             <PlusButton
               title='New branch'
               onClick={newBranch}

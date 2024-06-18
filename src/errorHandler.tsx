@@ -12,7 +12,7 @@ const ErrorContainer = styled.div`
   background-color: var(--bg-color-secondary);
   bottom: 0;
   left: 0;
-  border: 0.5px solid var(--line-color-dark);
+  border: 0.5px solid var(--line-color-strong);
   border-radius: 4px;
   padding: 10px 28px 10px 10px;
   margin: 4px;

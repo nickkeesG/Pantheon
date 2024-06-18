@@ -11,6 +11,8 @@ import { fadeInAnimation } from '../../../styles/mixins';
 
 const TextAreaField = styled(TextArea)`
   width: 100%;
+  font-family: inherit;
+  font-weight: inherit;
   font-size: 16px;
   overflow: hidden;
   resize: none;
@@ -95,7 +97,7 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
     <div style={{ position: 'relative', width: '46%' }}>
       <TextAreaField
         ref={textAreaRef}
-        placeholder="Enter text here..."
+        placeholder="What are you thinking about?"
         onChange={() => {
           resize();
           checkForMentions();

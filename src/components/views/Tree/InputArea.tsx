@@ -20,7 +20,9 @@ const ButtonRow = styled(ContainerHorizontal)`
 const InputArea = () => {
   const dispatch = useAppDispatch();
   const textAreaRef = useRef<InputBoxHandle>(null);
-  const newSectionButtonDisabled = useAppSelector(state => state.ui.activeIdeaIds.length === 0)
+  const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
+  const isCreatingSection = useAppSelector(state => state.ui.creatingSection);
+  const [newSectionButtonDisabled, setNewSectionButtonDisabled] = useState(true);
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon>(new InstructDaemon(instructDaemonConfig));
   const openAIKey = useAppSelector(state => state.config.openAIKey);
@@ -33,6 +35,10 @@ const InputArea = () => {
   useEffect(() => {
     setInstructDaemon(new InstructDaemon(instructDaemonConfig));
   }, [instructDaemonConfig]);
+
+  useEffect(() => {
+    setNewSectionButtonDisabled(activeIdeaIds.length === 0 || isCreatingSection === true);
+  }, [activeIdeaIds, isCreatingSection]);
 
   // TODO This should be a thunk
   const dispatchInstruction = useCallback(async (instruction: string) => {

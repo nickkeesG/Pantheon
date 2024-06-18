@@ -1,36 +1,44 @@
 import React from 'react';
 
-interface TextWithHighlightsProps {
-  text: string;
-  highlights: [number, number][];
-}
 
-const generateHighlightedText = (text: string, highlights: [number, number][]) => {
+const generateHighlightedTextWithLineBreaks = (text: string, highlights: [number, number][]) => {
   const textParts: React.ReactNode[] = [];
   let lastEnd = 0;
 
   highlights.forEach(([start, end], index) => {
-    // Add non-highlighted text
-    textParts.push(text.slice(lastEnd, start));
-    // Add highlighted text
-    textParts.push(
-      <span key={`${start}-${end}`} style={{ color: 'var(--accent-color-coral)' }}>
-        {text.slice(start, end)}
+    // Add non-highlighted text with line breaks
+    const nonHighlighted = text.slice(lastEnd, start).split('\n').map((part, idx, arr) => (
+      idx < arr.length - 1 ? <React.Fragment key={`${lastEnd}-${start}-${idx}`}>{part}<br /></React.Fragment> : part
+    ));
+    textParts.push(...nonHighlighted);
+    // Add highlighted text with line breaks
+    const highlighted = text.slice(start, end).split('\n').map((part, idx, arr) => (
+      <span key={`${start}-${end}-${idx}`} style={{ color: 'var(--accent-color-coral)' }}>
+        {idx < arr.length - 1 ? <React.Fragment>{part}<br /></React.Fragment> : part}
       </span>
-    );
+    ));
+    textParts.push(...highlighted);
     lastEnd = end;
   });
 
-  // Add any remaining text after the last highlight
+  // Add any remaining text after the last highlight with line breaks
   if (lastEnd < text.length) {
-    textParts.push(text.slice(lastEnd));
+    const remainingText = text.slice(lastEnd).split('\n').map((part, idx, arr) => (
+      idx < arr.length - 1 ? <React.Fragment key={`${lastEnd}-${text.length}-${idx}`}>{part}<br /></React.Fragment> : part
+    ));
+    textParts.push(...remainingText);
   }
 
   return textParts;
 };
 
+interface TextWithHighlightsProps {
+  text: string;
+  highlights: [number, number][];
+}
+
 const TextWithHighlights: React.FC<TextWithHighlightsProps> = React.memo(({ text, highlights }) => {
-  const highlightedText = generateHighlightedText(text, highlights);
+  const highlightedText = generateHighlightedTextWithLineBreaks(text, highlights);
   return <span>{highlightedText.length > 0 ? highlightedText : text}</span>;
 });
 

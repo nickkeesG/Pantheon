@@ -23,8 +23,8 @@ const UpButton = styled(IconButtonMedium).attrs({
   left: 50%;
   transform: translateX(-50%);
   border: 0px;
-  border-left: 0.5px solid var(--line-color-dark);
-  border-right: 0.5px solid var(--line-color-dark);
+  border-left: 0.5px solid var(--line-color-strong);
+  border-right: 0.5px solid var(--line-color-strong);
   border-radius: 0px;
 `;
 

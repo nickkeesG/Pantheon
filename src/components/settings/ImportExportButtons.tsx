@@ -75,9 +75,11 @@ const ImportExportButtons = () => {
         Importing will override the existing state and cannot be undone.
       </p>
       <ButtonsContainer>
-        <StyledButtonHighlighted as="label">
+        <StyledButtonHighlighted
+          onClick={(e) => (e.currentTarget.children[0] as HTMLInputElement).click()}>
           Import
-          <input type="file"
+          <input
+            type="file"
             accept=".json"
             onChange={importStateFromJson}
             style={{ display: 'none' }} />

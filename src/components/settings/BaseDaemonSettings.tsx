@@ -3,14 +3,20 @@ import { updateBaseDaemon } from "../../redux/daemonSlice"
 import { BaseDaemonConfig } from '../../redux/models';
 import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
-import { Button, ButtonSmall, TextArea, TextButton } from '../../styles/sharedStyles';
+import { Button, ButtonSmall, ContainerHorizontal, SettingLabel, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectActivePastThoughts } from '../../redux/ideaSlice';
 import { dispatchError } from '../../errorHandler';
+import { styledBackground } from '../../styles/mixins';
 
 
 const BaseDaemonSettingsContainer = styled.div`
   text-align: left;
+`;
+
+const StyledDiv = styled.div`
+  padding: 8px;
+  ${styledBackground};
 `;
 
 type BaseDaemonSettingsProps = {
@@ -73,12 +79,13 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     }
   }
 
+  // TODO Remove the 'raw context' button?
   return (
     <BaseDaemonSettingsContainer>
       <span>
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
-          Base daemon config
+          Completions settings
         </TextButton>
         {isEdited && (
           <ButtonSmall onClick={updateDaemonConfig}>
@@ -87,10 +94,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
         )}
       </span>
       {!isCollapsed && (
-        <>
-          <br />
+        <StyledDiv>
           <label>
-            Main template:
+            <SettingLabel>Main template</SettingLabel>
             <TextArea
               ref={mainTemplateRef}
               value={mainTemplate}
@@ -103,7 +109,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
             />
           </label>
           <label>
-            Idea template:
+            <SettingLabel>Idea template</SettingLabel>
             <TextArea
               ref={ideaTemplateRef}
               value={ideaTemplate}
@@ -115,23 +121,25 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
               style={{ width: '100%' }}
             />
           </label>
-          <br />
           <label>
-            Temperature: <span>{temperature.toFixed(2)}</span>
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="0.05"
-              value={temperature}
-              onChange={(e) => {
-                setTemperature(parseFloat(e.target.value));
-                setIsEdited(true);
-              }}
-              style={{ width: '100%' }}
-            />
+            <SettingLabel>Temperature</SettingLabel>
+            <ContainerHorizontal>
+              <input
+                type="range"
+                min="0"
+                max="2"
+                step="0.05"
+                value={temperature}
+                onChange={(e) => {
+                  setTemperature(parseFloat(e.target.value));
+                  setIsEdited(true);
+                }}
+                style={{ width: '100%' }}
+              />
+              <div style={{ padding: '4px 8px 4px 16px' }}>{temperature.toFixed(2)}</div>
+            </ContainerHorizontal>
           </label>
-        </>
+        </StyledDiv>
       )}
       {!isCollapsed && (
         <div>

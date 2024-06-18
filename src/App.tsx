@@ -1,7 +1,6 @@
 import './app.css'
 import TreeView from './components/views/Tree/TreeView';
 import DaemonManager from './components/DaemonManager';
-import Synchronizer from './components/Synchronizer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CollectionView from './components/views/Collection/CollectionView';
 import { useAppSelector } from './hooks';
@@ -43,7 +42,6 @@ function App() {
           <Route path="/collection" element={<CollectionView />} />
         </Routes>
         <DaemonManager />
-        <Synchronizer />
         <Filler />
         <footer>
           <p>

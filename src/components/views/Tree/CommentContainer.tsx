@@ -5,13 +5,13 @@ import { IconButtonSmall } from '../../../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../../../hooks';
 import { approveComment } from '../../../redux/commentSlice';
-import { fadeInAnimation } from '../../../styles/mixins';
 import Modal from '../../common/Modal';
+import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 
 
 const CommentName = styled.div`
   text-align: right;
-  font-weight: bold;
+  color: var(--accent-color-coral);
 `;
 
 const CommentText = styled.div`
@@ -39,18 +39,17 @@ const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ us
 `;
 
 const StyledCommentContainer = styled.div`
-position: relative;
+  position: relative;
   padding: 6px 12px;
   color: var(--text-color-dark);
+  ${aiFont};
   ${fadeInAnimation};
 
-  // Initially set the ThumbsUpButton to be fully transparent
   ${ThumbsUpButton} {
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
-  // Change the opacity to make the ThumbsUpButton visible when hovering over the container
   &:hover ${ThumbsUpButton} {
     opacity: 1;
   }
@@ -103,7 +102,7 @@ const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
             <h2>Comment History</h2>
             {comment.history.map(([author, text], index) => (
               <div key={index}>
-                <h3>{author.toUpperCase()}</h3> 
+                <h3>{author.toUpperCase()}</h3>
                 <br />
                 {renderTextWithNewLines(text)}
                 <br />

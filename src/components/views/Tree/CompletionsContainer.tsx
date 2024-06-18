@@ -3,7 +3,7 @@ import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
 import { dispatchError } from '../../../errorHandler';
-import { fadeInAnimation } from '../../../styles/mixins';
+import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
 import BaseDaemon from '../../../daemons/baseDaemon';
 import { Idea } from '../../../redux/models';
@@ -40,8 +40,11 @@ const StyledIndividualCompletion = styled.div`
   flex: 1;
   padding: 8px;
   margin: 8px 0px;
-  border: 0.5px solid var(--line-color-dark);
+  border: 0.5px solid var(--line-color-strong);
   border-radius: 4px;
+  white-space: normal;
+  word-break: break-word;
+  ${aiFont};
   ${fadeInAnimation};
 `;
 
@@ -79,10 +82,12 @@ const CompletionsContainer = () => {
   return (
     <TopLevelContainer>
       <BackgroundContainer>
-        <ContainerHorizontal>
+        <ContainerHorizontal style={{ alignItems: 'center' }}>
           <h4>Base model completions</h4>
           <Filler />
-          <TextButton onClick={() => getNewCompletions(currentBranchIdeas)}>Refresh</TextButton>
+          <TextButton onClick={() => getNewCompletions(currentBranchIdeas)}>
+            Refresh
+          </TextButton>
         </ContainerHorizontal>
         {completions.length === 0 &&
           <Hint>Here you will see how the base model would continue your train of thought</Hint>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import Modal from './common/Modal';
 
 
@@ -17,15 +17,30 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setModals(prev => { return [...prev, modal]; });
   };
 
-  const removeModal = () => {
+  const removeModal = useCallback(() => {
     setModals(prev => prev.slice(0, -1));
-  };
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        removeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [removeModal]);
 
   return (
     <ModalContext.Provider value={{ modals, addModal, removeModal }}>
       {children}
       {modals.map((modalContent, index) => (
-        <Modal key={index}>
+        <Modal key={index} zIndex={100 + (index * 2)}>
           {modalContent}
         </Modal>
       ))}

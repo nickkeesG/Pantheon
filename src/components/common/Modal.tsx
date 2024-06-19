@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { ExitButtonLarge } from "../../styles/sharedStyles";
-import { useEffect } from "react";
 import { useModal } from "../ModalContext";
 
 const Backdrop = styled.div`
@@ -19,26 +18,10 @@ const StyledModal = styled.div`
  transform: translateX(-50%);
 `;
 
-const Modal: React.FC<{
-  children: React.ReactNode,
-  zIndex?: number
-}> = ({ children, zIndex }) => {
+const Modal: React.FC<
+  { children: React.ReactNode, zIndex?: number }
+> = ({ children, zIndex }) => {
   const { removeModal } = useModal();
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        removeModal();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'auto';
-    };
-  }, [removeModal]);
 
   return (
     <>

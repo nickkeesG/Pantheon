@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { ButtonDangerous, IconButtonMedium } from '../../styles/sharedStyles';
+import { ButtonDangerous, IconButtonMedium, ModalHeader } from '../../styles/sharedStyles';
 import Modal from '../common/Modal';
 import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
@@ -31,10 +31,6 @@ const SettingsPanel = styled.div`
   overflow-y: auto;
 `;
 
-const SettingsHeader = styled.h3`
-  text-align: center;
-`;
-
 const Settings = () => {
   const dispatch = useAppDispatch();
   const [key, setKey] = useState(Date.now()) // Key modifier for UI reset
@@ -43,7 +39,7 @@ const Settings = () => {
   const openSettings = () => {
     addModal(<Modal>
       <SettingsPanel>
-        <SettingsHeader>Settings</SettingsHeader>
+        <ModalHeader>Settings</ModalHeader>
         <hr />
         <ConfigSettings />
         <hr />

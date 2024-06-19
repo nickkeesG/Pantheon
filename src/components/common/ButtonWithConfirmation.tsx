@@ -1,38 +1,27 @@
-import { useState } from "react";
 import ConfirmationModal from "./ConfirmationModal";
+import { useModal } from "../ModalContext";
 
 interface ButtonWithConfirmationProps extends React.PropsWithChildren {
   confirmationText: string,
   onConfirm: () => void;
 }
 
-// TODO Make use ModalContext
 const ButtonWithConfirmation: React.FC<ButtonWithConfirmationProps> = ({ confirmationText, onConfirm, children }) => {
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const { addModal, removeModal } = useModal();
 
-  const toggleConfirmationModal = () => {
-    setIsConfirmationModalOpen(!isConfirmationModalOpen);
+  const onClick = () => {
+    addModal(<ConfirmationModal onConfirm={confirmSelected} onCancel={removeModal} message={confirmationText} />);
   }
 
   const confirmSelected = () => {
-    toggleConfirmationModal();
+    removeModal();
     onConfirm();
   }
 
   return (
-    <>
-      <div onClick={toggleConfirmationModal}>
-        {children}
-      </div>
-      {isConfirmationModalOpen && (
-        <ConfirmationModal
-          onConfirm={confirmSelected}
-          onCancel={toggleConfirmationModal}
-          message={confirmationText}
-          zIndex={120}
-        />
-      )}
-    </>
+    <div onClick={onClick}>
+      {children}
+    </div>
   )
 }
 

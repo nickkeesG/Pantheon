@@ -40,7 +40,11 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ModalContext.Provider value={{ modals, addModal, removeModal }}>
       {children}
       {modals.map((modalContent, index) => (
-        <Modal key={index} zIndex={100 + (index * 2)}>
+        <Modal
+          key={index}
+          zIndex={100 + (index * 2)}
+          top={`${(index + 1) * 10}%`}
+        >
           {modalContent}
         </Modal>
       ))}

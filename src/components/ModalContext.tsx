@@ -13,9 +13,9 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [modals, setModals] = useState<React.ReactNode[]>([]);
 
-  const addModal = (modal: React.ReactNode) => {
+  const addModal = useCallback((modal: React.ReactNode) => {
     setModals(prev => { return [...prev, modal]; });
-  };
+  }, []);
 
   const removeModal = useCallback(() => {
     setModals(prev => prev.slice(0, -1));
@@ -29,12 +29,18 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'auto';
     };
   }, [removeModal]);
+
+  useEffect(() => {
+    if (modals.length === 0) {
+      document.body.style.overflow = 'auto';
+    } else {
+      document.body.style.overflow = 'hidden';
+    }
+  }, [modals]);
 
   return (
     <ModalContext.Provider value={{ modals, addModal, removeModal }}>

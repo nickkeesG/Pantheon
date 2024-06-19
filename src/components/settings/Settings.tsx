@@ -11,6 +11,7 @@ import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { resetState } from '../../redux/thunks';
 import { resetDaemonSlice } from '../../redux/daemonSlice';
 import ThemeSettings from './ThemeSettings';
+import { useModal } from '../ModalContext';
 
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
@@ -36,11 +37,39 @@ const SettingsHeader = styled.h3`
 
 const Settings = () => {
   const dispatch = useAppDispatch();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [key, setKey] = useState(Date.now()) // Key modifier for UI reset
+  const { addModal } = useModal();
 
-  const toggleSettings = () => {
-    setIsSettingsOpen(!isSettingsOpen);
+  const openSettings = () => {
+    addModal(<Modal>
+      <SettingsPanel>
+        <SettingsHeader>Settings</SettingsHeader>
+        <hr />
+        <ConfigSettings />
+        <hr />
+        <DaemonSettings key={key} />
+        <hr />
+        <ThemeSettings />
+        <hr />
+        <ImportExportButtons />
+        <hr />
+        <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
+        <ButtonWithConfirmation
+          confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
+          onConfirm={resetDaemonSettings}
+        >
+          <ButtonDangerous>Reset daemon settings</ButtonDangerous>
+        </ButtonWithConfirmation>
+        <hr />
+        <p style={{ color: 'var(--text-color-dark)' }}>Reset the entire app state back to default. All ideas, comments, and custom daemons will be lost.</p>
+        <ButtonWithConfirmation
+          confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
+          onConfirm={resetAppState}
+        >
+          <ButtonDangerous>Reset entire app state</ButtonDangerous>
+        </ButtonWithConfirmation>
+      </SettingsPanel>
+    </Modal>);
   };
 
   const resetDaemonSettings = () => {
@@ -55,38 +84,7 @@ const Settings = () => {
 
   return (
     <div>
-      <SettingsButton title="Settings" onClick={toggleSettings} />
-      {isSettingsOpen && (
-        <Modal toggleVisibility={toggleSettings} zIndex={100}>
-          <SettingsPanel>
-            <SettingsHeader>Settings</SettingsHeader>
-            <hr />
-            <ConfigSettings />
-            <hr />
-            <DaemonSettings key={key} />
-            <hr />
-            <ThemeSettings />
-            <hr />
-            <ImportExportButtons />
-            <hr />
-            <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
-            <ButtonWithConfirmation
-              confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
-              onConfirm={resetDaemonSettings}
-            >
-              <ButtonDangerous>Reset daemon settings</ButtonDangerous>
-            </ButtonWithConfirmation>
-            <hr />
-            <p style={{ color: 'var(--text-color-dark)' }}>Reset the entire app state back to default. All ideas, comments, and custom daemons will be lost.</p>
-            <ButtonWithConfirmation
-              confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
-              onConfirm={resetAppState}
-            >
-              <ButtonDangerous>Reset entire app state</ButtonDangerous>
-            </ButtonWithConfirmation>
-          </SettingsPanel>
-        </Modal>
-      )}
+      <SettingsButton title="Settings" onClick={openSettings} />
     </div>
   );
 };

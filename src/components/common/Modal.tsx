@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { ExitButtonLarge } from "../../styles/sharedStyles";
 import { useEffect } from "react";
+import { useModal } from "../ModalContext";
 
 const Backdrop = styled.div`
   position: fixed;
@@ -20,15 +21,14 @@ const StyledModal = styled.div`
 
 const Modal: React.FC<{
   children: React.ReactNode,
-  toggleVisibility: () => void,
   zIndex?: number
-}> = ({ children, toggleVisibility, zIndex }) => {
+}> = ({ children, zIndex }) => {
+  const { removeModal } = useModal();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        // TODO Right now this will propagate and close all open modals - we need some kind of modal manager
-        toggleVisibility();
+        removeModal();
       }
     };
 
@@ -38,13 +38,13 @@ const Modal: React.FC<{
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'auto';
     };
-  }, [toggleVisibility]);
+  }, [removeModal]);
 
   return (
     <>
-      <Backdrop onClick={toggleVisibility} style={{ zIndex: zIndex ? zIndex : 100 }} />
+      <Backdrop onClick={removeModal} style={{ zIndex: zIndex ? zIndex : 100 }} />
       <StyledModal style={{ zIndex: zIndex ? zIndex + 1 : 101 }}>
-        <ExitButtonLarge onClick={toggleVisibility} style={{ right: '8px' }} />
+        <ExitButtonLarge onClick={removeModal} style={{ right: '8px' }} />
         {children}
       </StyledModal>
     </>

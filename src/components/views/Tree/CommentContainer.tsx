@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Comment } from '../../../redux/models';
-import { IconButtonSmall } from '../../../styles/sharedStyles';
+import { Hint, IconButtonSmall } from '../../../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../../../hooks';
 import { approveComment } from '../../../redux/commentSlice';
-import Modal from '../../common/Modal';
 import { aiFont, fadeInAnimation } from '../../../styles/mixins';
+import { useModal } from '../../ModalContext';
+import TextWithHighlights from '../../common/TextWithHighlights';
 
 
 const CommentName = styled.div`
@@ -70,25 +71,27 @@ const HistoryPanel = styled.div`
 
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
   const dispatch = useAppDispatch();
-  const [isCommentHistoryOpen, setIsCommentHistoryOpen] = React.useState(false);
+  const { addModal } = useModal();
 
-  const toggleCommentHistory = () => {
-    setIsCommentHistoryOpen(!isCommentHistoryOpen);
+  const openCommentHistory = () => {
+    addModal(<HistoryPanel>
+      <h2>Comment History</h2>
+      {comment.history?.map(([author, text], index) => (
+        <div key={index}>
+          <h3>{author.toUpperCase()}</h3>
+          <br />
+          <TextWithHighlights text={text} highlights={[]} />
+          <br />
+          <br />
+        </div>
+      ))}
+      {(comment.history === undefined || comment.history?.length === 0) && <Hint>Comment history is not available for old comments.</Hint>}
+    </HistoryPanel>);
   }
-
-  // This is copied from IdeaText. TODO - refactor to a shared location
-  const renderTextWithNewLines = (text: string) => {
-    return text.split('\n').map((line, index) => (
-      <React.Fragment key={index}>
-        {line}
-        {index !== text.split('\n').length - 1 && <br />}
-      </React.Fragment>
-    ));
-  };
 
   return (
     <div>
-      <StyledCommentContainer onClick={toggleCommentHistory}>
+      <StyledCommentContainer onClick={openCommentHistory}>
         <CommentName>{comment.daemonName}</CommentName>
         <CommentText>{comment.text}</CommentText>
         <ThumbsUpButton
@@ -96,22 +99,6 @@ const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
           onClick={() => dispatch(approveComment(comment.id))}
         />
       </StyledCommentContainer>
-      {isCommentHistoryOpen && (
-        <Modal toggleVisibility={toggleCommentHistory} zIndex={100}>
-          <HistoryPanel>
-            <h2>Comment History</h2>
-            {comment.history.map(([author, text], index) => (
-              <div key={index}>
-                <h3>{author.toUpperCase()}</h3>
-                <br />
-                {renderTextWithNewLines(text)}
-                <br />
-                <br />
-              </div>
-            ))}
-          </HistoryPanel>
-        </Modal>
-      )}
     </div>
   );
 };

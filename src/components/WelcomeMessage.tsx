@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import Modal from './common/Modal';
+import { useModal } from './ModalContext';
+
 
 const WelcomePanel = styled.div`
   background-color: var(--bg-color);
@@ -19,27 +21,24 @@ const WelcomeHeader = styled.h3`
 `;
 
 const WelcomeMessage = () => {
-  const [isWelcomeOpen, setIsWelcomeOpen] = useState(
-    !localStorage.getItem('hasSeenWelcomeMessage')
-  );
+  const { addModal } = useModal();
 
-  const close = () => {
-    setIsWelcomeOpen(false);
-    localStorage.setItem('hasSeenWelcomeMessage', 'true');
-  }
-
-  return (
-    <>
-      {isWelcomeOpen && (
-        <Modal toggleVisibility={close} zIndex={100}>
+  useEffect(() => {
+    const hasSeenWelcomeMessage = localStorage.getItem('hasSeenWelcomeMessage');
+    if (!hasSeenWelcomeMessage) {
+      addModal(
+        <Modal>
           <WelcomePanel>
             <WelcomeHeader>Welcome to Pantheon</WelcomeHeader>
             <p>Pick a topic you would like to make progress on, and make an effort to think out loud, writing out your thoughts as they appear. Daemons will appear to the left and right of your thoughts offering commentary.</p>
           </WelcomePanel>
         </Modal>
-      )}
-    </>
-  );
+      )
+      localStorage.setItem('hasSeenWelcomeMessage', 'true');
+    }
+  }, [addModal]);
+
+  return (<></>);
 };
 
 export default WelcomeMessage;

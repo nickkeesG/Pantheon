@@ -6,6 +6,7 @@ interface ButtonWithConfirmationProps extends React.PropsWithChildren {
   onConfirm: () => void;
 }
 
+// TODO Make use ModalContext
 const ButtonWithConfirmation: React.FC<ButtonWithConfirmationProps> = ({ confirmationText, onConfirm, children }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 

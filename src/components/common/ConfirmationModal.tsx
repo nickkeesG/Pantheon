@@ -26,7 +26,7 @@ const ConfirmationModal: React.FC<{
   zIndex?: number;
 }> = ({ message, onConfirm, onCancel, zIndex }) => {
   return (
-    <Modal toggleVisibility={onCancel} zIndex={zIndex}>
+    <Modal>
       <ConfirmationContent>
         <ConfirmationMessage>{message}</ConfirmationMessage>
         <ButtonGroup>

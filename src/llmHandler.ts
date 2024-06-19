@@ -89,9 +89,9 @@ export async function GenerateChatComment(systemPrompt: string, userPrompts: str
     }
 
     let commentText: string = data.messages[data.messages.length - 1].content;
-    let history: [string, string][] = data.messages.map((message: { role: string; content: string }) => [message.role, message.content]);
+    let chainOfThought: [string, string][] = data.messages.map((message: { role: string; content: string }) => [message.role, message.content]);
 
-    return { text: commentText, history: history };
+    return { text: commentText, chainOfThought: chainOfThought };
 }
 
 export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {

@@ -15,13 +15,13 @@ const commentSlice = createSlice({
   name: 'comment',
   initialState,
   reducers: {
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, history: [string, string][], daemonName: string, daemonType: string }>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, chainOfThought: [string, string][], daemonName: string, daemonType: string }>) {
       const newId = Date.now();
       const newComment: Comment = {
         id: newId,
         ideaId: action.payload.ideaId,
         text: action.payload.text,
-        history: action.payload.history,
+        chainOfThought: action.payload.chainOfThought,
         daemonName: action.payload.daemonName,
         daemonType: action.payload.daemonType,
         userApproved: false
@@ -85,7 +85,7 @@ export const selectMostRecentCommentForCurrentBranch = createSelector(
     (state: RootState) => state.ui.activeIdeaIds
   ],
   (comments, activeIdeaIds) => {
-    const commentsForActiveIdeas = Object.values(comments).filter((comment: Comment) => 
+    const commentsForActiveIdeas = Object.values(comments).filter((comment: Comment) =>
       activeIdeaIds.includes(comment.ideaId)
     );
     const sortedComments = commentsForActiveIdeas.sort((a, b) => b.ideaId - a.ideaId);

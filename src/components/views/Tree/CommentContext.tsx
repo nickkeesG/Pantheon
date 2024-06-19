@@ -21,10 +21,10 @@ interface CommentContextProps {
 }
 
 const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
-  const historyExists = useMemo(() => comment.history !== undefined && comment.history?.length > 0, [comment.history]);
-  const modifiedHistory = useMemo(() => comment.history?.map(([author, text]) =>
+  const chainOfThoughtExists = useMemo(() => comment.chainOfThought !== undefined && comment.chainOfThought?.length > 0, [comment.chainOfThought]);
+  const modifiedChainOfThought = useMemo(() => comment.chainOfThought?.map(([author, text]) =>
     [author === 'assistant' ? comment.daemonName : author.charAt(0).toUpperCase() + author.slice(1) + ' prompt', text]
-  ), [comment.history, comment.daemonName]);
+  ), [comment.chainOfThought, comment.daemonName]);
 
 
   return (<CommentContextPanel>
@@ -32,7 +32,7 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
     <hr />
     <Hint>A record of the AI's internal chain-of-thought process leading up to this comment. <b>You can modify the system and user prompts in the settings.</b></Hint>
     <br />
-    {historyExists && modifiedHistory?.map(([author, text], index) => (
+    {chainOfThoughtExists && modifiedChainOfThought?.map(([author, text], index) => (
       <div key={index}>
         {index === 0 && <b>{author}</b>}
         {index !== 0 && <b>{index}. {author}</b>}
@@ -47,7 +47,7 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
         </div>
       </div>
     ))}
-    {!historyExists && <Hint>Comment history is not available for old comments.</Hint>}
+    {!chainOfThoughtExists && <Hint>Comment context is not available for old comments.</Hint>}
   </CommentContextPanel>);
 };
 

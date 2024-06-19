@@ -39,7 +39,7 @@ export interface Comment {
   id: number;
   ideaId: number;
   text: string;
-  history: [string, string][]; // [user/daemon, text]
+  chainOfThought?: [string, string][];
   daemonName: string;
   daemonType: string;
   userApproved: boolean;

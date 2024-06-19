@@ -45,7 +45,7 @@ function App() {
         <Filler />
         <footer>
           <p>
-            © {new Date().getFullYear()} Niki Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
+            © {new Date().getFullYear()} Nicholas Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
             <br />
             {/* Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>. */}
           </p>

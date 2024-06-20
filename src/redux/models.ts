@@ -35,10 +35,17 @@ export interface IdeaExport {
   outgoing: boolean;
 }
 
+export enum ChainOfThoughtType {
+  System = 'system',
+  User = 'user',
+  Daemon = 'assistant'
+}
+
 export interface Comment {
   id: number;
   ideaId: number;
   text: string;
+  chainOfThought?: [ChainOfThoughtType, string][];
   daemonName: string;
   daemonType: string;
   userApproved: boolean;

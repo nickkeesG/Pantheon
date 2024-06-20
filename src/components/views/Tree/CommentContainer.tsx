@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Comment } from '../../../redux/models';
-import { IconButtonSmall } from '../../../styles/sharedStyles';
+import { IconButtonSmall, TextButton } from '../../../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
 import { useAppDispatch } from '../../../hooks';
 import { approveComment } from '../../../redux/commentSlice';
 import { aiFont, fadeInAnimation } from '../../../styles/mixins';
+import { useModal } from '../../ModalContext';
+import CommentContext from './CommentContext';
 
 
 const CommentName = styled.div`
@@ -20,11 +22,10 @@ const CommentText = styled.div`
 
 interface ThumbsUpIconProps {
   userApproved: boolean;
-  [key: string]: any; // for the rest of the props
+  [key: string]: any;
 }
 
 const ThumbsUpIcon = ({ userApproved, ...props }: ThumbsUpIconProps) => <IoIosThumbsUp {...props} />;
-
 
 const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ userApproved: boolean }>`
   position: absolute;
@@ -37,7 +38,7 @@ const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ us
   transition: opacity 0.3s ease;
 `;
 
-const StyledCommentContainer = styled.div`
+const StyledCommentContainer = styled(TextButton)`
   position: relative;
   padding: 6px 12px;
   color: var(--text-color-dark);
@@ -57,16 +58,22 @@ const StyledCommentContainer = styled.div`
 
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
   const dispatch = useAppDispatch();
+  const { addModal } = useModal();
 
   return (
-    <StyledCommentContainer>
-      <CommentName>{comment.daemonName}</CommentName>
-      <CommentText>{comment.text}</CommentText>
-      <ThumbsUpButton
-        userApproved={comment.userApproved}
-        onClick={() => dispatch(approveComment(comment.id))}
-      />
-    </StyledCommentContainer>
+    <div>
+      <StyledCommentContainer onClick={() => addModal(<CommentContext comment={comment} />)}>
+        <CommentName>{comment.daemonName}</CommentName>
+        <CommentText>{comment.text}</CommentText>
+        <ThumbsUpButton
+          userApproved={comment.userApproved}
+          onClick={(event: React.MouseEvent) => {
+            event.stopPropagation();
+            dispatch(approveComment(comment.id));
+          }}
+        />
+      </StyledCommentContainer>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { Comment } from './models';
+import { ChainOfThoughtType, Comment } from './models';
 
 
 export interface CommentState {
@@ -15,12 +15,13 @@ const commentSlice = createSlice({
   name: 'comment',
   initialState,
   reducers: {
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, daemonName: string, daemonType: string }>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, chainOfThought: [ChainOfThoughtType, string][], daemonName: string, daemonType: string }>) {
       const newId = Date.now();
       const newComment: Comment = {
         id: newId,
         ideaId: action.payload.ideaId,
         text: action.payload.text,
+        chainOfThought: action.payload.chainOfThought,
         daemonName: action.payload.daemonName,
         daemonType: action.payload.daemonType,
         userApproved: false
@@ -84,7 +85,7 @@ export const selectMostRecentCommentForCurrentBranch = createSelector(
     (state: RootState) => state.ui.activeIdeaIds
   ],
   (comments, activeIdeaIds) => {
-    const commentsForActiveIdeas = Object.values(comments).filter((comment: Comment) => 
+    const commentsForActiveIdeas = Object.values(comments).filter((comment: Comment) =>
       activeIdeaIds.includes(comment.ideaId)
     );
     const sortedComments = commentsForActiveIdeas.sort((a, b) => b.ideaId - a.ideaId);

@@ -6,6 +6,7 @@ import CollectionView from './components/views/Collection/CollectionView';
 import { useAppSelector } from './hooks';
 import { useCallback, useEffect } from 'react';
 import { Filler } from './styles/sharedStyles';
+import { ModalProvider } from './components/ModalContext';
 
 function App() {
   const configTheme = useAppSelector(state => state.config.theme);
@@ -36,20 +37,22 @@ function App() {
   return (
     <BrowserRouter>
       <div className={`App`} >
-        <Routes>
-          <Route path="/" element={<TreeView />} />
-          <Route path="/tree/:treeId" element={<TreeView />} />
-          <Route path="/collection" element={<CollectionView />} />
-        </Routes>
-        <DaemonManager />
-        <Filler />
-        <footer>
-          <p>
-            © {new Date().getFullYear()} Nicholas Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
-            <br />
-            {/* Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>. */}
-          </p>
-        </footer>
+        <ModalProvider>
+          <Routes>
+            <Route path="/" element={<TreeView />} />
+            <Route path="/tree/:treeId" element={<TreeView />} />
+            <Route path="/collection" element={<CollectionView />} />
+          </Routes>
+          <DaemonManager />
+          <Filler />
+          <footer>
+            <p>
+              © {new Date().getFullYear()} Nicholas Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
+              <br />
+              {/* Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>. */}
+            </p>
+          </footer>
+        </ModalProvider>
       </div>
     </BrowserRouter>
   );

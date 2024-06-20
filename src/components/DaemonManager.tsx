@@ -42,7 +42,7 @@ const DaemonManager = () => {
       const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
 
       if (response) {
-        dispatch(addComment({ ideaId: currentIdea.id, text: response, daemonName: daemon.config.name, daemonType: column }));
+        dispatch(addComment({ ideaId: currentIdea.id, text: response.text, chainOfThought: response.chainOfThought, daemonName: daemon.config.name, daemonType: column }));
       }
       else {
         console.error('No chat comment generated');

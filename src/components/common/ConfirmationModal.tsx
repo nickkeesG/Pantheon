@@ -1,5 +1,4 @@
 import React from 'react';
-import Modal from './Modal';
 import styled from 'styled-components';
 import { Button, ButtonDangerous } from '../../styles/sharedStyles';
 
@@ -26,19 +25,17 @@ const ConfirmationModal: React.FC<{
   zIndex?: number;
 }> = ({ message, onConfirm, onCancel, zIndex }) => {
   return (
-    <Modal toggleVisibility={onCancel} zIndex={zIndex}>
-      <ConfirmationContent>
-        <ConfirmationMessage>{message}</ConfirmationMessage>
-        <ButtonGroup>
-          <ButtonDangerous onClick={onConfirm} >
-            Confirm
-          </ButtonDangerous>
-          <Button onClick={onCancel}>
-            Cancel
-          </Button>
-        </ButtonGroup>
-      </ConfirmationContent>
-    </Modal>
+    <ConfirmationContent>
+      <ConfirmationMessage>{message}</ConfirmationMessage>
+      <ButtonGroup>
+        <ButtonDangerous onClick={onConfirm} >
+          Confirm
+        </ButtonDangerous>
+        <Button onClick={onCancel}>
+          Cancel
+        </Button>
+      </ButtonGroup>
+    </ConfirmationContent>
   );
 };
 

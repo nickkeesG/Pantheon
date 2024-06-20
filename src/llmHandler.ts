@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getEncoding } from 'js-tiktoken';
 import { dispatchError } from './errorHandler';
+import { ChainOfThoughtType } from './redux/models';
 
 async function CallChatAPI(data: any, config: any) {
     try {
@@ -88,7 +89,11 @@ export async function GenerateChatComment(systemPrompt: string, userPrompts: str
         }
     }
 
-    return data.messages[data.messages.length - 1].content;
+    // TODO Fix - I think the bug with receiving instructions as comments come from here
+    let commentText: string = data.messages[data.messages.length - 1].content;
+    let chainOfThought: [ChainOfThoughtType, string][] = data.messages.map((message: { role: string; content: string }) => [ChainOfThoughtType[message.role as keyof typeof ChainOfThoughtType], message.content]);
+
+    return { text: commentText, chainOfThought: chainOfThought };
 }
 
 export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number) {

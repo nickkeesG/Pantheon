@@ -53,8 +53,8 @@ const InputArea = () => {
           openAIKey,
           openAIOrgId,
           instructModel);
-        if (response) {
-          dispatch(createIdea(response, IdeaType.ResponseFromAi)); // flag idea as response to instruction
+        if (response && response.length > 0) {
+          dispatch(createIdea(response[0], IdeaType.ResponseFromAi));
         } else {
           dispatchError('Instruct daemon failed to generate response');
         }

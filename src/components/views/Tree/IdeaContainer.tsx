@@ -15,7 +15,6 @@ import TextWithHighlights from '../../common/TextWithHighlights';
 import { getHighlightsArray } from '../../../styles/uiUtils.ts';
 
 // TODO Massively cleanup this file, it's way too big
-// TODO Also restructure files into folders based on view
 
 const Container = styled.div`
   display: flex;

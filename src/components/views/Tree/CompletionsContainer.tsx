@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
-import { dispatchError } from '../../../errorHandler';
 import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
 import BaseDaemon from '../../../daemons/baseDaemon';
@@ -51,7 +50,7 @@ const StyledIndividualCompletion = styled.div`
 const CompletionsContainer = () => {
   const [completions, setCompletions] = useState<string[]>([]);
   const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
-  const branchLength = useRef(currentBranchIdeas.length);
+  const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
   const openAIKey = useAppSelector(state => state.config.openAIKey);
@@ -60,16 +59,8 @@ const CompletionsContainer = () => {
 
   const getNewCompletions = useCallback(async (branchIdeas: Idea[]) => {
     if (branchIdeas.length === 0 || !openAIKey) return;
-    try {
-      const completions = await baseDaemon.getCompletions(branchIdeas, openAIKey, openAIOrgId, baseModel);
-      setCompletions(completions);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        dispatchError(error.toString());
-      } else {
-        dispatchError('An unknown error occurred');
-      }
-    }
+    const completions = await baseDaemon.getCompletions(branchIdeas, openAIKey, openAIOrgId, baseModel);
+    if (completions) setCompletions(completions);
   }, [baseDaemon, openAIKey, openAIOrgId, baseModel]);
 
   useEffect(() => {

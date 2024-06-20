@@ -1,10 +1,7 @@
 import { Idea, ChatDaemonConfig } from '../redux/models';
-import { GenerateChatComment } from '../llmHandler';
-import { dispatchError } from '../errorHandler';
+import { GenerateChatComment } from '../networking/llmHandler';
 
-/*
-  Used to generate chat comments, using prompt pipeline defined by config
-*/
+
 class ChatDaemon {
   config: ChatDaemonConfig;
 
@@ -13,34 +10,19 @@ class ChatDaemon {
   }
 
   static fillInPrompt(prompt: string, pastIdeasText: string, currentIdeaText: string) {
-
     let filledPrompt = prompt.replace('{PAST}', pastIdeasText);
     filledPrompt = filledPrompt.replace('{CURRENT}', currentIdeaText);
-
     return filledPrompt;
   }
 
   async generateComments(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
-    // Generate prompts
-    let userPrompts = [...this.config.userPrompts];
-
-    let pastIdeasText = pastIdeas.map(idea => idea.text).join('\n');
-    let currentIdeaText = currentIdea.text;
-
+    const userPrompts = [...this.config.userPrompts];
+    const pastIdeasText = pastIdeas.map(idea => idea.text).join('\n');
+    const currentIdeaText = currentIdea.text;
     for (let i = 0; i < userPrompts.length; i++) {
       userPrompts[i] = ChatDaemon.fillInPrompt(userPrompts[i], pastIdeasText, currentIdeaText);
     }
-
-    try {
-      // Call LLMHandler to generate comments
-      var response = await GenerateChatComment(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
-    } catch (error) {
-      dispatchError("Error calling chat model"); // send error to user
-      console.error(error);
-      return null;
-    }
-
-    return response;
+    return await GenerateChatComment(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
   }
 }
 

@@ -1,9 +1,7 @@
 import { Idea, BaseDaemonConfig } from '../redux/models';
-import { GenerateBaseCompletions } from '../llmHandler';
+import { GenerateBaseCompletions } from '../networking/llmHandler';
 
-/*
-  Used to generate base model completions of the user text
-*/
+
 class BaseDaemon {
   config: BaseDaemonConfig;
   mainTemplate: string;
@@ -17,13 +15,10 @@ class BaseDaemon {
 
   getContext(pastIdeas: Idea[]): string {
     let context = "";
-
     for (let i = 0; i < pastIdeas.length; i++) {
       context += '\n' + this.ideaTemplate.replace("{}", pastIdeas[i].text);
     }
-
     context = this.mainTemplate.replace("{}", context);
-
     return context;
   }
 
@@ -40,10 +35,8 @@ class BaseDaemon {
   getCompletions = async (currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, baseModel: string) => {
     const context = this.getContextWithPrefix(currentIdeas);
     const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, this.config.temperature);
-
     return completions;
   }
-  
 }
 
 export default BaseDaemon;

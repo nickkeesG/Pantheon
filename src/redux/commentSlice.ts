@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { Comment } from './models';
+import { ChainOfThoughtType, Comment } from './models';
 
 
 export interface CommentState {
@@ -15,7 +15,7 @@ const commentSlice = createSlice({
   name: 'comment',
   initialState,
   reducers: {
-    addComment(state, action: PayloadAction<{ ideaId: number, text: string, chainOfThought: [string, string][], daemonName: string, daemonType: string }>) {
+    addComment(state, action: PayloadAction<{ ideaId: number, text: string, chainOfThought: [ChainOfThoughtType, string][], daemonName: string, daemonType: string }>) {
       const newId = Date.now();
       const newComment: Comment = {
         id: newId,

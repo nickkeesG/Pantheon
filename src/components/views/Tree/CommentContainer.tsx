@@ -29,8 +29,8 @@ const ThumbsUpIcon = ({ userApproved, ...props }: ThumbsUpIconProps) => <IoIosTh
 
 const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ userApproved: boolean }>`
   position: absolute;
-  bottom: 6px;
-  right: 12px;
+  top: 2px;
+  left: 8px;
   color: ${props => props.userApproved ? 'var(--accent-color-coral)' : 'var(--line-color)'};
   pointer-events: ${props => props.userApproved ? 'none' : 'auto'};
   cursor: ${props => props.userApproved ? 'default' : 'pointer'};

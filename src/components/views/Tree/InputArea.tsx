@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { setCreatingSection } from "../../../redux/uiSlice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstructDaemon from "../../../daemons/instructDaemon";
-import { selectCurrentBranchThoughts } from "../../../redux/ideaSlice";
+import { selectActiveThoughts } from "../../../redux/ideaSlice";
 import { createIdea } from "../../../redux/thunks";
 import { IdeaType } from "../../../redux/models";
 import { dispatchError } from "../../../errorHandler";
@@ -27,10 +27,8 @@ const InputArea = () => {
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon>(new InstructDaemon(instructDaemonConfig));
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const instructModel = useAppSelector(state => state.config.chatModel); // using the chat model
-
-  // Instuct daemon can only see thoughts, and the most recent instruction (no past instructions or responses)
-  const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
+  const instructModel = useAppSelector(state => state.config.chatModel);
+  const activeThoughts = useAppSelector(selectActiveThoughts);
 
   useEffect(() => {
     setInstructDaemon(new InstructDaemon(instructDaemonConfig));
@@ -47,8 +45,9 @@ const InputArea = () => {
 
     if (instructDaemon) {
       try {
+        // TODO Instruct daemon should also be able to see the previous instruct daemon interactions
         const response = await instructDaemon.handleInstruction(
-          currentBranchIdeas,
+          activeThoughts,
           instruction,
           openAIKey,
           openAIOrgId,
@@ -62,7 +61,7 @@ const InputArea = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, currentBranchIdeas, dispatch]);
+  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeThoughts, dispatch]);
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>

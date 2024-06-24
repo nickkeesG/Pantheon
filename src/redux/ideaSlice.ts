@@ -45,8 +45,6 @@ const ideaSlice = createSlice({
   },
 });
 
-// TODO Add docstrings
-
 export const selectIdeasById = createSelector(
   [
     (state: RootState) => state.idea.ideas,
@@ -85,7 +83,6 @@ export const selectSectionBranchRootIdeas = createSelector(
   }
 )
 
-// TODO Probably ideas should also have references to their comments
 export const selectActiveThoughtsEligibleForComments = createSelector(
   [(state: RootState) => state.idea.ideas,
   (state: RootState) => state.ui.activeIdeaIds,
@@ -107,30 +104,7 @@ export const selectActiveThoughtsEligibleForComments = createSelector(
   }
 )
 
-export const selectActivePastThoughts = createSelector(
-  [(state: RootState) => state.idea.ideas,
-  (state: RootState) => state.ui.activeIdeaIds,
-  (state: RootState) => state.comment.comments],
-  (ideas, activeIdeaIds, comments) => {
-    try {
-      // filter out ideas that are not thoughts
-      const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
-      const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
-      const ideasSinceLastCommentIds = getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
-      const ideasUpToMaxCommented = activeBranchIdeas.filter(idea => !ideasSinceLastCommentIds.includes(idea));
-      return ideasUpToMaxCommented;
-    } catch (e) {
-      if (e instanceof TypeError) {
-        // The active tree was probably deleted
-        return []
-      } else {
-        throw e;
-      }
-    }
-  }
-)
-
-export const selectCurrentBranchThoughts = createSelector(
+export const selectActiveThoughts = createSelector(
   [
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds

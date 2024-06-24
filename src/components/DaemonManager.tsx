@@ -5,11 +5,9 @@ import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
-import { selectActiveThoughtsEligibleForComments, selectActivePastThoughts } from '../redux/ideaSlice';
+import { selectActiveThoughtsEligibleForComments, selectActiveThoughts } from '../redux/ideaSlice';
 
-/*
-Central controller for the deployment of daemons.
-*/
+
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
   const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
@@ -17,17 +15,12 @@ const DaemonManager = () => {
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
-
-  // Only gets ideas which are "thoughts" (as opposed to instructions or responses to instructions)
+  const activeThoughts = useAppSelector(selectActiveThoughts);
   const ideasEligbleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
-  const pastIdeas = useAppSelector(selectActivePastThoughts);
-
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
-
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
-
   const maxTimeInactive = 3; // seconds
 
   useEffect(() => {
@@ -82,12 +75,13 @@ const DaemonManager = () => {
       else {
         const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
         let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+        const pastIdeas = activeThoughts.slice(0, activeThoughts.indexOf(currentIdea));
 
         // To maintain backwards compatibility with base/chat naming
         if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
         if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
 
-        let column = lastCommentColumn === 'left' ? 'right' : 'left';
+        const column = lastCommentColumn === 'left' ? 'right' : 'left';
 
         if (currentIdea.mention) {
           const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
@@ -103,7 +97,7 @@ const DaemonManager = () => {
       }
     }
   }, [ideasEligbleForComments,
-    pastIdeas,
+    activeThoughts,
     chatDaemonActive,
     chatDaemons,
     openAIKey,

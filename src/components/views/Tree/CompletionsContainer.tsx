@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { selectCurrentBranchThoughts } from '../../../redux/ideaSlice';
+import { selectActiveThoughts } from '../../../redux/ideaSlice';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks';
 import { aiFont, fadeInAnimation } from '../../../styles/mixins';
@@ -49,7 +49,7 @@ const StyledIndividualCompletion = styled.div`
 
 const CompletionsContainer = () => {
   const [completions, setCompletions] = useState<string[]>([]);
-  const currentBranchIdeas = useAppSelector(selectCurrentBranchThoughts);
+  const activeThoughts = useAppSelector(selectActiveThoughts);
   const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
@@ -64,11 +64,11 @@ const CompletionsContainer = () => {
   }, [baseDaemon, openAIKey, openAIOrgId, baseModel]);
 
   useEffect(() => {
-    if (branchLength.current !== currentBranchIdeas.length) {
-      getNewCompletions(currentBranchIdeas);
-      branchLength.current = currentBranchIdeas.length;
+    if (branchLength.current !== activeThoughts.length) {
+      getNewCompletions(activeThoughts);
+      branchLength.current = activeThoughts.length;
     }
-  }, [currentBranchIdeas, baseDaemon, openAIKey, openAIOrgId, baseModel, getNewCompletions]);
+  }, [activeThoughts, baseDaemon, openAIKey, openAIOrgId, baseModel, getNewCompletions]);
 
   return (
     <TopLevelContainer>
@@ -76,7 +76,7 @@ const CompletionsContainer = () => {
         <ContainerHorizontal style={{ alignItems: 'center' }}>
           <h4>Base model completions</h4>
           <Filler />
-          <TextButton onClick={() => getNewCompletions(currentBranchIdeas)}>
+          <TextButton onClick={() => getNewCompletions(activeThoughts)}>
             Refresh
           </TextButton>
         </ContainerHorizontal>

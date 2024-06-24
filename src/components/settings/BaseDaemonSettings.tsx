@@ -5,9 +5,9 @@ import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
 import { Button, ButtonSmall, ContainerHorizontal, SettingLabel, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectActivePastThoughts } from '../../redux/ideaSlice';
 import { dispatchError } from '../../errorHandler';
 import { styledBackground } from '../../styles/mixins';
+import { selectActiveThoughts } from '../../redux/ideaSlice';
 
 
 const BaseDaemonSettingsContainer = styled.div`
@@ -27,14 +27,10 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEdited, setIsEdited] = useState(false);
   const [rawContext, setRawContext] = useState('');
-
-  // Base daemon can only see "thoughts" (as opposed to instructions or responses to instructions)
-  const pastIdeas = useAppSelector(selectActivePastThoughts);
-
+  const activeThoughts = useAppSelector(selectActiveThoughts);
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
   const [temperature, setTemperature] = useState(config.temperature !== undefined ? config.temperature : 0.7);
-
   const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
   const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
 
@@ -57,7 +53,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const getRawContext = () => {
     try {
       const daemon = new BaseDaemon(config);
-      setRawContext(daemon.getContext(pastIdeas));
+      setRawContext(daemon.getContext(activeThoughts));
     }
     catch (error) {
       dispatchError('Failed to get raw context');

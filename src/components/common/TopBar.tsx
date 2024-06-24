@@ -12,7 +12,7 @@ const StyledTopBar = styled.div`
   gap: 4px;
   background: var(--bg-color-secondary);
   padding: 4px 12px;
-  z-index: 1000;
+  z-index: 50;
   border-top: 0.5px solid var(--line-color);
   border-bottom: 0.5px solid var(--line-color-strong);
 `;

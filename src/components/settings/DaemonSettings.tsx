@@ -10,9 +10,15 @@ function createEmptyChatDaemonConfig(): ChatDaemonConfig {
     id: Date.now(),
     name: 'New Daemon',
     systemPrompt: 'You are daemon made to be a part of a collective intelligence system.',
-    userPrompts: [`The human user has failed to initialize your prompts.
-Please ask the user to go to the settings and initialize your prompts.
-Don't write more than one sentence.`],
+    userPrompts: [`The user is in the process of writing. Start by reading the user's previous notes:
+"
+{PAST}
+"
+Now, here's the user's most recent note:
+"
+{CURRENT}
+"
+Leave a useful, short comment on this note. Don't write any more than 1-2 sentences.`],
     enabled: false
   };
 }

@@ -1,13 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, ButtonDangerous } from '../../styles/sharedStyles';
-
-const ConfirmationContent = styled.div`
-  background: var(--bg-color);
-  padding: 20px 44px;
-  border-radius: 10px;
-  border: 0.5px solid var(--line-color);
-`;
+import { Button, ButtonDangerous, ModalBox } from '../../styles/sharedStyles';
 
 const ConfirmationMessage = styled.p`
   margin-bottom: 20px;
@@ -22,10 +15,9 @@ const ConfirmationModal: React.FC<{
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
-  zIndex?: number;
-}> = ({ message, onConfirm, onCancel, zIndex }) => {
+}> = ({ message, onConfirm, onCancel }) => {
   return (
-    <ConfirmationContent>
+    <ModalBox>
       <ConfirmationMessage>{message}</ConfirmationMessage>
       <ButtonGroup>
         <ButtonDangerous onClick={onConfirm} >
@@ -35,7 +27,7 @@ const ConfirmationModal: React.FC<{
           Cancel
         </Button>
       </ButtonGroup>
-    </ConfirmationContent>
+    </ModalBox>
   );
 };
 

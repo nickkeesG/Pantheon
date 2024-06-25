@@ -49,7 +49,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         <Modal
           key={index}
           zIndex={100 + (index * 2)}
-          top={`${(index + 1) * 10}%`}
+          top={`${(index * 2) + 10}%`}
         >
           {modalContent}
         </Modal>

@@ -163,6 +163,17 @@ export const TextInput = styled.input`
   }
 `;
 
+export const ModalBox = styled.div`
+  box-sizing: border-box;
+  background-color: var(--bg-color);
+  padding: 20px 44px 20px 20px;
+  border-radius: 10px;
+  border: 0.5px solid var(--line-color);
+  max-width: min(800px, 80vw);
+  max-height: 80vh;
+  overflow-y: auto;
+`;
+
 export const ModalHeader = styled.h3`
   text-align: center;
 `;

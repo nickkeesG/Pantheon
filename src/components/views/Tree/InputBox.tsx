@@ -30,6 +30,7 @@ const MentionHint = styled(Hint)`
 interface InputBoxProps {
   // TODO This should be a thunk that InputBox dispatches directly
   dispatchInstruction: (instruction: string) => void;
+  onChange: () => void;
 }
 
 export interface InputBoxHandle {
@@ -37,7 +38,7 @@ export interface InputBoxHandle {
   clearAndScrollToView: () => void;
 }
 
-const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstruction }, ref) => {
+const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstruction, onChange }, ref) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const [mentionedDaemon, setMentionedDaemon] = useState<string | null>(null);
@@ -88,11 +89,13 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
           dispatch(createIdea(textAreaRef.current.value));
         }
         clearAndScrollToView();
+        onChange();
       }
     }
 
   };
 
+  // TODO Add a 'send' button to the right of the text box
   return (
     <div style={{ position: 'relative', width: '46%' }}>
       <TextAreaField
@@ -101,6 +104,7 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
         onChange={() => {
           resize();
           checkForMentions();
+          onChange();
         }}
         onKeyDown={handleKeyDown}
       />

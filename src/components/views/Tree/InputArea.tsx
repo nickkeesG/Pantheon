@@ -20,6 +20,7 @@ const ButtonRow = styled(ContainerHorizontal)`
 const InputArea = () => {
   const dispatch = useAppDispatch();
   const textAreaRef = useRef<InputBoxHandle>(null);
+  const [textAreaText, setTextAreaText] = useState('');
   const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
   const isCreatingSection = useAppSelector(state => state.ui.creatingSection);
   const [newSectionButtonDisabled, setNewSectionButtonDisabled] = useState(true);
@@ -37,6 +38,14 @@ const InputArea = () => {
   useEffect(() => {
     setNewSectionButtonDisabled(activeIdeaIds.length === 0 || isCreatingSection === true);
   }, [activeIdeaIds, isCreatingSection]);
+
+  const updateText = useCallback(() => {
+    if (textAreaRef.current) {
+      setTextAreaText(textAreaRef.current.getText());
+    } else {
+      setTextAreaText('');
+    }
+  }, [])
 
   // TODO This should be a thunk
   const dispatchInstruction = useCallback(async (instruction: string) => {
@@ -65,7 +74,11 @@ const InputArea = () => {
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <InputBox ref={textAreaRef} dispatchInstruction={dispatchInstruction} />
+      <InputBox
+        ref={textAreaRef}
+        dispatchInstruction={dispatchInstruction}
+        onChange={updateText}
+      />
       <ButtonRow>
         <Button
           onClick={() => dispatch(setCreatingSection(true))}
@@ -74,18 +87,17 @@ const InputArea = () => {
           + New section
         </Button>
         <Button
+          disabled={textAreaText.trim() === ''}
           onClick={() => {
-            if (textAreaRef.current) {
-              const text = textAreaRef.current.getText();
-              if (text.trim() !== '') {
-                dispatchInstruction(text);
-                textAreaRef.current.clearAndScrollToView();
-              }
+            if (textAreaText.trim() !== '') {
+              dispatchInstruction(textAreaText);
+              textAreaRef.current?.clearAndScrollToView();
+              updateText();
             }
           }}
-          title="Press Ctrl + Enter to send text to instruct daemon"
+          title="Ask a question directly, ChatGPT style. Hotkey: Ctrl + Enter"
         >
-          Send idea to instruct daemon
+          Ask AI
         </Button>
       </ButtonRow>
     </ContainerVertical>

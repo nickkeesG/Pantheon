@@ -48,9 +48,9 @@ const DaemonSettings = () => {
       <TextButton onClick={() => addNewDaemon()}>
         + New daemon
       </TextButton>
-      <h4>Completions</h4>
+      <h4>AI suggestions</h4>
       <Hint style={{ paddingBottom: '8px' }}>
-        Completions are ideas that the AI suggests to the user. They are powered by the given <i>base model</i> (currently <b>{baseModel}</b>).
+        AI suggestions are the AI's ideas for what might come next. They are powered by the given <i>base model</i> (currently <b>{baseModel}</b>).
       </Hint>
       <BaseDaemonSettings config={baseDaemonConfig} />
     </div>

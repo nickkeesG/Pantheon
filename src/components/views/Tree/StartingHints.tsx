@@ -10,9 +10,8 @@ const StartingHints = () => {
 
   return (
     <ContainerHorizontal>
-      <StyledHint>Chat model generated comments will appear here</StyledHint>
-      <Filler style={{ minWidth: '46%' }} />
-      <StyledHint>Chat model generated comments will appear here</StyledHint>
+      <StyledHint>AI daemons will leave comments on your writing here</StyledHint>
+      <Filler style={{ minWidth: '73%' }} />
     </ContainerHorizontal>
   )
 }

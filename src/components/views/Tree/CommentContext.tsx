@@ -1,20 +1,9 @@
 import styled from "styled-components";
 import { ChainOfThoughtType, Comment } from "../../../redux/models";
 import TextWithHighlights from "../../common/TextWithHighlights";
-import { Hint, ModalHeader } from "../../../styles/sharedStyles";
+import { Hint, ModalBox, ModalHeader } from "../../../styles/sharedStyles";
 import { useMemo } from "react";
 
-const CommentContextPanel = styled.div`
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  padding: 20px 44px 20px 20px;
-  border-radius: 10px;
-  border: 0.5px solid var(--line-color);
-  width: 50vw;
-  max-width: 800px;
-  max-height: 80vh;
-  overflow-y: auto;
-`;
 
 const InnerPanel = styled.div`
   background-color: var(--bg-color-secondary);
@@ -33,7 +22,7 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
   ), [comment.chainOfThought, comment.daemonName]);
 
 
-  return (<CommentContextPanel>
+  return (<ModalBox style={{ width: '70vw' }}>
     <ModalHeader>Comment context</ModalHeader>
     <hr />
     <Hint>A record of the AI's internal chain-of-thought process leading up to this comment. <b>You can modify the system and user prompts in the settings.</b></Hint>
@@ -56,7 +45,7 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
       ))}
       {!chainOfThoughtExists && <Hint>Comment context is not available for old comments.</Hint>}
     </InnerPanel>
-  </CommentContextPanel>);
+  </ModalBox>);
 };
 
 export default CommentContext;

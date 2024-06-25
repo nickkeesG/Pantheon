@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { updateBaseDaemon } from "../../redux/daemonSlice"
 import { BaseDaemonConfig } from '../../redux/models';
 import BaseDaemon from '../../daemons/baseDaemon';
 import styled from 'styled-components';
-import { Button, ButtonSmall, ContainerHorizontal, SettingLabel, TextArea, TextButton } from '../../styles/sharedStyles';
+import { Button, ButtonSmall, ContainerHorizontal, Hint, SettingLabel, TextArea, TextButton } from '../../styles/sharedStyles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { dispatchError } from '../../errorHandler';
-import { styledBackground } from '../../styles/mixins';
+import { aiFont, styledBackground } from '../../styles/mixins';
 import { selectActiveThoughts } from '../../redux/ideaSlice';
+import { useModal } from '../ModalContext';
+import InfoModal from '../common/InfoModal';
 
 
 const BaseDaemonSettingsContainer = styled.div`
@@ -19,6 +21,16 @@ const StyledDiv = styled.div`
   ${styledBackground};
 `;
 
+const ExamplePromptDiv = styled.div`
+  background-color: var(--bg-color-secondary);
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  ${aiFont};
+`;
+
 type BaseDaemonSettingsProps = {
   config: BaseDaemonConfig;
 };
@@ -26,15 +38,23 @@ type BaseDaemonSettingsProps = {
 const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEdited, setIsEdited] = useState(false);
-  const [rawContext, setRawContext] = useState('');
   const activeThoughts = useAppSelector(selectActiveThoughts);
   const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || '');
   const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || '');
   const [temperature, setTemperature] = useState(config.temperature !== undefined ? config.temperature : 0.7);
   const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
   const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
-
+  const { addModal } = useModal();
   const dispatch = useAppDispatch();
+
+  const getNewConfig = useCallback(() => {
+    return {
+      ...config,
+      mainTemplate: mainTemplate,
+      ideaTemplate: ideaTemplate,
+      temperature: temperature,
+    };
+  }, [config, mainTemplate, ideaTemplate, temperature])
 
   const resizeTextArea = (textArea: HTMLTextAreaElement | null) => {
     if (textArea) {
@@ -50,24 +70,9 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     }
   }, [mainTemplate, ideaTemplate, isCollapsed]);
 
-  const getRawContext = () => {
-    try {
-      const daemon = new BaseDaemon(config);
-      setRawContext(daemon.getContext(activeThoughts));
-    }
-    catch (error) {
-      dispatchError('Failed to get raw context');
-    }
-  }
-
   const updateDaemonConfig = () => {
     try {
-      const newConfig = {
-        ...config,
-        mainTemplate: mainTemplate,
-        ideaTemplate: ideaTemplate,
-        temperature: temperature,
-      };
+      const newConfig = getNewConfig();
       dispatch(updateBaseDaemon(newConfig));
       setIsEdited(false);
     } catch (error) {
@@ -75,13 +80,26 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
     }
   }
 
-  // TODO Remove the 'raw context' button?
+  const showExample = useCallback(() => {
+    const daemon = new BaseDaemon(getNewConfig());
+    const prompt = daemon.getContext(activeThoughts);
+    addModal(
+      <InfoModal>
+        <br />
+        <Hint>Final prompt given to the base model. This is what the AI will see, given these templates, in the selected tree.</Hint>
+        <ExamplePromptDiv>
+          {prompt}
+        </ExamplePromptDiv>
+      </InfoModal>
+    )
+  }, [getNewConfig, activeThoughts, addModal])
+
   return (
     <BaseDaemonSettingsContainer>
       <span>
         <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
-          Completions settings
+          AI suggestions settings
         </TextButton>
         {isEdited && (
           <ButtonSmall onClick={updateDaemonConfig}>
@@ -117,6 +135,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
               style={{ width: '100%' }}
             />
           </label>
+          <Button onClick={showExample}>Show example prompt</Button>
           <label>
             <SettingLabel>Temperature</SettingLabel>
             <ContainerHorizontal>
@@ -137,18 +156,7 @@ const BaseDaemonSettings: React.FC<BaseDaemonSettingsProps> = ({ config }) => {
           </label>
         </StyledDiv>
       )}
-      {!isCollapsed && (
-        <div>
-          {!rawContext && <Button onClick={() => getRawContext()}>View raw context</Button>}
-          {rawContext && (
-            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-              {rawContext}
-            </pre>
-          )}
-        </div>
-      )}
-
-    </BaseDaemonSettingsContainer>
+    </BaseDaemonSettingsContainer >
   );
 };
 

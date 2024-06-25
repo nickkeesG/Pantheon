@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SettingLabel, TextInput } from "../../styles/sharedStyles";
+import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
 import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 
@@ -35,6 +35,7 @@ const ConfigSettings = () => {
           value={openAIOrgId}
           onChange={(event) => dispatch(setOpenaiOrgId(event.target.value))}
         />
+        <Hint>Optional</Hint>
       </TextSettingContainer>
       <TextSettingContainer>
         <SettingLabel>Chat model</SettingLabel>
@@ -43,6 +44,7 @@ const ConfigSettings = () => {
           value={chatModel}
           onChange={(event) => dispatch(updateChatModel(event.target.value))}
         />
+        <Hint>Used by daemons and 'Ask AI'</Hint>
       </TextSettingContainer>
       <TextSettingContainer>
         <SettingLabel>Base model</SettingLabel>
@@ -51,6 +53,7 @@ const ConfigSettings = () => {
           value={baseModel}
           onChange={(event) => dispatch(updateBaseModel(event.target.value))}
         />
+        <Hint>Used by 'AI suggestions'</Hint>
       </TextSettingContainer>
     </div>
   )

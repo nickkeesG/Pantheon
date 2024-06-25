@@ -74,14 +74,14 @@ const CompletionsContainer = () => {
     <TopLevelContainer>
       <BackgroundContainer>
         <ContainerHorizontal style={{ alignItems: 'center' }}>
-          <h4>Base model completions</h4>
+          <h4>AI suggestions</h4>
           <Filler />
           <TextButton onClick={() => getNewCompletions(activeThoughts)}>
             Refresh
           </TextButton>
         </ContainerHorizontal>
         {completions.length === 0 &&
-          <Hint>Here you will see how the base model would continue your train of thought</Hint>
+          <Hint>Here you will see the AI's thoughts of what might come next</Hint>
         }
         <StyledCompletionsContainer>
           {completions.map((completion, index) => (

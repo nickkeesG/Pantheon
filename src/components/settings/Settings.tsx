@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { ButtonDangerous, IconButtonMedium, ModalHeader } from '../../styles/sharedStyles';
+import { ButtonDangerous, IconButtonMedium, ModalBox, ModalHeader } from '../../styles/sharedStyles';
 import Modal from '../common/Modal';
 import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
@@ -13,22 +13,11 @@ import { resetDaemonSlice } from '../../redux/daemonSlice';
 import ThemeSettings from './ThemeSettings';
 import { useModal } from '../ModalContext';
 
+
 const SettingsButton = styled(IconButtonMedium).attrs({
   as: FiSettings
 })`
   display: flex;
-`;
-
-const SettingsPanel = styled.div`
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  padding: 20px 44px 20px 20px;
-  border-radius: 10px;
-  border: 0.5px solid var(--line-color);
-  width: 50vw;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
 `;
 
 const Settings = () => {
@@ -38,7 +27,7 @@ const Settings = () => {
 
   const openSettings = () => {
     addModal(<Modal>
-      <SettingsPanel>
+      <ModalBox style={{ width: '70vw' }}>
         <ModalHeader>Settings</ModalHeader>
         <hr />
         <ConfigSettings />
@@ -64,7 +53,7 @@ const Settings = () => {
         >
           <ButtonDangerous>Reset entire app state</ButtonDangerous>
         </ButtonWithConfirmation>
-      </SettingsPanel>
+      </ModalBox>
     </Modal>);
   };
 

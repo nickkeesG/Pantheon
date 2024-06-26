@@ -19,7 +19,7 @@ const BackgroundContainer = styled.div`
   background-color: var(--bg-color-secondary);
   width: 100%;
   height: auto;
-  padding: 0px 12px 4px 12px;
+  padding: 0px 12px 12px 12px;
   box-sizing: border-box;
   border-radius: 4px;
 `;
@@ -38,7 +38,6 @@ const StyledIndividualCompletion = styled.div`
   position: relative;
   flex: 1;
   padding: 8px;
-  margin: 8px 0px;
   border: 0.5px solid var(--line-color-strong);
   border-radius: 4px;
   white-space: normal;

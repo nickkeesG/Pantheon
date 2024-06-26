@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { aiFont, highlightOnHover } from './mixins';
 import { FiX } from 'react-icons/fi';
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 export const ContainerVertical = styled.div`
   display: flex;
@@ -124,6 +125,11 @@ export const ExitButtonSmall = styled(IconButtonSmall).attrs({
   top: 4px;
   right: 4px;
   cursor: pointer;
+`;
+
+export const InfoButton = styled(IconButtonLarge).attrs({
+  as: IoInformationCircleOutline
+})`
 `;
 
 export const TextArea = styled.textarea`

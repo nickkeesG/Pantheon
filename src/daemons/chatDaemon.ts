@@ -3,6 +3,8 @@ import { GenerateChatComment } from '../networking/llmHandler';
 
 
 class ChatDaemon {
+  static PAST_VAR = '{PAST}';
+  static CURRENT_VAR = '{CURRENT}';
   config: ChatDaemonConfig;
 
   constructor(config: ChatDaemonConfig) {
@@ -10,8 +12,8 @@ class ChatDaemon {
   }
 
   static fillInPrompt(prompt: string, pastIdeasText: string, currentIdeaText: string) {
-    let filledPrompt = prompt.replace('{PAST}', pastIdeasText);
-    filledPrompt = filledPrompt.replace('{CURRENT}', currentIdeaText);
+    let filledPrompt = prompt.replace(this.PAST_VAR, pastIdeasText);
+    filledPrompt = filledPrompt.replace(this.CURRENT_VAR, currentIdeaText);
     return filledPrompt;
   }
 

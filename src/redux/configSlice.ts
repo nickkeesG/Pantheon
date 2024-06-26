@@ -19,7 +19,7 @@ const initialState: ConfigState = {
   openAIKey: '',
   openAIOrgId: '',
   baseModel: 'davinci-002',
-  chatModel: 'gpt-4-1106-preview',
+  chatModel: 'gpt-4o',
   isSynchronizerActive: false,
   theme: Theme.System
 };

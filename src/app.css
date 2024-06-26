@@ -10,15 +10,15 @@ html {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 100%;
-  font-weight: 300;
+  font-size: 87.5%;
+  font-weight: 400;
   scrollbar-color: var(--highlight) var(--highlight-weak);
   scrollbar-width: thin;
   --bg-color: #ffffff;
   --bg-color-secondary: #f0f0f0;
   --text-color: #000000;
-  --text-color-dark: #333333;
-  --text-color-darkest: #999999;
+  --text-color-secondary: #333333;
+  --text-color-tertiary: #999999;
   --line-color: #cccccc;
   --line-color-light: #dddddd;
   --line-color-strong: #bbbbbb;
@@ -35,8 +35,8 @@ html.dark {
   --bg-color: #1c2028;
   --bg-color-secondary: #232830;
   --text-color: #d7d8db;
-  --text-color-dark: #9196a2;
-  --text-color-darkest: #585c65;
+  --text-color-secondary: #b4b6bd;
+  --text-color-tertiary: #777d8b;
   --text-color-blue: #4f8df9;
   --line-color: #707070;
   --line-color-light: #818181;
@@ -85,7 +85,7 @@ b {
 }
 
 button {
-  font-weight: 400;
+  font-weight: 500;
 }
 
 hr {

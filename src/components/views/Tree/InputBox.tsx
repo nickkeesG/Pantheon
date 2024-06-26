@@ -13,7 +13,7 @@ const TextAreaField = styled(TextArea)`
   width: 100%;
   font-family: inherit;
   font-weight: inherit;
-  font-size: 16px;
+  font-size: inherit;
   overflow: hidden;
   resize: none;
   margin: 0px 0px 12px 0px;

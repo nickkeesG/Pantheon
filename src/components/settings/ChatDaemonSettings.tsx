@@ -3,9 +3,11 @@ import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { Button, ButtonDangerous, ButtonSmall, SettingLabel, TextArea, TextButton, TextInput } from '../../styles/sharedStyles';
+import { Button, ButtonDangerous, ButtonSmall, ContainerHorizontal, Filler, InfoButton, SettingLabel, TextArea, TextButton, TextInput } from '../../styles/sharedStyles';
 import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { styledBackground } from '../../styles/mixins';
+import { useModal } from '../ModalContext';
+import ChainOfThoughtInfo from './ChainOfThoughtInfo';
 
 
 const ChatDaemonSettingsContainer = styled.div`
@@ -25,15 +27,14 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEnabled, setIsEnabled] = useState(config.enabled);
   const [isEdited, setIsEdited] = useState(false);
-
   const [name, setName] = useState(config.name) || '';
   const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt || '');
   const [userPrompts, setUserPrompts] = useState(config.userPrompts || []);
-
-  const dispatch = useAppDispatch();
-
   const systemPromptRef = useRef<HTMLTextAreaElement>(null);
   const userPromptRefs = useRef<HTMLTextAreaElement[]>([]);
+  const dispatch = useAppDispatch();
+  const { addModal } = useModal();
+
 
   const handleUserPromptChange = (index: number, value: string, textArea: HTMLTextAreaElement) => {
     const newUserPrompts = [...userPrompts];
@@ -128,7 +129,11 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
             />
           </label>
           <br />
-          <h4>Chain-of-thought prompts</h4>
+          <ContainerHorizontal style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <h4 style={{ marginRight: '8px' }}>Chain-of-thought prompts</h4>
+            <InfoButton onClick={() => addModal(<ChainOfThoughtInfo />)} />
+            <Filler />
+          </ContainerHorizontal>
           {userPrompts.map((prompt, index) => (
             <div key={index}>
               <label>

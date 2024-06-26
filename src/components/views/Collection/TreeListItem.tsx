@@ -20,7 +20,7 @@ const TreeListItemContainer = styled(ContainerHorizontal)`
   border: none;
   border-bottom: 0.5px solid var(--line-color);
   border-radius: 0px;
-  color: var(--text-color-dark);
+  color: var(--text-color-secondary);
   text-align: start;
   ${highlightOnHover};
   padding: 8px 16px;

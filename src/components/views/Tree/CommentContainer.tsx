@@ -41,7 +41,7 @@ const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ us
 const StyledCommentContainer = styled(TextButton)`
   position: relative;
   padding: 6px 12px;
-  color: var(--text-color-dark);
+  color: var(--text-color-secondary);
   ${aiFont};
   ${fadeInAnimation};
 

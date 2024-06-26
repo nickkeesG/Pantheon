@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
-import { ButtonDangerous, IconButtonMedium, ModalBox, ModalHeader } from '../../styles/sharedStyles';
+import { ButtonDangerous, Hint, IconButtonMedium, ModalBox, ModalHeader } from '../../styles/sharedStyles';
 import Modal from '../common/Modal';
 import ConfigSettings from './ConfigSettings';
 import DaemonSettings from './DaemonSettings';
@@ -27,7 +27,7 @@ const Settings = () => {
 
   const openSettings = () => {
     addModal(<Modal>
-      <ModalBox style={{ width: '70vw' }}>
+      <ModalBox style={{ width: '70vw', maxWidth: '550px' }}>
         <ModalHeader>Settings</ModalHeader>
         <hr />
         <ConfigSettings />
@@ -38,21 +38,25 @@ const Settings = () => {
         <hr />
         <ImportExportButtons />
         <hr />
-        <p style={{ color: 'var(--text-color-dark)' }}>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</p>
-        <ButtonWithConfirmation
-          confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
-          onConfirm={resetDaemonSettings}
-        >
-          <ButtonDangerous>Reset daemon settings</ButtonDangerous>
-        </ButtonWithConfirmation>
+        <Hint>Reset all daemon settings back to default. All custom daemons, and edits made to default daemons, will be lost.</Hint>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <ButtonWithConfirmation
+            confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
+            onConfirm={resetDaemonSettings}
+          >
+            <ButtonDangerous>Reset daemon settings</ButtonDangerous>
+          </ButtonWithConfirmation>
+        </div>
         <hr />
-        <p style={{ color: 'var(--text-color-dark)' }}>Reset the entire app state back to default. All ideas, comments, and custom daemons will be lost.</p>
-        <ButtonWithConfirmation
-          confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
-          onConfirm={resetAppState}
-        >
-          <ButtonDangerous>Reset entire app state</ButtonDangerous>
-        </ButtonWithConfirmation>
+        <Hint>Reset the entire app state back to default. All ideas, comments, and custom daemons will be lost.</Hint>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <ButtonWithConfirmation
+            confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
+            onConfirm={resetAppState}
+          >
+            <ButtonDangerous>Reset entire app state</ButtonDangerous>
+          </ButtonWithConfirmation>
+        </div>
       </ModalBox>
     </Modal>);
   };

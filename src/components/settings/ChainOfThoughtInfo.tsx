@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import InfoModal from '../common/InfoModal';
 import { aiFont } from '../../styles/mixins';
 import ChatDaemon from '../../daemons/chatDaemon';
+import { Hint } from '../../styles/sharedStyles';
 
 
 const GridContainer = styled.div`
@@ -27,7 +28,7 @@ const Variable = styled(GridItem)`
 `;
 
 const Definition = styled(GridItem)`
-  color: var(--text-color-dark);
+  color: var(--text-color-secondary);
   font-size: 0.9em;
   width: 100%;
   text-align: right;
@@ -38,9 +39,10 @@ const Definition = styled(GridItem)`
 const ChainOfThoughtInfo: React.FC = () => {
   return (
     <InfoModal>
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ height: '20px' }}></div>
+      <Hint>
         The following variables are available in chain-of-thought prompts:
-      </div>
+      </Hint>
       <GridContainer>
         <Variable>{ChatDaemon.PAST_VAR}</Variable>
         <Definition>Past user-generated thoughts as a list. 'Ask AI' instructions, as well as responses, are omitted.</Definition>

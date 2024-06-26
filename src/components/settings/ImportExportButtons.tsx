@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, ButtonHighlighted, ContainerVertical } from "../../styles/sharedStyles";
+import { Button, ButtonHighlighted, ContainerVertical, Hint } from "../../styles/sharedStyles";
 import { LuImport } from "react-icons/lu";
 import { PiExportBold } from "react-icons/pi";
 import React from "react";
@@ -70,10 +70,10 @@ const ImportExportButtons = () => {
 
   return (
     <ContainerVertical>
-      <p style={{ color: 'var(--text-color-dark)' }}>
+      <Hint>
         Import or export entire app state, including trees, comments, daemons and settings.
         Importing will override the existing state and cannot be undone.
-      </p>
+      </Hint>
       <ButtonsContainer>
         <StyledButtonHighlighted
           onClick={(e) => (e.currentTarget.children[0] as HTMLInputElement).click()}>

@@ -22,7 +22,7 @@ export const Button = styled.button`
   font-family: inherit;
   font-size: 0.9em;
   background: none;
-  color: var(--text-color-dark);
+  color: var(--text-color-secondary);
   border: 0.5px solid var(--line-color-strong);
   border-radius: 50px;
   padding: 8px 16px;
@@ -34,7 +34,7 @@ export const Button = styled.button`
   }
 
   &:disabled {
-    color: var(--text-color-darkest);
+    color: var(--text-color-tertiary);
     border-color: var(--line-color-stronger);
     cursor: default;
   }
@@ -58,7 +58,7 @@ export const TextButton = styled(Button)`
   border: none;
   border-radius: 8px;
   padding: 4px 8px;
-  color: var(--text-color-dark);
+  color: var(--text-color-secondary);
   font-size: inherit;
 `;
 
@@ -175,7 +175,7 @@ export const ModalBox = styled.div`
   padding: 20px 44px 20px 20px;
   border-radius: 10px;
   border: 0.5px solid var(--line-color);
-  max-width: min(800px, 80vw);
+  max-width: min(550px, 80vw);
   max-height: 80vh;
   overflow-y: auto;
 `;
@@ -185,14 +185,14 @@ export const ModalHeader = styled.h3`
 `;
 
 export const Hint = styled.div`
-  font-size: 0.8em;
-  color: var(--text-color-darkest);
+  font-size: 0.85em;
+  color: var(--text-color-tertiary);
 `;
 
 export const SettingLabel = styled.p`
-  font-size: 0.8em;
+  font-size: 0.85em;
   margin-bottom: 5px;
-  color: var(--text-color-dark);
+  color: var(--text-color-secondary);
 `;
 
 export const Filler = styled.div`

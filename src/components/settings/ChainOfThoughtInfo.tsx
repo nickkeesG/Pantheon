@@ -18,18 +18,20 @@ const GridItem = styled.div`
   margin: 4px 4px 16px 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: right;
 `;
 
 const Variable = styled(GridItem)`
   ${aiFont};
   border-right: 0.5px solid var(--line-color-strong);
+  justify-content: center;
 `;
 
 const Definition = styled(GridItem)`
   color: var(--text-color-dark);
   font-size: 0.9em;
+  width: 100%;
+  text-align: right;
+  justify-content: right;
 `;
 
 

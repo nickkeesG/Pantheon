@@ -89,11 +89,9 @@ A) Information gain: Will you learn something new? Can you already answer the qu
 B) Surprise: How surprising is the question? Have they encountered a similar question before, or is it a very obvious question to ask?
 C) Unavoidable: Will they be forced to give a good answer? How easily can they side step the question with a generic response?
 
-Please use a 10 point scale for each criterion. `,
-`Thank you, this is good progress. It is now time to select a question. We need a question that didn't rate low on any of the three criteria. To do this, please select the question for which the minimum rating (of the three) is highest.
-
-Please type out the question, and the value of this minimum rating.`,
-`Wonderful. Now just type out the question, and no other text. Also remove any text formatting.`],
+Please use a 10 point scale for each criterion.`,
+`Thank you, this is good progress. For each question, please write down the minimum rating it received of the three criteria. This will now be the aggregate rating for the question as a whole.`,
+`Wonderful. Now please type out the question which got the highest aggregate rating. Just write the question, write no other text, and no formatting.`],
       enabled: true
     }
   ],

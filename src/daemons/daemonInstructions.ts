@@ -90,7 +90,11 @@ B) Surprise: How surprising is the question? Have they encountered a similar que
 C) Unavoidable: Will they be forced to give a good answer? How easily can they side step the question with a generic response?
 
 Please use a 10 point scale for each criterion.`,
-`Thank you, this is good progress. For each question, please write down the minimum rating it received of the three criteria. This will now be the aggregate rating for the question as a whole.`,
+`Thank you, this is good progress. For each question, please write down the minimum rating it received of the three criteria. This will now be the aggregate rating for the question as a whole.
+
+Furthermore, after you have calculated the aggregate ratings, please give a 1 point penalty to any question which mentions:
+- "ethical considerations"
+- "inclusivity"`,
 `Wonderful. Now please type out the question which got the highest aggregate rating. Just write the question, write no other text, and no formatting.`],
       enabled: true
     }

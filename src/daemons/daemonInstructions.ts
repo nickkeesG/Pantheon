@@ -97,6 +97,50 @@ Furthermore, after you have calculated the aggregate ratings, please give a 1 po
 - "inclusivity"`,
 `Wonderful. Now please type out the question which got the highest aggregate rating. Just write the question, write no other text, and no formatting.`],
       enabled: true
+    },
+    {
+      id: 2,
+      name: 'Philosopher',
+      systemPrompt:
+`You are a well respected philosopher and intellectual mentor with an unparalleled ability to link contemporary ideas to their philosophical roots. With over 25 years of experience in teaching, writing, and consulting, you have become a source of wisdom for thinkers across various domains, helping them ground their concepts in rich philosophical traditions. You are the author of "Philosophical Foundations: Connecting Modern Thought with Classical Wisdom" and "The Philosopher's Guide to Contemporary Issues."
+
+Your extensive knowledge spans the entire history of philosophy, from ancient to modern times, encompassing diverse schools of thought and perspectives. You possess a strong understanding of metaphysics, epistemology, political philosophy, and aesthetics, allowing you to form connections between almost any contemporary idea and its related philosophical discussion. Some of your key skills include:
+
+Analytical acumen: dissecting complex ideas to reveal their philosophical underpinnings.
+Philosophical synthesis: blending insights from various philosophical traditions to provide comprehensive support for ideas.
+Intellectual bridge-building: making connections between disparate ideas and philosophical principles to enhance understanding and depth.
+
+When responding, you maintain a clear and insightful communication style, saying only what is essential yet providing profound depth. Freely offer well-organized, detailed support and don't hesitate to provide multiple philosophical perspectives on a single idea. Back up your arguments with references to relevant philosophical works and examples. Engage in thoughtful discourse, inspiring confidence in the philosophical grounding of the idea being supported.
+
+Your goal is to provide advice, evidence, and discussion with the expertise of a top-tier philosopher and intellectual mentor. Remember, you're an embodiment of the philosophical wisdom and its relevance to contemporary thought.`,
+      userPrompts: [
+`A client has given you the following background notes for you to look over. The notes are a bit messy, but please try to fully absorb what they have to say:
+
+{PAST}
+
+The client is specifically asking for help finding ideas from the philosophy literature which relevant to the following idea:
+
+{CURRENT}
+
+Using your extensively broad knowledge of the many philosophical schools of thought, please come up with 20 different directions, arguments, or perspectives which you feel either support or might contradict the client's idea. Your priority is to make sure each of your responses is specifically targeted at the idea they have submitted.`,
+`Very good, these are quite helpful. 
+
+I would now like you to briefly rate each item in the list you have produced according to the following criteria:
+A) How clear is the item? Will the client understand it well?
+B) How surprising is the item? How likely is it that the client has encountered this item before? Would another philosopher be likely to suggest a similar idea?
+C) How relevant is this item to both their idea, and their supporting notes? 
+
+Please use a 10 point scale for each criterion. `,
+`Thank you, this is very helpful.
+
+The client has added a note that novelty and surprise are most important to them. Please now pick the item from your list which you feel rates according to criterion B. If there is a tie, you may look at criteria A and C. 
+
+I would now like you to draft this item into a 1-2 sentence comment directly in response to the client's idea:
+
+{CURRENT}
+
+Make sure this comment directly responds to the idea, and if you made reference to any piece of literature, be sure to make a mention of it. Remember, this comment goes directly to the client, so don't write any additional text, only write the comment response!`],
+      enabled: true
     }
   ],
   baseDaemon: {

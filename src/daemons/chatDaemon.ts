@@ -12,8 +12,8 @@ class ChatDaemon {
   }
 
   static fillInPrompt(prompt: string, pastIdeasText: string, currentIdeaText: string) {
-    let filledPrompt = prompt.replace(this.PAST_VAR, pastIdeasText);
-    filledPrompt = filledPrompt.replace(this.CURRENT_VAR, currentIdeaText);
+    let filledPrompt = prompt.replace(new RegExp(this.PAST_VAR, 'g'), pastIdeasText);
+    filledPrompt = filledPrompt.replace(new RegExp(this.CURRENT_VAR, 'g'), currentIdeaText);
     return filledPrompt;
   }
 

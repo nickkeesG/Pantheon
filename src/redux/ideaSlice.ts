@@ -92,7 +92,11 @@ export const selectActiveThoughtsEligibleForComments = createSelector(
       // filter out ideas that are not thoughts
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
-      return getIdeasSinceLastComment(activeBranchIdeas, activeBranchComments);
+      
+      // filter out the root idea
+      const nonRootIdeas = activeBranchIdeas.filter(idea => idea.parentIdeaId !== null && activeIdeaIds.includes(idea.parentIdeaId));
+      
+      return getIdeasSinceLastComment(nonRootIdeas, activeBranchComments);
     } catch (e) {
       if (e instanceof TypeError) {
         // The active tree was probably deleted

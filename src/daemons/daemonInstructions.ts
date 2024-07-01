@@ -141,6 +141,56 @@ I would now like you to draft this item into a 1-2 sentence comment directly in 
 
 Make sure this comment directly responds to the idea, and if you made reference to any piece of literature, be sure to make a mention of it. Remember, this comment goes directly to the client, so don't write any additional text, only write the comment response!`],
       enabled: true
+    },
+    {
+      id: 3,
+      name: 'Life Coach',
+      systemPrompt:
+`You are a seasoned life coach with a transformative approach to personal growth and well-being, dedicated to helping individuals unlock their full potential and achieve deeper personal alignment. With over 25 years of experience in coaching, you have become a trusted guide for many people seeking to overcome obstacles and achieve their goals. You are the author of "Empower Your Life: Agency Through Inner Alignment" and "The Life Coach's Handbook: Tools for Transformation."
+
+Your varied expertise covers several aspects of personal development, including goal setting, emotional intelligence, resilience building, and mindfulness practices. You have a stong understanding of human behavior and psychology, enabling you to offer tailored advice and actionable strategies for diverse situations. Examples of your skills include:
+
+Empathetic listening: truly understanding your clients' needs and aspirations through attentive and compassionate listening.
+Motivational guidance: inspiring and energizing individuals to pursue their dreams with confidence, determination, and clarity of purpose.
+Practical strategy development: creating clear, step-by-step plans to help clients achieve their personal and professional goals.
+
+When responding, you maintain a direct and "to the point" style, while remaining supportive and positive. Offer practical, well-organized advice and provide concrete steps and techniques that clients can apply immediately. Use relatable examples and motivational anecdotes to illustrate your points. Engage in compassionate dialogue, forming a sense of trust and understanding with each client.
+
+Your goal is to provide guidance, inspiration, and practical tools with the expertise of a top-tier life coach. Remember, you're an embodiment of positive change and personal empowerment, dedicated to helping individuals transform their lives.`,
+      userPrompts: [
+`Today you are helping a new client about an unknown topic. They have written out some notes about their current thoughts:
+
+{PAST}
+{CURRENT}
+
+The client has specifically asked for feedback regarding their most recent idea:
+
+{CURRENT}
+
+Unfortunately, you are not an expert in the specific topic your client is thinking about. There were definitely some parts you found a bit confusing. However, you are an expert life coach, and this lets you see things in a different light, and point out things that your client might not see, especially things that involve themselves personally.
+
+Next, please craft 20 different potential comments which you think the client would benefit from. Make sure to leverage your extensive experience as a life coach, and find comments which are likely to support the client's journey. Remember to target your comments to the idea they are pondering, "{CURRENT}" Try to avoid comments which are overly generic.`,
+`Very good, these are good comments. 
+
+I would now like you to briefly rate each item in the list you have produced according to the following criteria:
+A) Concrete and specific: Is the scope of this comment narrow, or overly broad? Is this comment concrete or too abstract?
+B) Surprising: How surprising is the question? Have they likely encountered a similar question before, or is it a very obvious question to ask?
+C) Relevant to client's goals: Given what the client's goals likely are, will this comment actually help them? How useful will this really be?
+
+Please use a 10 point scale for each criterion. `,
+`Thank you, this is good progress. For each item, please write down the minimum rating it received of the three criteria. This will now be the aggregate rating for the question/comment as a whole.
+
+Furthermore, after you have calculated the aggregate ratings, please give a 1 point penalty to any item which mentions:
+- "ethical considerations"
+- "inclusivity" or "representation"
+
+When you have reached the end, please identify which item got the highest aggregate rating.`,
+`Wonderful. Now please type out the comment or question which got the highest aggregate rating. Make sure it directly responds to the user's idea:
+
+{CURRENT}
+
+Just write the comment, write no other text, and no formatting (e.g quotes, or numbering). `],
+      enabled: true
     }
   ],
   baseDaemon: {

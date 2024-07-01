@@ -33,7 +33,6 @@ function App() {
     }
   }, [configTheme, setTheme]);
 
-  // TODO Uncomment the GitHub link once we've opened the repo
   return (
     <BrowserRouter>
       <div className={`App`} >
@@ -49,7 +48,7 @@ function App() {
             <p>
               © {new Date().getFullYear()} Nicholas Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
               <br />
-              {/* Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>. */}
+              Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>.
             </p>
           </footer>
         </ModalProvider>

@@ -37,7 +37,6 @@ html.dark {
   --text-color: #d7d8db;
   --text-color-secondary: #b4b6bd;
   --text-color-tertiary: #777d8b;
-  --text-color-blue: #4f8df9;
   --line-color: #707070;
   --line-color-light: #818181;
   --line-color-strong: #4e4e4e;
@@ -47,7 +46,7 @@ html.dark {
   --highlight-strong: #ffffff30;
   --accent-color-coral: #D77073;
   --accent-color-red: #d25446;
-  --url-color: #007bff;
+  --url-color: #4da3ff;
 }
 
 .App {

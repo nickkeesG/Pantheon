@@ -109,9 +109,10 @@ export const selectActiveThoughts = createSelector(
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
-    // filter out ideas that are not thoughts
-    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
-    return activeIdeas;
+    // filter out ideas that are not thoughts and handle missing ideas
+    // TODO Active ideas cannot be found if the most recently active tree was deleted. This should be handled better (= deleting an active tree should reset activeIdeaIds etc to undefined.)
+    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea && idea.type === IdeaType.User);
+    return activeIdeas.length > 0 ? activeIdeas : [];
   }
 )
 

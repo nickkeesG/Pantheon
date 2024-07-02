@@ -10,8 +10,6 @@ import { selectActiveThoughtsEligibleForComments, selectActiveThoughts } from '.
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
-  const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
-  const [alreadyWasInactive, setAlreadyWasInactive] = useState(false);
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
   const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
@@ -21,7 +19,6 @@ const DaemonManager = () => {
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
-  const maxTimeInactive = 3; // seconds
 
   useEffect(() => {
     const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));
@@ -63,64 +60,50 @@ const DaemonManager = () => {
 
 
   const handleDaemonDispatch = useCallback(async () => {
-    if (!openAIKey) {
-      dispatchError('OpenAI API key not set');
-      return;
-    }
+    if (!chatDaemonActive) {
+      const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
+      let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+      const pastIdeas = activeThoughts.slice(0, activeThoughts.indexOf(currentIdea));
 
-    if (ideasEligbleForComments.length > 0) {
-      if (chatDaemonActive) {
-        console.log('Chat daemon already active');
-      }
-      else {
-        const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
-        let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
-        const pastIdeas = activeThoughts.slice(0, activeThoughts.indexOf(currentIdea));
+      // To maintain backwards compatibility with base/chat naming
+      if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
+      if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
 
-        // To maintain backwards compatibility with base/chat naming
-        if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
-        if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
+      const column = lastCommentColumn === 'left' ? 'right' : 'left';
 
-        const column = lastCommentColumn === 'left' ? 'right' : 'left';
-
-        if (currentIdea.mention) {
-          const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
-          if (mentionedDaemon) {
-            dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
-          }
+      if (currentIdea.mention) {
+        const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
+        if (mentionedDaemon) {
+          dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
         }
         else {
-          // Randomly select daemon
-          const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-          dispatchChatComment(pastIdeas, currentIdea, daemon, column);
+          dispatchError(`Daemon ${currentIdea.mention} not found`);
+          setChatDaemonActive(false);
         }
+      }
+      else {
+        // Randomly select daemon
+        const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
+        dispatchChatComment(pastIdeas, currentIdea, daemon, column);
       }
     }
   }, [ideasEligbleForComments,
     activeThoughts,
     chatDaemonActive,
     chatDaemons,
-    openAIKey,
     mostRecentComment,
     dispatchChatComment,
     selectCurrentIdea]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const secondsSinceLastActive = (new Date().getTime() - new Date(lastTimeActive).getTime()) / 1000;
-      if (secondsSinceLastActive > maxTimeInactive && !alreadyWasInactive) {
-        setAlreadyWasInactive(true);
-        handleDaemonDispatch();
-      }
-      if (secondsSinceLastActive < maxTimeInactive && alreadyWasInactive) {
-        setAlreadyWasInactive(false);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [lastTimeActive,
-    alreadyWasInactive,
-    handleDaemonDispatch]);
+    if (!openAIKey) {
+      dispatchError('OpenAI API key not set');
+    } else if (ideasEligbleForComments.length > 0) {
+      handleDaemonDispatch();
+    }
+  }, [handleDaemonDispatch,
+    ideasEligbleForComments,
+    openAIKey]);
 
   return null;
 }

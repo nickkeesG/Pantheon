@@ -96,21 +96,14 @@ const DaemonManager = () => {
     selectCurrentIdea]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!openAIKey) {
-        dispatchError('OpenAI API key not set');
-        return;
-      }
-  
-      if (ideasEligbleForComments.length > 0) {
-        handleDaemonDispatch();
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
+    if (!openAIKey) {
+      dispatchError('OpenAI API key not set');
+    } else if (ideasEligbleForComments.length > 0) {
+      handleDaemonDispatch();
+    }
   }, [handleDaemonDispatch,
-      ideasEligbleForComments,
-      openAIKey]);
+    ideasEligbleForComments,
+    openAIKey]);
 
   return null;
 }

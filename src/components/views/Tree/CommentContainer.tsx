@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Comment } from '../../../redux/models';
 import { IconButtonSmall, TextButton } from '../../../styles/sharedStyles';
 import { IoIosThumbsUp } from "react-icons/io";
-import { useAppDispatch } from '../../../hooks';
-import { approveComment } from '../../../redux/commentSlice';
+// import { useAppDispatch } from '../../../hooks';
+// import { approveComment } from '../../../redux/commentSlice';
 import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 import { useModal } from '../../ModalContext';
 import CommentContext from './CommentContext';
@@ -39,8 +39,10 @@ const ThumbsUpButton = styled(IconButtonSmall).attrs({ as: ThumbsUpIcon }) <{ us
 `;
 
 const StyledCommentContainer = styled(TextButton)`
+  width: 100%;
   position: relative;
   padding: 6px 12px;
+  margin: 0px;
   color: var(--text-color-secondary);
   ${aiFont};
   ${fadeInAnimation};
@@ -57,21 +59,21 @@ const StyledCommentContainer = styled(TextButton)`
 
 
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const { addModal } = useModal();
 
   return (
-    <div>
+    <div style={{ margin: '4px' }}>
       <StyledCommentContainer onClick={() => addModal(<CommentContext comment={comment} />)}>
         <CommentName>{comment.daemonName}</CommentName>
         <CommentText>{comment.text}</CommentText>
-        <ThumbsUpButton
+        {/* <ThumbsUpButton
           userApproved={comment.userApproved}
           onClick={(event: React.MouseEvent) => {
             event.stopPropagation();
             dispatch(approveComment(comment.id));
           }}
-        />
+        /> */}
       </StyledCommentContainer>
     </div>
   );

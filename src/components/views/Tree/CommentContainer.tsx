@@ -17,6 +17,7 @@ const CommentName = styled.div`
 
 const CommentText = styled.div`
   text-align: left;
+  ${fadeInAnimation};
 `;
 
 
@@ -45,7 +46,6 @@ const StyledCommentContainer = styled(TextButton)`
   margin: 0px;
   color: var(--text-color-secondary);
   ${aiFont};
-  ${fadeInAnimation};
 
   ${ThumbsUpButton} {
     opacity: 0;

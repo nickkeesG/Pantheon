@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Idea, IdeaType } from '../../../redux/models';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
@@ -22,10 +22,6 @@ const Container = styled.div`
   width: 100%;
   word-break: break-word;
   padding: 8px 0px;
-`;
-
-const SidePanel = styled.div`
-  flex: 0 0 27%;
 `;
 
 const ActionPanel = styled.div`
@@ -101,11 +97,25 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
   const leftComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "left"));
   const rightComments = useAppSelector(state => selectCommentsForIdea(state, idea.id, "right"));
   const containerRef = useRef<HTMLDivElement>(null);
-  const leftCommentPanelRef = useRef<HTMLDivElement>(null);
-  const rightCommentPanelRef = useRef<HTMLDivElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [showPlusButton, setShowPlusButton] = useState(false);
   const [highlights] = useState<[number, number][]>(getHighlightsArray(idea));
+  const daemonGeneratingCommentForIdea = useAppSelector(state => state.ui.incomingComment);
+  const [daemonCommentingLeft, setDaemonCommentingLeft] = useState('');
+  const [daemonCommentingRight, setDaemonCommentingRight] = useState('');
+
+  useEffect(() => {
+    if (daemonGeneratingCommentForIdea?.ideaId === idea.id) {
+      if (daemonGeneratingCommentForIdea.isRight) {
+        setDaemonCommentingRight(daemonGeneratingCommentForIdea.daemonName);
+      } else {
+        setDaemonCommentingLeft(daemonGeneratingCommentForIdea.daemonName);
+      }
+    } else {
+      setDaemonCommentingLeft('');
+      setDaemonCommentingRight('');
+    }
+  }, [daemonGeneratingCommentForIdea, idea.id]);
 
   const commentListHeightChanged = (isRight: boolean, newHeight: number, offset: number) => {
     // Get the height of the idea object
@@ -132,17 +142,12 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
       onMouseEnter={() => setShowPlusButton(true)}
       onMouseLeave={() => setShowPlusButton(false)}
     >
-      <SidePanel>
-        <div
-          ref={leftCommentPanelRef}
-          onMouseEnter={() => setIsHighlighted(true)}
-          onMouseLeave={() => setIsHighlighted(false)}>
-          <CommentList
-            offset={leftCommentOffset}
-            comments={leftComments}
-            onHeightChanged={(newHeight) => commentListHeightChanged(false, newHeight, leftCommentOffset)} />
-        </div>
-      </SidePanel>
+      <CommentList
+        offset={leftCommentOffset}
+        comments={leftComments}
+        onHeightChanged={(newHeight) => commentListHeightChanged(false, newHeight, leftCommentOffset)}
+        onHoverChange={setIsHighlighted}
+        daemonCommenting={daemonCommentingLeft} />
       <CenterPanel>
         <Row>
           <ActionPanel>
@@ -189,17 +194,12 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({ idea, leftCommentOffset, 
           </Row>
         ))}
       </CenterPanel>
-      <SidePanel>
-        <div
-          ref={rightCommentPanelRef}
-          onMouseEnter={() => setIsHighlighted(true)}
-          onMouseLeave={() => setIsHighlighted(false)}>
-          <CommentList
-            offset={rightCommentOffset}
-            comments={rightComments}
-            onHeightChanged={(newHeight) => commentListHeightChanged(true, newHeight, rightCommentOffset)} />
-        </div>
-      </SidePanel>
+      <CommentList
+        offset={rightCommentOffset}
+        comments={rightComments}
+        onHeightChanged={(newHeight) => commentListHeightChanged(true, newHeight, rightCommentOffset)}
+        onHoverChange={setIsHighlighted}
+        daemonCommenting={daemonCommentingRight} />
     </Container>
   );
 };

@@ -6,6 +6,7 @@ import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
 import { selectActiveThoughtsEligibleForComments, selectActiveThoughts } from '../redux/ideaSlice';
+import { setIncomingComment } from '../redux/uiSlice';
 
 
 const DaemonManager = () => {
@@ -27,6 +28,7 @@ const DaemonManager = () => {
 
   const dispatchChatComment = useCallback(async (pastIdeas: Idea[], currentIdea: Idea, daemon: ChatDaemon, column: string) => {
     setChatDaemonActive(true);
+    dispatch(setIncomingComment({ daemonName: daemon.config.name, ideaId: currentIdea.id, isRight: column === 'right' }));
     try {
       // Returns a single comment
       const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
@@ -43,6 +45,7 @@ const DaemonManager = () => {
       console.error(error);
     } finally {
       setChatDaemonActive(false);
+      dispatch(setIncomingComment({}));
     }
   }, [openAIKey, openAIOrgId, chatModel, dispatch]);
 

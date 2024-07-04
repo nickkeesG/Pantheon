@@ -1,117 +1,117 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Idea } from '../redux/models';
 import { selectEnabledChatDaemons } from '../redux/daemonSlice';
 import ChatDaemon from '../daemons/chatDaemon';
 import { dispatchError } from '../errorHandler';
 import { addComment, selectMostRecentCommentForCurrentBranch } from '../redux/commentSlice';
 import { selectActiveThoughtsEligibleForComments, selectActiveThoughts } from '../redux/ideaSlice';
 import { setIncomingComment } from '../redux/uiSlice';
+import { Idea } from '../redux/models';
 
 
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
-  const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
-  const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
+  const [chatDaemons] = useState<ChatDaemon[]>(chatDaemonConfigs.map(config => new ChatDaemon(config)));
+  const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const activeThoughts = useAppSelector(selectActiveThoughts);
-  const ideasEligbleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
+  const ideasEligibleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const chatModel = useAppSelector(state => state.config.chatModel);
+  const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
+  const maxSecondsInactive = 3;
+  const [newActivity, setNewActivity] = useState(false);
+
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const stateRef = useRef({
+    lastTimeActive,
+    newActivity,
+    ideasEligibleForComments,
+    openAIKey,
+    chatDaemons,
+    chatDaemonActive,
+    activeThoughts,
+    mostRecentComment
+  });
 
   useEffect(() => {
-    const daemons = chatDaemonConfigs.map(config => new ChatDaemon(config));
-    setChatDaemons(daemons);
-  }, [chatDaemonConfigs]);
+    stateRef.current = {
+      lastTimeActive,
+      newActivity,
+      ideasEligibleForComments,
+      openAIKey,
+      chatDaemons,
+      chatDaemonActive,
+      activeThoughts,
+      mostRecentComment
+    };
+  }, [lastTimeActive, newActivity, ideasEligibleForComments, openAIKey, chatDaemons, chatDaemonActive, activeThoughts, mostRecentComment]);
 
-  const dispatchChatComment = useCallback(async (pastIdeas: Idea[], currentIdea: Idea, daemon: ChatDaemon, column: string) => {
-    setChatDaemonActive(true);
-    dispatch(setIncomingComment({ daemonName: daemon.config.name, ideaId: currentIdea.id, isRight: column === 'right' }));
+  const generateComment = useCallback(async (daemon: ChatDaemon, idea: Idea, pastIdeas: Idea[], column: string,) => {
     try {
-      // Returns a single comment
-      const response = await daemon.generateComments(pastIdeas, currentIdea, openAIKey, openAIOrgId, chatModel);
-
-      if (response) {
-        dispatch(addComment({ ideaId: currentIdea.id, text: response.text, chainOfThought: response.chainOfThought, daemonName: daemon.config.name, daemonType: column }));
-      }
-      else {
-        console.error('No chat comment generated');
+      setChatDaemonActive(true);
+      dispatch(setIncomingComment({ daemonName: daemon.config.name, ideaId: idea.id, isRight: column === 'right' }));
+      const response = await daemon.generateComments(pastIdeas, idea, openAIKey, openAIOrgId, chatModel);
+      if (!response) {
+        dispatchError("Couldn't generate comment (no response received)");
+        return;
       }
 
+      dispatch(addComment({
+        ideaId: idea.id,
+        text: response.text,
+        chainOfThought: response.chainOfThought,
+        daemonName: daemon.config.name,
+        daemonType: column
+      }));
     } catch (error) {
-      dispatchError('Failed to dispatch chat comment'); //send error to user
+      dispatchError("Unknown error while generating comment");
       console.error(error);
     } finally {
-      setChatDaemonActive(false);
       dispatch(setIncomingComment({}));
+      setChatDaemonActive(false);
     }
-  }, [openAIKey, openAIOrgId, chatModel, dispatch]);
-
-  const selectCurrentIdea = useCallback(async (ideasEligbleForComments: Idea[]) => {
-    // First try to find an idea with a mention
-    const ideaWithMention = ideasEligbleForComments.find(idea => idea.mention);
-    if (ideaWithMention) {
-      return ideaWithMention;
-    }
-
-    // Ramdomly select an idea
-    const randomIdea = ideasEligbleForComments[Math.floor(Math.random() * ideasEligbleForComments.length)];
-    return randomIdea;
-  }, []);
-
-
-  const handleDaemonDispatch = useCallback(async () => {
-    if (!chatDaemonActive) {
-      const currentIdea = await selectCurrentIdea(ideasEligbleForComments);
-      let lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
-      const pastIdeas = activeThoughts.slice(0, activeThoughts.indexOf(currentIdea));
-
-      // To maintain backwards compatibility with base/chat naming
-      if (lastCommentColumn === 'base') { lastCommentColumn = 'left'; }
-      if (lastCommentColumn === 'chat') { lastCommentColumn = 'right'; }
-
-      const column = lastCommentColumn === 'left' ? 'right' : 'left';
-
-      if (currentIdea.mention) {
-        const mentionedDaemon = chatDaemons.find(daemon => daemon.config.name === currentIdea.mention);
-        if (mentionedDaemon) {
-          dispatchChatComment(pastIdeas, currentIdea, mentionedDaemon, column);
-        }
-        else {
-          dispatchError(`Daemon ${currentIdea.mention} not found`);
-          setChatDaemonActive(false);
-        }
-      }
-      else {
-        // Randomly select daemon
-        const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-        if (daemon) {
-          dispatchChatComment(pastIdeas, currentIdea, daemon, column);
-        } else {
-          dispatchError(`Daemon not found`);
-          setChatDaemonActive(false);
-        }
-      }
-    }
-  }, [ideasEligbleForComments,
-    activeThoughts,
-    chatDaemonActive,
-    chatDaemons,
-    mostRecentComment,
-    dispatchChatComment,
-    selectCurrentIdea]);
+  }, [chatModel, openAIKey, openAIOrgId, dispatch])
 
   useEffect(() => {
-    if (!openAIKey) {
-      dispatchError('OpenAI API key not set');
-    } else if (ideasEligbleForComments.length > 0) {
-      handleDaemonDispatch();
-    }
-  }, [handleDaemonDispatch,
-    ideasEligbleForComments,
-    openAIKey]);
+    const interval = setInterval(() => {
+      const { lastTimeActive, newActivity, ideasEligibleForComments, openAIKey, chatDaemons, chatDaemonActive, activeThoughts, mostRecentComment } = stateRef.current;
+      if (chatDaemonActive) return;
+      const secondsInactive = (new Date().getTime() - lastTimeActive) / 1000
+      if (secondsInactive < maxSecondsInactive && !newActivity) {
+        setNewActivity(true);
+      } else if (
+        newActivity &&
+        secondsInactive >= maxSecondsInactive
+        && ideasEligibleForComments.length > 0
+      ) {
+        if (!openAIKey) {
+          dispatchError("OpenAI API key not set. Enter your key in Settings.");
+          return;
+        }
+
+        setNewActivity(false);
+        const lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
+        const column = lastCommentColumn === 'left' ? 'right' : 'left'; // TODO Fix - 'daemonType' should be changed into 'isRight' or 'column' enum etc
+        const selectedIdea = ideasEligibleForComments.find(idea => idea.mention)
+          || ideasEligibleForComments[Math.floor(Math.random() * ideasEligibleForComments.length)];
+        const daemon = selectedIdea.mention ? chatDaemons.find(daemon => daemon.config.name === selectedIdea.mention) : chatDaemons[Math.floor(Math.random() * chatDaemons.length)]
+        if (!daemon) {
+          dispatchError("Couldn't generate comment (daemon not found)");
+          return;
+        }
+
+        const pastIdeas = activeThoughts.slice(0, activeThoughts.indexOf(selectedIdea));
+        generateComment(daemon, selectedIdea, pastIdeas, column)
+      }
+    }, 1000);
+
+    intervalRef.current = interval;
+
+    return () => clearInterval(interval);
+  }, [chatModel, dispatch, generateComment]);
 
   return null;
 }

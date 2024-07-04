@@ -10,9 +10,9 @@ const ErrorContainer = styled.div`
   z-index: 50;
   color: var(--accent-color-red);
   background-color: var(--bg-color-secondary);
-  bottom: 0;
-  left: 0;
-  border: 0.5px solid var(--line-color-strong);
+  bottom: 16px;
+  left: 16px;
+  border: 0.5px solid var(--accent-color-red);
   border-radius: 4px;
   padding: 10px 28px 10px 10px;
   margin: 4px;
@@ -49,7 +49,7 @@ const ErrorDisplay: React.FC = () => {
   return (
     <ErrorContainer>
       <ExitButtonSmall onClick={() => setShowError(false)} />
-      {latestError}
+      <b>{latestError}</b>
     </ErrorContainer>
   );
 };

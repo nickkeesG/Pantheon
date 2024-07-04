@@ -84,7 +84,12 @@ const DaemonManager = () => {
       else {
         // Randomly select daemon
         const daemon = chatDaemons[Math.floor(Math.random() * chatDaemons.length)];
-        dispatchChatComment(pastIdeas, currentIdea, daemon, column);
+        if (daemon) {
+          dispatchChatComment(pastIdeas, currentIdea, daemon, column);
+        } else {
+          dispatchError(`Daemon not found`);
+          setChatDaemonActive(false);
+        }
       }
     }
   }, [ideasEligbleForComments,

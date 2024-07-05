@@ -1,12 +1,12 @@
 import React, { useRef, useCallback, forwardRef, useImperativeHandle, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { Hint, TextArea } from '../../../styles/sharedStyles';
-import { createIdea } from '../../../redux/thunks';
+import { Hint, IconButtonLarge, TextArea } from '../../../styles/sharedStyles';
 import { setLastTimeActive } from '../../../redux/uiSlice';
 import TextWithHighlights from '../../common/TextWithHighlights';
 import { findDaemonMention } from '../../../redux/storeUtils';
 import { fadeInAnimation } from '../../../styles/mixins';
+import { FaArrowUp } from "react-icons/fa6";
 
 
 const TextAreaField = styled(TextArea)`
@@ -17,7 +17,30 @@ const TextAreaField = styled(TextArea)`
   overflow: hidden;
   resize: none;
   margin: 0px 0px 12px 0px;
-  padding-bottom: 20px;
+  padding: 10px 42px 20px 10px;
+`;
+
+const SendButton = styled(IconButtonLarge)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 6px;
+  color: var(--bg-color);
+  background-color: var(--text-color-secondary);
+  svg {
+    fill: currentColor;
+  }
+
+  &:disabled {
+    opacity: 40%;
+    color: var(--bg-color);
+    background-color: var(--text-color-secondary);
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 70%;
+    background-color: var(--text-color-secondary);
+  }
 `;
 
 const MentionHint = styled(Hint)`
@@ -28,8 +51,8 @@ const MentionHint = styled(Hint)`
 `;
 
 interface InputBoxProps {
-  // TODO This should be a thunk that InputBox dispatches directly
-  dispatchInstruction: (instruction: string) => void;
+  dispatchIdea: () => void;
+  dispatchInstruction: () => void;
   onChange: () => void;
 }
 
@@ -38,7 +61,7 @@ export interface InputBoxHandle {
   clearAndScrollToView: () => void;
 }
 
-const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstruction, onChange }, ref) => {
+const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchIdea, dispatchInstruction, onChange }, ref) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const [mentionedDaemon, setMentionedDaemon] = useState<string | null>(null);
@@ -81,21 +104,17 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
   const handleKeyDown = (event: React.KeyboardEvent) => {
     dispatch(setLastTimeActive())
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault(); // Prevents the addition of a new line
+      event.preventDefault();
       if (textAreaRef.current && textAreaRef.current.value.trim() !== '') {
-        if (event.ctrlKey) { // Treat text as instruction
-          dispatchInstruction(textAreaRef.current.value);
-        } else { // Save the text to the history
-          dispatch(createIdea(textAreaRef.current.value));
+        if (event.ctrlKey) {
+          dispatchInstruction();
+        } else {
+          dispatchIdea();
         }
-        clearAndScrollToView();
-        onChange();
       }
     }
-
   };
 
-  // TODO Add a 'send' button to the right of the text box
   return (
     <div style={{ position: 'relative', width: '46%' }}>
       <TextAreaField
@@ -108,6 +127,14 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchInstructio
         }}
         onKeyDown={handleKeyDown}
       />
+      <SendButton
+        disabled={!textAreaRef?.current?.value.trim()}
+        onClick={() => {
+          dispatchIdea();
+          textAreaRef.current?.focus();
+        }}>
+        <FaArrowUp />
+      </SendButton>
       {mentionedDaemon && (
         <MentionHint>
           <TextWithHighlights text={`Pings ${mentionedDaemon}.`} highlights={[[6, 6 + mentionedDaemon.length]]} />

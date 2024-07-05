@@ -47,56 +47,56 @@ const InputArea = () => {
     }
   }, [])
 
-  // TODO This should be a thunk
-  const dispatchInstruction = useCallback(async (instruction: string) => {
-    // dispatch instruction as idea but set type to "instruction"
-    dispatch(createIdea(instruction, IdeaType.InstructionToAi));
+  const dispatchIdea = useCallback(() => {
+    dispatch(createIdea(textAreaText))
+    textAreaRef.current?.clearAndScrollToView();
+    updateText();
+  }, [dispatch, textAreaText, textAreaRef, updateText]);
+
+  const dispatchInstruction = useCallback(async () => {
+    dispatch(createIdea(textAreaText, IdeaType.InstructionToAi));
+    textAreaRef.current?.clearAndScrollToView();
+    updateText();
 
     if (instructDaemon) {
       try {
         // TODO Instruct daemon should also be able to see the previous instruct daemon interactions
         const response = await instructDaemon.handleInstruction(
           activeThoughts,
-          instruction,
+          textAreaText,
           openAIKey,
           openAIOrgId,
           instructModel);
         if (response && response.length > 0) {
           dispatch(createIdea(response[0], IdeaType.ResponseFromAi));
         } else {
-          dispatchError('Instruct daemon failed to generate response');
+          dispatchError('Ask AI failed to generate response');
         }
       } catch (error) {
+        dispatchError("Unknown error from Ask AI")
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeThoughts, dispatch]);
+  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText]);
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>
       <InputBox
         ref={textAreaRef}
+        dispatchIdea={dispatchIdea}
         dispatchInstruction={dispatchInstruction}
         onChange={updateText}
       />
       <ButtonRow>
         <Button
           onClick={() => dispatch(setCreatingSection(true))}
-          disabled={newSectionButtonDisabled}
-        >
+          disabled={newSectionButtonDisabled}>
           + New section
         </Button>
         <Button
           disabled={textAreaText.trim() === ''}
-          onClick={() => {
-            if (textAreaText.trim() !== '') {
-              dispatchInstruction(textAreaText);
-              textAreaRef.current?.clearAndScrollToView();
-              updateText();
-            }
-          }}
-          title="Ask a question directly, ChatGPT style. Hotkey: Ctrl + Enter"
-        >
+          onClick={dispatchInstruction}
+          title="Ask a question directly, ChatGPT style. Hotkey: Ctrl + Enter">
           Ask AI
         </Button>
       </ButtonRow>

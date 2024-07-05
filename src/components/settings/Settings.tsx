@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { FiSettings } from 'react-icons/fi';
-import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
 import { ButtonDangerous, Hint, IconButtonMedium, ModalBox, ModalHeader } from '../../styles/sharedStyles';
 import Modal from '../common/Modal';
@@ -13,12 +12,6 @@ import { resetDaemonSlice } from '../../redux/daemonSlice';
 import ThemeSettings from './ThemeSettings';
 import { useModal } from '../ModalContext';
 
-
-const SettingsButton = styled(IconButtonMedium).attrs({
-  as: FiSettings
-})`
-  display: flex;
-`;
 
 const Settings = () => {
   const dispatch = useAppDispatch();
@@ -72,9 +65,11 @@ const Settings = () => {
   }
 
   return (
-    <div>
-      <SettingsButton title="Settings" onClick={openSettings} />
-    </div>
+    <IconButtonMedium
+      title="Settings"
+      onClick={openSettings}>
+      <FiSettings />
+    </IconButtonMedium>
   );
 };
 

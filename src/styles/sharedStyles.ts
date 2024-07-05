@@ -29,7 +29,7 @@ export const Button = styled.button`
   margin: 4px;
   ${highlightOnHover};
 
-  &:active {
+  &:active:not(:disabled) {
     opacity: 70%;
   }
 

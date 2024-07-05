@@ -23,12 +23,8 @@ export const transition02 = css`
 export const highlightOnHover = css`
   ${transition02}
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: var(--highlight-weak);
-  }
-
-  &:disabled:hover {
-    background-color: transparent;
   }
 `;
 

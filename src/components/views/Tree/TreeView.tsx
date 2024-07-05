@@ -1,7 +1,6 @@
 import HistoryContainer from './HistoryContainer';
 import CompletionsContainer from './CompletionsContainer';
 import ErrorDisplay from '../../../errorHandler';
-import WelcomeMessage from '../../WelcomeMessage';
 import { ContainerVertical } from '../../../styles/sharedStyles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
@@ -43,7 +42,6 @@ const TreeView = () => {
           <InputArea />
           <CompletionsContainer />
           <ErrorDisplay />
-          <WelcomeMessage />
         </>
       }
     </ContainerVertical>

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import WelcomeInfoButton from '../WelcomeInfoButton';
 
 const StyledTopBar = styled.div`
   position: fixed;
@@ -22,6 +23,7 @@ const TopBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <StyledTopBar>
       {children}
+      <WelcomeInfoButton />
     </StyledTopBar>
   )
 };

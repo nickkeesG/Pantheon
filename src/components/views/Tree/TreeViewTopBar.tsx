@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Settings from "../../settings/Settings";
 import { FiCheckCircle, FiCopy } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { IconButtonMedium } from '../../../styles/sharedStyles';
+import { ContainerHorizontal, IconButtonMedium } from '../../../styles/sharedStyles';
 import { useEffect, useState } from 'react';
 import { SlArrowUp } from 'react-icons/sl';
 import { navigateToParentSection } from '../../../redux/thunks';
@@ -31,6 +31,7 @@ const UpButton = styled(IconButtonMedium).attrs({
 const ButtonContainer = styled.div`
   display: flex;
   gap: 4px;
+  margin-left: auto;
 `;
 
 const TreeViewTopBar = () => {
@@ -70,29 +71,31 @@ const TreeViewTopBar = () => {
   }
   return (
     <TopBar>
-      <div>
-        <Link to="/collection" >
-          <IconButtonMedium title="Collection view">
-            <MdOutlineCollectionsBookmark />
+      <ContainerHorizontal>
+        <div>
+          <Link to="/collection" >
+            <IconButtonMedium title="Collection view">
+              <MdOutlineCollectionsBookmark />
+            </IconButtonMedium>
+          </Link>
+        </div>
+        {(creatingSection || activeSection.parentSectionId !== null) && (
+          <UpButton
+            title="Back to previous tree"
+            onClick={upButtonClicked}
+          />
+        )}
+        <ButtonContainer>
+          <IconButtonMedium
+            title="Copy context"
+            onClick={copyContextToMarkdown}
+            disabled={creatingSection || activeSection.ideaIds.length === 0}
+          >
+            {isCopied ? <FiCheckCircle /> : <FiCopy />}
           </IconButtonMedium>
-        </Link>
-      </div>
-      {(creatingSection || activeSection.parentSectionId !== null) && (
-        <UpButton
-          title="Back to previous tree"
-          onClick={upButtonClicked}
-        />
-      )}
-      <ButtonContainer>
-        <IconButtonMedium
-          title="Copy context"
-          onClick={copyContextToMarkdown}
-          disabled={creatingSection || activeSection.ideaIds.length === 0}
-        >
-          {isCopied ? <FiCheckCircle /> : <FiCopy />}
-        </IconButtonMedium>
-        <Settings />
-      </ButtonContainer>
+          <Settings />
+        </ButtonContainer>
+      </ContainerHorizontal>
     </TopBar>
   )
 }

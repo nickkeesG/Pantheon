@@ -127,9 +127,12 @@ export const ExitButtonSmall = styled(IconButtonSmall).attrs({
   cursor: pointer;
 `;
 
-export const InfoButton = styled(IconButtonLarge).attrs({
+export const InfoButton = styled(IconButtonMedium).attrs({
   as: IoInformationCircleOutline
 })`
+width: 20px;
+height: 20px;
+padding: 4px;
 `;
 
 export const TextArea = styled.textarea`

@@ -28,8 +28,9 @@ const CollectionView = () => {
   return (
     <ContainerVertical style={{ alignItems: 'center' }}>
       <TopBar>
-        <div></div>
-        <div><Settings /></div>
+        <div style={{ marginLeft: 'auto' }}>
+          <Settings />
+        </div>
       </TopBar>
       <ContainerVertical style={{
         maxWidth: '700px',

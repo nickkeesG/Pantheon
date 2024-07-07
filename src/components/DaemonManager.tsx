@@ -12,7 +12,7 @@ import { Idea } from '../redux/models';
 const DaemonManager = () => {
   const dispatch = useAppDispatch();
   const chatDaemonConfigs = useAppSelector(selectEnabledChatDaemons);
-  const [chatDaemons] = useState<ChatDaemon[]>(chatDaemonConfigs.map(config => new ChatDaemon(config)));
+  const [chatDaemons, setChatDaemons] = useState<ChatDaemon[]>([]);
   const [chatDaemonActive, setChatDaemonActive] = useState(false);
   const activeThoughts = useAppSelector(selectActiveThoughts);
   const ideasEligibleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
@@ -35,6 +35,10 @@ const DaemonManager = () => {
     activeThoughts,
     mostRecentComment
   });
+
+  useEffect(() => {
+    setChatDaemons(chatDaemonConfigs.map(config => new ChatDaemon(config)));
+  }, [chatDaemonConfigs]);
 
   useEffect(() => {
     stateRef.current = {
@@ -91,6 +95,8 @@ const DaemonManager = () => {
           dispatchError("OpenAI API key not set. Enter your key in Settings.");
           return;
         }
+
+        console.log("Active chat daemons: ", chatDaemons.map(daemon => daemon.config.name).join(", "));
 
         setNewActivity(false);
         const lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';

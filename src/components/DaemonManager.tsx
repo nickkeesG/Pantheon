@@ -96,8 +96,6 @@ const DaemonManager = () => {
           return;
         }
 
-        console.log("Active chat daemons: ", chatDaemons.map(daemon => daemon.config.name).join(", "));
-
         setNewActivity(false);
         const lastCommentColumn = mostRecentComment ? mostRecentComment.daemonType : '';
         const column = lastCommentColumn === 'left' ? 'right' : 'left'; // TODO Fix - 'daemonType' should be changed into 'isRight' or 'column' enum etc

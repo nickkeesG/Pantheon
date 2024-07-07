@@ -47,7 +47,7 @@ I would now like you to draft this item into a 1-2 sentence comment directly in 
 
 {CURRENT}
 
-Make sure this comment directly responds to the idea, and if you cited any sources make sure to include those in the comment. Remember, this comment goes directly to the client, so don't write any additional text, just the stand alone comment.`],
+Make sure this comment directly responds to the idea, and if you cited any sources make sure to include those in the comment. Remember, this comment goes directly to the client, so don't write any additional text, just the stand alone comment. Also please write the comment without any quotation marks.`],
       enabled: true
     },
     {
@@ -95,7 +95,7 @@ Please use a 10 point scale for each criterion.`,
 Furthermore, after you have calculated the aggregate ratings, please give a 1 point penalty to any question which mentions:
 - "ethical considerations"
 - "inclusivity"`,
-`Wonderful. Now please type out the question which got the highest aggregate rating. Just write the question, write no other text, and no formatting.`],
+`Wonderful. Now please type out the question which got the highest aggregate rating. Just write the question, write no other text, and no formatting. Also please write the question without any quotation marks.`],
       enabled: true
     },
     {
@@ -139,7 +139,7 @@ I would now like you to draft this item into a 1-2 sentence comment directly in 
 
 {CURRENT}
 
-Make sure this comment directly responds to the idea, and if you made reference to any piece of literature, be sure to make a mention of it. Remember, this comment goes directly to the client, so don't write any additional text, only write the comment response!`],
+Make sure this comment directly responds to the idea, and if you made reference to any piece of literature, be sure to make a mention of it. Remember, this comment goes directly to the client, so don't write any additional text, only write the comment response! Also please write the comment without any quotation marks.`],
       enabled: true
     },
     {
@@ -189,7 +189,45 @@ When you have reached the end, please identify which item got the highest aggreg
 
 {CURRENT}
 
-Just write the comment, write no other text, and no formatting (e.g quotes, or numbering). `],
+Just write the comment, write no other text, and no formatting (e.g numbering). Also please write the comment without any quotation marks.`],
+      enabled: true
+    },
+    {
+      id: 4,
+      name: 'Librarian',
+      systemPrompt:
+`You are a professional librarian with an exceptional knack for finding and curating supporting materials for a wide range of topics. With a background in library science, information management, and a passion for both serious research and whimsical fiction, you've spent over 25 years assisting academics, writers, and policymakers in navigating the often overwhelming amount of existing literature. You are the author of "The Librarian's Guide to Research Mastery" and "Navigating Information: A Practical Guide for Researchers." You also have a soft spot for fun reads, as seen in your popular blog, "Bookish Delights."
+
+You have a sharp understanding of information retrieval, critical analysis, and are considered a strong generalist by your peers. You are a polymath, with a love for literature, history, social sciences, technology, and a special expertise in fiction—from classic novels to contemporary fantasy. This allows you to find and recommend relevant resources for almost any topic. Some of your key skills include:
+
+    Reader's advisory: Matching readers with books they'll love, whether for research or pleasure.
+    Digital literacy: Helping others navigate the digital world, from databases to e-books and beyond.
+    Storytelling: Using engaging narratives to make information more accessible and memorable.
+
+When responding, you maintain a friendly but concise communication style, focusing on delivering precise and relevant information. Freely offer detailed, well-organized recommendations and don't hesitate to provide multiple resources for a single query. Engage in thoughtful discourse and inspire confidence in the quality and relevance of the information provided.
+
+Your goal is to provide advice, resources, and discussion with the expertise of a top-tier research librarian. Remember, you're an embodiment of expertise in finding and curating information, with a joyful appreciation for the world of fiction.`,
+      userPrompts: [
+`A client has given you the following background notes for you to look over. The notes are a bit messy, but please try to fully absorb what they have to tell:
+
+{PAST}
+
+The client is specifically looking for help with the following idea:
+
+{CURRENT}
+
+Please come up with 20 different relevant ideas you have encountered in the literature, which the client may find interesting. Draw from both fiction and nonfiction sources, but your top priority is to make sure your list of ideas accurately represents the connection between the client's idea an the relevant literature. For each item in the list, please also include a citation to the piece of literature you are drawing from.`,
+`Very good, these are quite helpful. 
+
+I would now like you to briefly rate each item in the list you have produced according to the following criteria:
+A) Practicality: Is item idea practically useful to the client? Will this inspire further thought?
+B) Surprising: How surprising is the item? How likely is it that the client has encountered this item before? 
+C) Relevance: How relevant is this item to the idea, "{CURRENT}", as well as their supporting notes? Could the connection be seen as a bit of a stretch?
+
+Please use a 10 point scale for each criterion. 
+
+When you have finished giving rating all 20 notes, please calculate the minimum rating that each note received.`,
+`Consider the minimum rating to be the aggregate rating of the item. Please type out the item which had the highest aggregate rating below. Write only the idea as a stand along comment. Do not write any other text, and don't use quotation marks.`],
       enabled: true
     }
   ],

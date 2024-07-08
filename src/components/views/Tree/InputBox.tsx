@@ -20,7 +20,9 @@ const TextAreaField = styled(TextArea)`
   padding: 10px 42px 20px 10px;
 `;
 
-const SendButton = styled(IconButtonLarge)`
+const SendButton = styled(IconButtonLarge).attrs({
+  'aria-label': 'Send thought'
+})`
   position: absolute;
   top: 8px;
   right: 8px;

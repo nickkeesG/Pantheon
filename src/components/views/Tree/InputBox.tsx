@@ -93,6 +93,7 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(({ dispatchIdea, disp
     clearAndScrollToView: clearAndScrollToView
   }));
 
+
   const checkForMentions = () => {
     if (textAreaRef.current) {
       if (textAreaRef.current.value.trim() === '') {

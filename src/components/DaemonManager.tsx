@@ -103,7 +103,11 @@ const DaemonManager = () => {
           || ideasEligibleForComments[Math.floor(Math.random() * ideasEligibleForComments.length)];
         const daemon = selectedIdea.mention ? chatDaemons.find(daemon => daemon.config.name === selectedIdea.mention) : chatDaemons[Math.floor(Math.random() * chatDaemons.length)]
         if (!daemon) {
-          dispatchError("Couldn't generate comment (daemon not found)");
+          if (chatDaemons.length === 0) {
+            dispatchError("No daemons available! Add or enable daemons in Settings.")
+          } else {
+            dispatchError("Couldn't generate comment (daemon not found)");
+          }
           return;
         }
 

@@ -51,10 +51,14 @@ const CompletionsContainer = () => {
   const activeThoughts = useAppSelector(selectActiveThoughts);
   const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
-  const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
+  const [baseDaemon, setBaseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const baseModel = useAppSelector(state => state.config.baseModel);
+
+  useEffect(() => {
+    setBaseDaemon(new BaseDaemon(baseDaemonConfig));
+  }, [baseDaemonConfig]);
 
   const getNewCompletions = useCallback(async (branchIdeas: Idea[]) => {
     if (branchIdeas.length === 0 || !openAIKey) return;

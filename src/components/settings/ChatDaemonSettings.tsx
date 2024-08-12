@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice"
 import { ChatDaemonConfig } from '../../redux/models';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import ButtonWithConfirmation from '../common/ButtonWithConfirmation';
 import { styledBackground } from '../../styles/mixins';
 import { useModal } from '../ModalContext';
 import ChainOfThoughtInfo from './ChainOfThoughtInfo';
+import { dispatchError } from '../../errorHandler';
 
 
 const ChatDaemonSettingsContainer = styled.div`
@@ -19,6 +20,12 @@ const StyledDiv = styled.div`
   ${styledBackground};
 `;
 
+const useConfigChanged = (config: ChatDaemonConfig, currentState: Partial<ChatDaemonConfig>) => {
+  return useMemo(() => {
+    return Object.entries(currentState).some(([key, value]) => config[key as keyof ChatDaemonConfig] !== value);
+  }, [config, currentState]);
+};
+
 type ChatDaemonSettingsProps = {
   config: ChatDaemonConfig;
 };
@@ -26,7 +33,6 @@ type ChatDaemonSettingsProps = {
 const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isEnabled, setIsEnabled] = useState(config.enabled);
-  const [isEdited, setIsEdited] = useState(false);
   const [name, setName] = useState(config.name) || '';
   const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt || '');
   const [userPrompts, setUserPrompts] = useState(config.userPrompts || []);
@@ -35,25 +41,25 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
   const dispatch = useAppDispatch();
   const { addModal } = useModal();
 
+  const configChanged = useConfigChanged(config, {
+    name,
+    systemPrompt,
+    userPrompts,
+    enabled: isEnabled
+  });
+
 
   const handleUserPromptChange = (index: number, value: string, textArea: HTMLTextAreaElement) => {
     const newUserPrompts = [...userPrompts];
     newUserPrompts[index] = value;
     setUserPrompts(newUserPrompts);
-    setIsEdited(true);
     resizeTextArea(textArea);
-  }
-
-  const addUserPrompt = () => {
-    setUserPrompts([...userPrompts, '']);
-    setIsEdited(true);
   }
 
   const deleteUserPrompt = (index: number) => {
     if (userPrompts.length > 1) {
       const updatedPrompts = [...userPrompts.slice(0, index), ...userPrompts.slice(index + 1)];
       setUserPrompts(updatedPrompts);
-      setIsEdited(true);
     }
   };
 
@@ -71,37 +77,33 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
     }
   }, [systemPrompt, userPrompts, isCollapsed]);
 
-  const updateDaemonConfig = () => {
+  useEffect(() => {
+    if (!configChanged) return;
     try {
       const newConfig = {
         ...config,
-        name: name,
-        systemPrompt: systemPrompt,
-        userPrompts: userPrompts,
+        name,
+        systemPrompt,
+        userPrompts,
         enabled: isEnabled,
       };
       dispatch(updateChatDaemon(newConfig));
-      setIsEdited(false);
     } catch (error) {
-      console.error("Failed to update config:", error);
-      // TODO: Handle the error state appropriately, e.g., show an error message to the user
+      dispatchError("Couldn't update daemon config")
     }
-  }
+  }, [configChanged, dispatch, config, name, systemPrompt, userPrompts, isEnabled]);
 
-  // TODO Styling for the checkbox
   return (
     <ChatDaemonSettingsContainer>
       <span>
-        <input type="checkbox" checked={isEnabled} onChange={(e) => { setIsEnabled(e.target.checked); setIsEdited(true); }} />
-        <TextButton onClick={() => setIsCollapsed(!isCollapsed)}>
+        <input type="checkbox"
+          checked={isEnabled}
+          onChange={e => setIsEnabled(e.target.checked)} />
+        <TextButton
+          onClick={() => setIsCollapsed(!isCollapsed)}>
           <span>{isCollapsed ? '▼' : '▲'} </span>
           {config.name}
         </TextButton>
-        {isEdited && (
-          <ButtonSmall onClick={updateDaemonConfig}>
-            Save
-          </ButtonSmall>
-        )}
       </span>
       {!isCollapsed && (
         <StyledDiv>
@@ -109,10 +111,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
             <SettingLabel>Name</SettingLabel>
             <TextInput
               value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                setIsEdited(true);
-              }}
+              onChange={e => setName(e.target.value)}
             />
           </label>
           <br />
@@ -123,7 +122,6 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
               value={systemPrompt}
               onChange={(e) => {
                 setSystemPrompt(e.target.value);
-                setIsEdited(true);
                 resizeTextArea(e.target);
               }}
             />
@@ -153,7 +151,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
               </ButtonSmall>
             </div>
           ))}
-          <Button onClick={addUserPrompt}>
+          <Button onClick={() => setUserPrompts([...userPrompts, ''])}>
             Add User Prompt
           </Button>
           <ButtonWithConfirmation

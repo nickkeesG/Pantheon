@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { setCreatingSection } from "../../../redux/uiSlice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstructDaemon from "../../../daemons/instructDaemon";
-import { selectActiveThoughts } from "../../../redux/ideaSlice";
+import { selectActiveBranch, selectActiveThoughts } from "../../../redux/ideaSlice";
 import { createIdea } from "../../../redux/thunks";
 import { IdeaType } from "../../../redux/models";
 import { dispatchError } from "../../../errorHandler";
@@ -29,7 +29,7 @@ const InputArea = () => {
   const openAIKey = useAppSelector(state => state.config.openAIKey);
   const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
   const instructModel = useAppSelector(state => state.config.chatModel);
-  const activeThoughts = useAppSelector(selectActiveThoughts);
+  const activeBranch = useAppSelector(selectActiveBranch);
 
   useEffect(() => {
     setInstructDaemon(new InstructDaemon(instructDaemonConfig));
@@ -60,9 +60,8 @@ const InputArea = () => {
 
     if (instructDaemon) {
       try {
-        // TODO Instruct daemon should also be able to see the previous instruct daemon interactions
         const response = await instructDaemon.handleInstruction(
-          activeThoughts,
+          activeBranch,
           textAreaText,
           openAIKey,
           openAIOrgId,
@@ -77,7 +76,7 @@ const InputArea = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
+  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeBranch, dispatch, textAreaText, updateText]);
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>

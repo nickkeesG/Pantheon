@@ -92,10 +92,10 @@ export const selectActiveThoughtsEligibleForComments = createSelector(
       // filter out ideas that are not thoughts
       const activeBranchIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => (idea.type === IdeaType.User));
       const activeBranchComments = Object.values(comments).filter(comment => activeIdeaIds.includes(comment.ideaId));
-      
+
       // filter out the root idea
       const nonRootIdeas = activeBranchIdeas.filter(idea => idea.parentIdeaId !== null && activeIdeaIds.includes(idea.parentIdeaId));
-      
+
       return getIdeasSinceLastComment(nonRootIdeas, activeBranchComments);
     } catch (e) {
       if (e instanceof TypeError) {
@@ -108,15 +108,36 @@ export const selectActiveThoughtsEligibleForComments = createSelector(
   }
 )
 
+// TODO Active ideas cannot be found if the most recently active tree was deleted. This should be handled better (= deleting an active tree should reset activeIdeaIds etc to undefined.)
+
+/**
+ * Selects the active branch of ideas, including messages to and from 'Ask AI'.
+ * 
+ * @param state - The root state of the application.
+ * @returns An array of Idea objects representing the active branch, filtering out any missing ideas.
+ */
+export const selectActiveBranch = createSelector(
+  [
+    (state: RootState) => state.idea.ideas,
+    (state: RootState) => state.ui.activeIdeaIds
+  ], (ideas, activeIdeaIds) => {
+    // Handle missing ideas
+    return activeIdeaIds.map(id => ideas[id]).filter(idea => idea);
+  }
+)
+
+/**
+ * Selects the active thoughts (user-generated ideas) from the active branch.
+ * 
+ * @param state - The root state of the application.
+ * @returns An array of Idea objects representing the active thoughts, filtering out non-user ideas and missing ideas.
+ */
 export const selectActiveThoughts = createSelector(
   [
     (state: RootState) => state.idea.ideas,
     (state: RootState) => state.ui.activeIdeaIds
   ], (ideas, activeIdeaIds) => {
-    // filter out ideas that are not thoughts and handle missing ideas
-    // TODO Active ideas cannot be found if the most recently active tree was deleted. This should be handled better (= deleting an active tree should reset activeIdeaIds etc to undefined.)
-    let activeIdeas = activeIdeaIds.map(id => ideas[id]).filter(idea => idea && idea.type === IdeaType.User);
-    return activeIdeas.length > 0 ? activeIdeas : [];
+    return activeIdeaIds.map(id => ideas[id]).filter(idea => idea && idea.type === IdeaType.User);
   }
 )
 

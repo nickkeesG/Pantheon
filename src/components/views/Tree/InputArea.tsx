@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { setCreatingSection } from "../../../redux/uiSlice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstructDaemon from "../../../daemons/instructDaemon";
-import { selectActiveBranch, selectActiveThoughts } from "../../../redux/ideaSlice";
+import { selectActiveBranch } from "../../../redux/ideaSlice";
 import { createIdea } from "../../../redux/thunks";
 import { IdeaType } from "../../../redux/models";
 import { dispatchError } from "../../../errorHandler";

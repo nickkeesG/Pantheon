@@ -52,9 +52,9 @@ const CompletionsContainer = () => {
   const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon, setBaseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const baseModel = useAppSelector(state => state.config.baseModel);
+  const openAIKey = useAppSelector(state => state.config.openAI.ApiKey);
+  const openAIOrgId = useAppSelector(state => state.config.openAI.OrgId);
+  const baseModel = useAppSelector(state => state.config.openAI.baseModel);
 
   useEffect(() => {
     setBaseDaemon(new BaseDaemon(baseDaemonConfig));

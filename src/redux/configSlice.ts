@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { OpenAIApi } from './apiModels';
 
 export enum Theme {
   System = 'system',
@@ -7,20 +8,17 @@ export enum Theme {
 }
 
 export interface ConfigState {
-  openAIKey: string;
-  openAIOrgId: string;
-  baseModel: string;
-  chatModel: string;
-  isSynchronizerActive: boolean; // TODO Remove this field
+  openAI: OpenAIApi
   theme?: Theme;
 }
 
 const initialState: ConfigState = {
-  openAIKey: '',
-  openAIOrgId: '',
-  baseModel: 'davinci-002',
-  chatModel: 'gpt-4o',
-  isSynchronizerActive: false,
+  openAI: {
+    ApiKey: '',
+    OrgId: '',
+    baseModel: 'davinci-002',
+    chatModel: 'gpt-4o'
+  },
   theme: Theme.System
 };
 
@@ -28,20 +26,11 @@ const configSlice = createSlice({
   name: 'config',
   initialState: initialState,
   reducers: {
-    setOpenaiKey(state, action: PayloadAction<string>) {
-      state.openAIKey = action.payload;
-    },
-    setOpenaiOrgId(state, action: PayloadAction<string>) {
-      state.openAIOrgId = action.payload;
-    },
-    updateBaseModel(state, action: PayloadAction<string>) {
-      state.baseModel = action.payload;
-    },
-    updateChatModel(state, action: PayloadAction<string>) {
-      state.chatModel = action.payload;
-    },
-    setSynchronizerActive(state, action: PayloadAction<boolean>) {
-      state.isSynchronizerActive = action.payload;
+    updateOpenAIConfig(state, action: PayloadAction<Partial<OpenAIApi>>) {
+      state.openAI = {
+        ...state.openAI,
+        ...action.payload
+      };
     },
     setTheme(state, action: PayloadAction<Theme>) {
       state.theme = action.payload;
@@ -51,6 +40,6 @@ const configSlice = createSlice({
   },
 });
 
-export const { updateBaseModel, updateChatModel, setOpenaiKey, setOpenaiOrgId, setSynchronizerActive, setTheme, replaceSlice: replaceConfigSlice, resetSlice: resetConfigSlice } = configSlice.actions;
+export const { updateOpenAIConfig, setTheme, replaceSlice: replaceConfigSlice, resetSlice: resetConfigSlice } = configSlice.actions;
 export const initialConfigState = initialState;
 export default configSlice.reducer;

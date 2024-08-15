@@ -3,9 +3,9 @@ import { V0StoreState } from "./v0to1migration";
 import { initialTreeState } from "../treeSlice";
 import { initialSectionState } from "../sectionSlice";
 import { initialCommentState } from "../commentSlice";
-import { initialConfigState } from "../configSlice";
 import { initialUiState } from "../uiSlice";
 import { initialErrorState } from "../errorSlice";
+import { initialV2ConfigState } from "./v2to3migration";
 
 export const V0InitialMigration = (state: PersistedState): V0StoreState => {
   const persistState = state?._persist || { version: 0, rehydrated: true };
@@ -39,7 +39,7 @@ Now follow the next instructions keeping in mind the context you just read.
 Make sure to to keep your response as short as possible (less that 400 characters) and to write no unnecessary text which wasn't directly asked for by the user:`
       }
     },
-    config: initialConfigState,
+    config: initialV2ConfigState,
     ui: initialUiState,
     error: initialErrorState,
     _persist: persistState

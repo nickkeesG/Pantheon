@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
-import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
+import { updateOpenAIConfig } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 
 
@@ -13,10 +13,11 @@ const TextSettingContainer = styled.div`
 
 const ConfigSettings = () => {
   const dispatch = useAppDispatch();
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const chatModel = useAppSelector(state => state.config.chatModel);
-  const baseModel = useAppSelector(state => state.config.baseModel);
+  const openAIConfig = useAppSelector(state => state.config.openAI);
+
+  const handleOpenAIConfigChange = (field: string, value: string) => {
+    dispatch(updateOpenAIConfig({ [field]: value }));
+  };
 
   return (
     <div>
@@ -24,34 +25,34 @@ const ConfigSettings = () => {
         <SettingLabel>OpenAI API key</SettingLabel>
         <TextInput
           placeholder="sk-..."
-          value={openAIKey}
-          onChange={(event) => dispatch(setOpenaiKey(event.target.value))}
+          value={openAIConfig.ApiKey}
+          onChange={(event) => handleOpenAIConfigChange('ApiKey', event.target.value)}
         />
       </TextSettingContainer>
       <TextSettingContainer>
         <SettingLabel>OpenAI organization ID</SettingLabel>
         <TextInput
           placeholder="org-..."
-          value={openAIOrgId}
-          onChange={(event) => dispatch(setOpenaiOrgId(event.target.value))}
+          value={openAIConfig.OrgId}
+          onChange={(event) => handleOpenAIConfigChange('OrgId', event.target.value)}
         />
         <Hint>Optional</Hint>
       </TextSettingContainer>
       <TextSettingContainer>
         <SettingLabel>Chat model</SettingLabel>
         <TextInput
-          placeholder={chatModel}
-          value={chatModel}
-          onChange={(event) => dispatch(updateChatModel(event.target.value))}
+          placeholder={openAIConfig.chatModel}
+          value={openAIConfig.chatModel}
+          onChange={(event) => handleOpenAIConfigChange('chatModel', event.target.value)}
         />
         <Hint>Used by daemons and 'Ask AI'</Hint>
       </TextSettingContainer>
       <TextSettingContainer>
         <SettingLabel>Base model</SettingLabel>
         <TextInput
-          placeholder={baseModel}
-          value={baseModel}
-          onChange={(event) => dispatch(updateBaseModel(event.target.value))}
+          placeholder={openAIConfig.baseModel}
+          value={openAIConfig.baseModel}
+          onChange={(event) => handleOpenAIConfigChange('baseModel', event.target.value)}
         />
         <Hint>Used by 'AI suggestions'</Hint>
       </TextSettingContainer>

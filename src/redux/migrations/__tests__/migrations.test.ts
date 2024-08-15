@@ -6,12 +6,13 @@ import { initialSectionState } from "../../sectionSlice";
 import { initialIdeaState } from "../../ideaSlice";
 import { initialCommentState } from "../../commentSlice";
 import { defaultDaemonState } from "../../../daemons/daemonInstructions";
-import { initialConfigState } from "../../configSlice";
+import { initialConfigState, Theme } from "../../configSlice";
 import { initialUiState } from "../../uiSlice";
 import { initialErrorState } from "../../errorSlice";
 import { V0StoreState, V0to1Migration, V0to1UserPrompt } from "../v0to1migration";
 import { V1StoreState, V1to2Migration } from "../v1to2migration";
 import { IdeaType } from "../../models";
+import { initialV2ConfigState, V2StoreState, V2to3Migration } from "../v2to3migration";
 
 describe('Migrations', () => {
   it('should migrate state correctly', () => {
@@ -195,7 +196,7 @@ describe('Migrations', () => {
         },
         comment: initialCommentState,
         daemon: defaultDaemonState,
-        config: initialConfigState,
+        config: initialV2ConfigState,
         ui: initialUiState,
         error: initialErrorState,
         _persist: {
@@ -204,7 +205,7 @@ describe('Migrations', () => {
         }
       };
 
-      const expectedV2State: RootState = {
+      const expectedV2State: V2StoreState = {
         ...v1State,
         idea: {
           ideas: {
@@ -242,6 +243,49 @@ describe('Migrations', () => {
       const migratedState = V1to2Migration(v1State);
 
       expect(migratedState).toEqual(expectedV2State);
+    });
+  });
+
+  describe('V2to3Migration', () => {
+    it('should migrate V2 state to V3 state correctly', () => {
+      const v2State: V2StoreState = {
+        tree: initialTreeState,
+        section: initialSectionState,
+        idea: initialIdeaState,
+        comment: initialCommentState,
+        daemon: defaultDaemonState,
+        config: {
+          openAIKey: "test-key",
+          openAIOrgId: "test-org",
+          baseModel: "davinci-002",
+          chatModel: "gpt-4",
+          isSynchronizerActive: true,
+          theme: Theme.Light
+        },
+        ui: initialUiState,
+        error: initialErrorState,
+        _persist: {
+          version: 2,
+          rehydrated: true
+        }
+      };
+
+      const expectedV3State: RootState = {
+        ...v2State,
+        config: {
+          openAI: {
+            ApiKey: "test-key",
+            OrgId: "test-org",
+            baseModel: "davinci-002",
+            chatModel: "gpt-4"
+          },
+          theme: Theme.Light
+        }
+      };
+
+      const migratedState = V2to3Migration(v2State);
+
+      expect(migratedState).toEqual(expectedV3State);
     });
   });
 });

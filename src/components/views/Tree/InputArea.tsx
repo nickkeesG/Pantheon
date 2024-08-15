@@ -26,9 +26,9 @@ const InputArea = () => {
   const [newSectionButtonDisabled, setNewSectionButtonDisabled] = useState(true);
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon>(new InstructDaemon(instructDaemonConfig));
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const instructModel = useAppSelector(state => state.config.chatModel);
+  const openAIKey = useAppSelector(state => state.config.openAI.ApiKey);
+  const openAIOrgId = useAppSelector(state => state.config.openAI.OrgId);
+  const instructModel = useAppSelector(state => state.config.openAI.chatModel);
   const activeBranch = useAppSelector(selectActiveBranch);
 
   useEffect(() => {

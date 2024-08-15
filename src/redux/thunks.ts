@@ -157,8 +157,6 @@ export const createIdea = (text: string, type: IdeaType = IdeaType.User): AppThu
     sectionId,
     parentIdeaId,
     text,
-    textTokens: [],
-    tokenSurprisals: [],
     mention: mention || undefined
   }
   const newActiveIdeaIds = [...state.ui.activeIdeaIds, id];

@@ -3,6 +3,7 @@ import { V0to1Migration } from "./v0to1migration";
 import { V0InitialMigration } from "./v0InitialMigration";
 import { V1to2Migration } from "./v1to2migration";
 import { V2to3Migration } from "./v2to3migration";
+import { V3to4Migration } from "./v3to4migration";
 
 // Steps to create a new migration for Redux changes:
 // 1. Create a file for the migration, following the naming convention
@@ -15,7 +16,8 @@ const migrations: MigrationManifest = {
   0: V0InitialMigration,
   1: V0to1Migration,
   2: V1to2Migration,
-  3: V2to3Migration
+  3: V2to3Migration,
+  4: V3to4Migration
 }
 
 export default migrations;

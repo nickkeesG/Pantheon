@@ -6,13 +6,15 @@ import { initialSectionState } from "../../sectionSlice";
 import { initialIdeaState } from "../../ideaSlice";
 import { initialCommentState } from "../../commentSlice";
 import { defaultDaemonState } from "../../../daemons/daemonInstructions";
-import { initialConfigState, Theme } from "../../configSlice";
+import { initialConfigState } from "../../configSlice";
+import { Theme } from "../../../styles/types/theme";
 import { initialUiState } from "../../uiSlice";
 import { initialErrorState } from "../../errorSlice";
 import { V0StoreState, V0to1Migration, V0to1UserPrompt } from "../v0to1migration";
 import { V1StoreState, V1to2Migration } from "../v1to2migration";
 import { IdeaType } from "../../models";
 import { initialV2ConfigState, V2StoreState, V2to3Migration } from "../v2to3migration";
+import { V3StoreState, V3to4Migration } from "../v3to4migration";
 
 describe('Migrations', () => {
   it('should migrate state correctly', () => {
@@ -286,6 +288,56 @@ describe('Migrations', () => {
       const migratedState = V2to3Migration(v2State);
 
       expect(migratedState).toEqual(expectedV3State);
+    });
+  });
+
+  describe('V3to4Migration', () => {
+    it('should migrate V3 state to V4 state correctly', () => {
+      const v3State: V3StoreState = {
+        tree: initialTreeState,
+        section: initialSectionState,
+        idea: {
+          ideas: {
+            1: {
+              id: 1,
+              type: IdeaType.User,
+              sectionId: 1,
+              parentIdeaId: null,
+              text: "Test idea",
+              textTokens: ["Test", "idea"],
+              tokenSurprisals: [0.1, 0.2]
+            }
+          }
+        },
+        comment: initialCommentState,
+        daemon: defaultDaemonState,
+        config: initialConfigState,
+        ui: initialUiState,
+        error: initialErrorState,
+        _persist: {
+          version: 3,
+          rehydrated: true
+        }
+      };
+
+      const expectedV4State: RootState = {
+        ...v3State,
+        idea: {
+          ideas: {
+            1: {
+              id: 1,
+              type: IdeaType.User,
+              sectionId: 1,
+              parentIdeaId: null,
+              text: "Test idea",
+            }
+          }
+        }
+      };
+
+      const migratedState = V3to4Migration(v3State);
+
+      expect(migratedState).toEqual(expectedV4State);
     });
   });
 });

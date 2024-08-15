@@ -24,8 +24,6 @@ export interface Idea {
   sectionId: number;
   parentIdeaId: number | null;
   text: string;
-  textTokens: string[];
-  tokenSurprisals: number[];
   mention?: string;
 }
 

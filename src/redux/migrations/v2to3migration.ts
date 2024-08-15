@@ -1,7 +1,8 @@
 import { PersistedState } from "redux-persist";
 import { ConfigState, Theme } from "../configSlice";
-import { RootState } from "../store";
+import { ConfigState } from "../configSlice";
 import { OpenAIApi } from "../apiModels";
+import { V3StoreState } from "./v3to4migration";
 
 interface V2ConfigState {
   openAIKey: string;
@@ -21,11 +22,11 @@ export const initialV2ConfigState: V2ConfigState = {
   theme: Theme.System
 }
 
-export type V2StoreState = { [P in keyof Omit<RootState, 'config'>]: RootState[P]; } & {
+export type V2StoreState = { [P in keyof Omit<V3StoreState, 'config'>]: V3StoreState[P]; } & {
   config: V2ConfigState;
 } & PersistedState;
 
-export const V2to3Migration = (state: PersistedState): RootState => {
+export const V2to3Migration = (state: PersistedState): V3StoreState => {
   if (state && 'config' in state) {
     const configState = state.config as V2ConfigState;
     const OpenAIApiConfig: OpenAIApi = {
@@ -41,8 +42,8 @@ export const V2to3Migration = (state: PersistedState): RootState => {
     return {
       ...state,
       config: newConfigState
-    } as RootState
+    } as V3StoreState
   }
 
-  return state as RootState
+  return state as V3StoreState
 }

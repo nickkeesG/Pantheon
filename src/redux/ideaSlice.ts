@@ -31,11 +31,6 @@ const ideaSlice = createSlice({
         delete state.ideas[ideaId];
       });
     },
-    setSurprisalToIdea(state, action: PayloadAction<{ ideaId: number, textTokens: string[], tokenSurprisals: number[] }>) {
-      const idea = state.ideas[action.payload.ideaId]!;
-      idea.textTokens = action.payload.textTokens;
-      idea.tokenSurprisals = action.payload.tokenSurprisals;
-    },
     setMentionToIdea(state, action: PayloadAction<{ ideaId: number, mention: string }>) {
       const idea = state.ideas[action.payload.ideaId]!;
       idea.mention = action.payload.mention;
@@ -174,6 +169,6 @@ export const selectMostRecentIdeaInTree = createSelector(
   }
 )
 
-export const { addIdea, updateIdea, deleteIdeas, setSurprisalToIdea, setMentionToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
+export const { addIdea, updateIdea, deleteIdeas, setMentionToIdea, replaceSlice: replaceIdeaSlice, resetSlice: resetIdeaSlice } = ideaSlice.actions;
 export const initialIdeaState = initialState;
 export default ideaSlice.reducer;

@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OpenAIApi } from './apiModels';
-
-export enum Theme {
-  System = 'system',
-  Light = 'light',
-  Dark = 'dark'
-}
+import { Theme } from '../styles/types/theme';
 
 export interface ConfigState {
   openAI: OpenAIApi

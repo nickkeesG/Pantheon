@@ -1,6 +1,6 @@
 import { PersistedState } from "redux-persist";
-import { ConfigState, Theme } from "../configSlice";
 import { ConfigState } from "../configSlice";
+import { Theme } from "../../styles/types/theme";
 import { OpenAIApi } from "../apiModels";
 import { V3StoreState } from "./v3to4migration";
 

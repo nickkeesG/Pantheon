@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { Theme, setTheme } from "../../redux/configSlice";
+import { Theme } from "../../styles/types/theme";
+import { setTheme } from "../../redux/configSlice";
 import { ContainerVertical } from "../../styles/sharedStyles";
 
 const ThemeSettings = () => {

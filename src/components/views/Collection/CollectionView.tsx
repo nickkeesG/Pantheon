@@ -6,6 +6,7 @@ import { createTree } from '../../../redux/thunks';
 import { selectTreesWithMostRecentEdit } from '../../../redux/treeSlice';
 import TopBar from '../../common/TopBar';
 import Settings from '../../settings/Settings';
+import WelcomeInfoButton from '../../WelcomeInfoButton';
 
 
 const List = styled.ul`
@@ -15,6 +16,11 @@ const List = styled.ul`
   border-top: 0.5px solid var(--line-color);
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+`;
 
 const CollectionView = () => {
   const dispatch = useAppDispatch();
@@ -28,9 +34,10 @@ const CollectionView = () => {
   return (
     <ContainerVertical style={{ alignItems: 'center' }}>
       <TopBar>
-        <div style={{ marginLeft: 'auto' }}>
+        <ButtonContainer>
           <Settings />
-        </div>
+          <WelcomeInfoButton />
+        </ButtonContainer>
       </TopBar>
       <ContainerVertical style={{
         maxWidth: '700px',

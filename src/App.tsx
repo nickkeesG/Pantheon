@@ -7,6 +7,7 @@ import { useAppSelector } from './hooks';
 import { useCallback, useEffect } from 'react';
 import { Filler } from './styles/sharedStyles';
 import { ModalProvider } from './components/ModalContext';
+import LandingView from './components/views/Landing/LandingView';
 
 function App() {
   const configTheme = useAppSelector(state => state.config.theme);
@@ -38,7 +39,7 @@ function App() {
       <div className={`App`} >
         <ModalProvider>
           <Routes>
-            <Route path="/" element={<TreeView />} />
+            <Route path="/" element={<LandingView />} />
             <Route path="/tree/:treeId" element={<TreeView />} />
             <Route path="/collection" element={<CollectionView />} />
           </Routes>

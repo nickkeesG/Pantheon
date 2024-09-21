@@ -11,6 +11,7 @@ import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import { setCreatingSection } from '../../../redux/uiSlice';
 import { selectSectionContentAsMarkdown } from '../../../redux/sectionSlice';
+import WelcomeInfoButton from "../../WelcomeInfoButton";
 
 const UpButton = styled(IconButtonMedium).attrs({
   as: SlArrowUp
@@ -72,13 +73,11 @@ const TreeViewTopBar = () => {
   return (
     <TopBar>
       <ContainerHorizontal>
-        <div>
-          <Link to="/collection" >
-            <IconButtonMedium title="Collection view">
-              <MdOutlineCollectionsBookmark />
-            </IconButtonMedium>
-          </Link>
-        </div>
+        <Link to="/collection" >
+          <IconButtonMedium title="Collection view">
+            <MdOutlineCollectionsBookmark />
+          </IconButtonMedium>
+        </Link>
         {(creatingSection || activeSection.parentSectionId !== null) && (
           <UpButton
             title="Back to previous tree"
@@ -94,6 +93,7 @@ const TreeViewTopBar = () => {
             {isCopied ? <FiCheckCircle /> : <FiCopy />}
           </IconButtonMedium>
           <Settings />
+          <WelcomeInfoButton />
         </ButtonContainer>
       </ContainerHorizontal>
     </TopBar>

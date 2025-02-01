@@ -8,6 +8,7 @@ import { useCallback, useEffect } from 'react';
 import { Filler } from './styles/sharedStyles';
 import { ModalProvider } from './components/ModalContext';
 import LandingView from './components/views/Landing/LandingView';
+import { FaGithub } from 'react-icons/fa';
 
 function App() {
   const configTheme = useAppSelector(state => state.config.theme);
@@ -47,10 +48,12 @@ function App() {
           <Filler />
           <footer>
             <p>
-              © {new Date().getFullYear()} Nicholas Kees Dupuis and Sofia Vanhanen. Licensed under the GNU GPLv3.
-              <br />
-              Contribute to this project on <a href="https://github.com/nickkeesG/Pantheon">GitHub</a>.
+              Crafted by <a href="https://mosaic-labs.org" target="_blank" rel="noopener noreferrer">Mosaic Labs</a>
             </p>
+            <a href="https://github.com/nickkeesG/Pantheon" target="_blank" rel="noopener noreferrer">
+              <FaGithub className="github-icon" />
+              Source
+            </a>
           </footer>
         </ModalProvider>
       </div>

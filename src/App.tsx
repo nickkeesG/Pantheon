@@ -8,7 +8,7 @@ import { useCallback, useEffect } from 'react';
 import { Filler } from './styles/sharedStyles';
 import { ModalProvider } from './components/ModalContext';
 import LandingView from './components/views/Landing/LandingView';
-import { FaGithub } from 'react-icons/fa';
+import Footer from './components/Footer';
 
 function App() {
   const configTheme = useAppSelector(state => state.config.theme);
@@ -46,15 +46,7 @@ function App() {
           </Routes>
           <DaemonManager />
           <Filler />
-          <footer>
-            <p>
-              Crafted by <a href="https://mosaic-labs.org" target="_blank" rel="noopener noreferrer">Mosaic Labs</a>
-            </p>
-            <a href="https://github.com/nickkeesG/Pantheon" target="_blank" rel="noopener noreferrer">
-              <FaGithub className="github-icon" />
-              Source
-            </a>
-          </footer>
+          <Footer />
         </ModalProvider>
       </div>
     </BrowserRouter>

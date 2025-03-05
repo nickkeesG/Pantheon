@@ -60,26 +60,46 @@ body {
 }
 
 footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
   min-height: 50px;
   height: 100%;
   background-color: var(--bg-color-secondary);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   line-height: 1.5;
   border-top: 0.5px solid var(--line-color-strong);
-  padding: 0px 20px;
-  color: var(--text-color-secondary);
+  padding: 40px 20px;
+  color: var(--text-color-tertiary);
 }
 
-footer a {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  min-height: 40px;
+.footer-container {
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .github-icon {
@@ -90,6 +110,11 @@ footer a {
 
 a {
   color: var(--url-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 b {

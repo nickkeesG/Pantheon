@@ -4,8 +4,6 @@ Pantheon is an experimental LLM interface exploring new ways to use AI to improv
 
 ## Commands
 
-In the project directory, you can run:
-
-- `npm start` to start the development build locally. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-- `npm test` to access the test runner for running unit tests.
+- `npm run dev` to start the development server. Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
 - `npm run build` to build the app for production to the `build` folder.
+- `npm run preview` to locally preview the production build.

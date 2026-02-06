@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 @font-face {
   font-family: 'Monaspace Neon';
   src: url('./fonts/MonaspaceNeon-Regular.woff') format('woff');

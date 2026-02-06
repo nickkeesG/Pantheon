@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { ContainerVertical, Filler, TextButton } from '../../../styles/sharedStyles';
+import { Button, ButtonHighlighted, ContainerVertical, Filler, TextButton } from '../../../styles/sharedStyles';
 import { useAppDispatch } from '../../../hooks';
 import { createTree } from '../../../redux/thunks';
 import TopBar from '../../common/TopBar';
@@ -56,9 +56,9 @@ const LandingView: React.FC = () => {
           Explore your ideas and create knowledge trees with powerful and customizable AI assistance
         </Subtitle>
         <ButtonContainer>
-          <TextButton onClick={handleCreateTree} style={{ fontSize: '1.6rem' }}>Start writing</TextButton>
+          <ButtonHighlighted onClick={handleCreateTree} style={{ fontSize: '1.6rem' }}>Start writing</ButtonHighlighted>
           or
-          <TextButton onClick={handleViewCollection} style={{ fontSize: '1.2rem' }}>View my trees</TextButton>
+          <Button onClick={handleViewCollection} style={{ fontSize: '1.2rem' }}>View my trees</Button>
         </ButtonContainer>
         <p style={{ marginTop: '80px' }}>
           Pantheon is an experimental LLM interface exploring new ways to use AI to improve human thinking. OpenAI API key required.

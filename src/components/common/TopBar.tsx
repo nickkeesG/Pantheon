@@ -1,49 +1,17 @@
-import styled from 'styled-components';
-import { TextButton } from '../../styles/sharedStyles';
 import { Link } from 'react-router-dom';
 
-const StyledTopBar = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2.6em;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 4px;
-  background: var(--bg-color-secondary);
-  padding: 4px 12px;
-  z-index: 50;
-  border-top: 0.5px solid var(--line-color);
-  border-bottom: 0.5px solid var(--line-color-strong);
-`;
-
-const PantheonButton = styled(TextButton)`
-  font-weight: 300;
-  font-size: 1.2em;
-  padding: 0 4px;
-
-  &:hover:not(:disabled) {
-    background-color: transparent;
-    color: var(--text-color);
-  }
-`;
-
-
-const TopBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-
+function TopBar({ children }: { children: React.ReactNode }) {
   return (
-    <StyledTopBar>
-      <Link to="/">
-        <PantheonButton>
-          Pantheon
-        </PantheonButton>
+    <div className="fixed top-0 left-0 w-full box-border flex flex-row justify-between items-center gap-1 bg-[var(--bg-color-secondary)] p-3 z-50 border-t-[0.5px_solid_var(--line-color)] border-b-[0.5px_solid_var(--line-color-strong)]">
+      <Link
+        to="/"
+        className="font-light text-xl px-1 no-underline !text-[var(--text-color-secondary)] hover:!text-[var(--text-color)]"
+      >
+        Pantheon
       </Link>
       {children}
-    </StyledTopBar>
-  )
-};
+    </div>
+  );
+}
 
 export default TopBar;

@@ -1,17 +1,10 @@
-import styled from 'styled-components';
 import IdeaContainer from './IdeaContainer';
 import { useCallback, useState } from 'react';
 import { useAppSelector } from '../../../hooks';
 import { selectIdeasById } from '../../../redux/ideaSlice';
 import StartingHints from './StartingHints';
 
-
-const StyledHistoryContainer = styled.div`
-  padding: 10px 0px;
-  margin-top: 40px;
-`;
-
-const HistoryContainer = () => {
+function HistoryContainer() {
   const creatingSection = useAppSelector(state => state.ui.creatingSection);
   const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
   const ideas = useAppSelector(state => selectIdeasById(state, activeIdeaIds))
@@ -31,7 +24,7 @@ const HistoryContainer = () => {
   }, []);
 
   return (
-    <StyledHistoryContainer>
+    <div className="py-2 mt-18">
       {ideas.length === 0 &&
         <StartingHints />
       }
@@ -47,8 +40,8 @@ const HistoryContainer = () => {
             leftCommentOffset={baseOverflow} />
         )
       })}
-    </StyledHistoryContainer>
-  )
-};
+    </div>
+  );
+}
 
 export default HistoryContainer;

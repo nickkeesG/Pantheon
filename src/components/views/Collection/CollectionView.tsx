@@ -1,6 +1,5 @@
-import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { ContainerVertical, TextButton } from '../../../styles/sharedStyles';
+import { TextButton } from '../../../styles/sharedStyles';
 import TreeListItem from './TreeListItem';
 import { createTree } from '../../../redux/thunks';
 import { selectTreesWithMostRecentEdit } from '../../../redux/treeSlice';
@@ -8,21 +7,7 @@ import TopBar from '../../common/TopBar';
 import Settings from '../../settings/Settings';
 import WelcomeInfoButton from '../../WelcomeInfoButton';
 
-
-const List = styled.ul`
-  width: 100%;
-  padding: 0px;
-  list-style-type: none;
-  border-top: 0.5px solid var(--line-color);
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 4px;
-  margin-left: auto;
-`;
-
-const CollectionView = () => {
+function CollectionView() {
   const dispatch = useAppDispatch();
   const trees = useAppSelector(state => selectTreesWithMostRecentEdit(state));
 
@@ -32,30 +17,26 @@ const CollectionView = () => {
   }
 
   return (
-    <ContainerVertical style={{ alignItems: 'center' }}>
+    <div className="flex flex-col w-full box-border items-center">
       <TopBar>
-        <ButtonContainer>
+        <div className="flex gap-1 ml-auto">
           <Settings />
           <WelcomeInfoButton />
-        </ButtonContainer>
+        </div>
       </TopBar>
-      <ContainerVertical style={{
-        maxWidth: '700px',
-        alignItems: 'center',
-        padding: '40px 16px'
-      }}>
-        <h1>Trees</h1>
+      <div className="flex flex-col w-full box-border max-w-[700px] items-center py-10 px-4 mt-18">
+        <h1 className="text-4xl font-light">Trees</h1>
         <TextButton style={{ alignSelf: 'end' }} onClick={handleCreateTree}>+ New tree</TextButton>
-        <List>
+        <ul className="w-full p-0 list-none border-t-[0.5px_solid_var(--line-color)]">
           {Object.values(trees).map((tree) => (
             <li key={tree.id}>
               <TreeListItem tree={tree} mostRecentEdit={tree.mostRecentEdit} />
             </li>
           ))}
-        </List>
-      </ContainerVertical>
-    </ContainerVertical>
+        </ul>
+      </div>
+    </div>
   );
-};
+}
 
 export default CollectionView;

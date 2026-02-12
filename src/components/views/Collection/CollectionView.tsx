@@ -2,9 +2,6 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { createTree } from "../../../redux/thunks";
 import { selectTreesWithMostRecentEdit } from "../../../redux/treeSlice";
 import { TextButton } from "../../../styles/sharedStyles";
-import TopBar from "../../common/TopBar";
-import Settings from "../../settings/Settings";
-import WelcomeInfoButton from "../../WelcomeInfoButton";
 import TreeListItem from "./TreeListItem";
 
 function CollectionView() {
@@ -18,12 +15,6 @@ function CollectionView() {
 
 	return (
 		<div className="flex flex-col w-full box-border items-center">
-			<TopBar>
-				<div className="flex gap-1 ml-auto">
-					<Settings />
-					<WelcomeInfoButton />
-				</div>
-			</TopBar>
 			<div className="flex flex-col w-full items-center py-10 px-4 mt-18">
 				<div className="flex flex-col max-w-[1024px] w-full">
 					<h1 className="text-4xl font-light text-center">Trees</h1>

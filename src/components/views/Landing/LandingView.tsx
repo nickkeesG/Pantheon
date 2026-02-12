@@ -7,10 +7,7 @@ import {
 	Button,
 	ButtonHighlighted,
 	ContainerVertical,
-	Filler,
-	TextButton,
 } from "../../../styles/sharedStyles";
-import TopBar from "../../common/TopBar";
 
 const LandingContainer = styled(ContainerVertical)`
   align-items: center;
@@ -52,12 +49,6 @@ const LandingView: React.FC = () => {
 
 	return (
 		<LandingContainer>
-			<TopBar>
-				<Filler />
-				<TextButton onClick={handleCreateTree} style={{ margin: 0 }}>
-					Start writing
-				</TextButton>
-			</TopBar>
 			<ContainerVertical
 				style={{ maxWidth: "1024px", margin: "0 auto", alignItems: "center" }}
 			>

@@ -7,6 +7,7 @@ import { ContainerVertical } from "../../../styles/sharedStyles";
 import CompletionsContainer from "./CompletionsContainer";
 import HistoryContainer from "./HistoryContainer";
 import InputArea from "./InputArea";
+import TreeActionBar from "./TreeActionBar";
 
 const TreeView = () => {
 	const { treeId } = useParams();
@@ -35,6 +36,7 @@ const TreeView = () => {
 		<ContainerVertical>
 			{treeFound && (
 				<>
+					<TreeActionBar />
 					<HistoryContainer />
 					<InputArea />
 					<CompletionsContainer />

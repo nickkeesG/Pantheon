@@ -12,7 +12,7 @@ import {
 const LandingContainer = styled(ContainerVertical)`
   align-items: center;
   justify-content: center;
-  padding: 80px 16px;
+  padding: 16px;
 `;
 
 const Title = styled.h1`

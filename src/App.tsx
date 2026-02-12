@@ -1,6 +1,7 @@
 import "./app.css";
 import { useCallback, useEffect } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { ActionBarProvider } from "./components/common/ActionBarContext";
 import Navbar from "./components/common/Navbar";
 import DaemonManager from "./components/DaemonManager";
 import Footer from "./components/Footer";
@@ -56,13 +57,15 @@ function App() {
 		<BrowserRouter>
 			<div className={`App`}>
 				<ModalProvider>
-					<Routes>
-						<Route element={<Layout />}>
-							<Route path="/" element={<LandingView />} />
-							<Route path="/tree/:treeId" element={<TreeView />} />
-							<Route path="/collection" element={<CollectionView />} />
-						</Route>
-					</Routes>
+					<ActionBarProvider>
+						<Routes>
+							<Route element={<Layout />}>
+								<Route path="/" element={<LandingView />} />
+								<Route path="/tree/:treeId" element={<TreeView />} />
+								<Route path="/collection" element={<CollectionView />} />
+							</Route>
+						</Routes>
+					</ActionBarProvider>
 				</ModalProvider>
 			</div>
 		</BrowserRouter>

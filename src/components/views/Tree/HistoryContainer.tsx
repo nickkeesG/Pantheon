@@ -1,47 +1,58 @@
-import IdeaContainer from './IdeaContainer';
-import { useCallback, useState } from 'react';
-import { useAppSelector } from '../../../hooks';
-import { selectIdeasById } from '../../../redux/ideaSlice';
-import StartingHints from './StartingHints';
+import { useCallback, useState } from "react";
+import { useAppSelector } from "../../../hooks";
+import { selectIdeasById } from "../../../redux/ideaSlice";
+import IdeaContainer from "./IdeaContainer";
+import StartingHints from "./StartingHints";
 
 function HistoryContainer() {
-  const creatingSection = useAppSelector(state => state.ui.creatingSection);
-  const activeIdeaIds = useAppSelector(state => state.ui.activeIdeaIds);
-  const ideas = useAppSelector(state => selectIdeasById(state, activeIdeaIds))
+	const creatingSection = useAppSelector((state) => state.ui.creatingSection);
+	const activeIdeaIds = useAppSelector((state) => state.ui.activeIdeaIds);
+	const ideas = useAppSelector((state) =>
+		selectIdeasById(state, activeIdeaIds),
+	);
 
-  // Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
-  const [leftCommentOverflows, setLeftCommentOverflows] = useState<{ [key: number]: number }>({});
-  const [rightCommentOverflows, setRightCommentOverflows] = useState<{ [key: number]: number }>({});
+	// Maps ideaIds to the number of pixels that the comment panel overflows past the idea object itself
+	const [leftCommentOverflows, setLeftCommentOverflows] = useState<{
+		[key: number]: number;
+	}>({});
+	const [rightCommentOverflows, setRightCommentOverflows] = useState<{
+		[key: number]: number;
+	}>({});
 
-  const setCommentOverflow = useCallback((isChat: boolean, ideaId: number, height: number) => {
-    const updater = (prevHeights: { [key: number]: number }) => {
-      if (prevHeights[ideaId] === height) return prevHeights; // No change, return the original state to avoid re-render
-      return { ...prevHeights, [ideaId]: height };
-    };
+	const setCommentOverflow = useCallback(
+		(isChat: boolean, ideaId: number, height: number) => {
+			const updater = (prevHeights: { [key: number]: number }) => {
+				if (prevHeights[ideaId] === height) return prevHeights; // No change, return the original state to avoid re-render
+				return { ...prevHeights, [ideaId]: height };
+			};
 
-    if (isChat) setRightCommentOverflows(updater);
-    else setLeftCommentOverflows(updater);
-  }, []);
+			if (isChat) setRightCommentOverflows(updater);
+			else setLeftCommentOverflows(updater);
+		},
+		[],
+	);
 
-  return (
-    <div className="py-2 mt-18">
-      {ideas.length === 0 &&
-        <StartingHints />
-      }
-      {!creatingSection && ideas.map((idea, index) => {
-        const baseOverflow = index === 0 ? 0 : leftCommentOverflows[ideas[index - 1].id];
-        const chatOverflow = index === 0 ? 0 : rightCommentOverflows[ideas[index - 1].id];
-        return (
-          <IdeaContainer
-            key={idea.id}
-            idea={idea}
-            rightCommentOffset={chatOverflow}
-            setCommentOverflow={setCommentOverflow}
-            leftCommentOffset={baseOverflow} />
-        )
-      })}
-    </div>
-  );
+	return (
+		<div className="py-2">
+			{ideas.length === 0 && <StartingHints />}
+			{!creatingSection &&
+				ideas.map((idea, index) => {
+					const baseOverflow =
+						index === 0 ? 0 : leftCommentOverflows[ideas[index - 1].id];
+					const chatOverflow =
+						index === 0 ? 0 : rightCommentOverflows[ideas[index - 1].id];
+					return (
+						<IdeaContainer
+							key={idea.id}
+							idea={idea}
+							rightCommentOffset={chatOverflow}
+							setCommentOverflow={setCommentOverflow}
+							leftCommentOffset={baseOverflow}
+						/>
+					);
+				})}
+		</div>
+	);
 }
 
 export default HistoryContainer;

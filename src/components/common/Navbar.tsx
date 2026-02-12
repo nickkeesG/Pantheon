@@ -1,3 +1,4 @@
+import { FiPlus } from "react-icons/fi";
 import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks";
@@ -25,7 +26,7 @@ function Navbar() {
 				<PantheonLogo />
 				<div className="flex gap-1 ml-auto">
 					<IconButtonMedium title="New tree" onClick={handleCreateTree}>
-						+
+						<FiPlus />
 					</IconButtonMedium>
 					<Link to="/collection">
 						<IconButtonMedium title="Collection">

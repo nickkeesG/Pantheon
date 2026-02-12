@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { aiFont, highlightOnHover } from './mixins';
-import { FiX } from 'react-icons/fi';
+import { FiX } from "react-icons/fi";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import styled from "styled-components";
+import { aiFont, highlightOnHover } from "./mixins";
 
 export const ContainerVertical = styled.div`
   display: flex;
@@ -110,7 +110,7 @@ export const IconButtonSmall = styled(IconButtonLarge)`
 `;
 
 export const ExitButtonLarge = styled(IconButtonLarge).attrs({
-  as: FiX
+	as: FiX,
 })`
   position: absolute;
   top: 4px;
@@ -119,7 +119,7 @@ export const ExitButtonLarge = styled(IconButtonLarge).attrs({
 `;
 
 export const ExitButtonSmall = styled(IconButtonSmall).attrs({
-  as: FiX
+	as: FiX,
 })`
   position: absolute;
   top: 4px;
@@ -128,7 +128,7 @@ export const ExitButtonSmall = styled(IconButtonSmall).attrs({
 `;
 
 export const InfoButton = styled(IconButtonMedium).attrs({
-  as: IoInformationCircleOutline
+	as: IoInformationCircleOutline,
 })`
 width: 20px;
 height: 20px;
@@ -185,6 +185,7 @@ export const ModalBox = styled.div`
 
 export const ModalHeader = styled.h3`
   text-align: center;
+  font-size: 1.2em;
 `;
 
 export const Hint = styled.div`
@@ -205,7 +206,7 @@ export const Filler = styled.div`
 export const ToggleSwitch = styled.div<{ toggled: boolean }>`
   width: 50px;
   height: 25px;
-  background-color: ${({ toggled }) => (toggled ? '#4caf50' : '#ccc')};
+  background-color: ${({ toggled }) => (toggled ? "#4caf50" : "#ccc")};
   border-radius: 25px;
   position: relative;
   cursor: pointer;
@@ -219,6 +220,6 @@ export const ToggleKnob = styled.div<{ toggled: boolean }>`
   border-radius: 50%;
   position: absolute;
   top: 1px;
-  left: ${({ toggled }) => (toggled ? '26px' : '1px')};
+  left: ${({ toggled }) => (toggled ? "26px" : "1px")};
   transition: left 0.3s;
 `;

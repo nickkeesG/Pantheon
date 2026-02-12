@@ -4,7 +4,7 @@ const Footer = () => {
 	return (
 		<footer className="px-4 py-8 bg-[var(--bg-color-secondary)] border-t-[0.5px] border-t-[var(--line-color-strong)]">
 			<div className="flex flex-col sm:flex-row justify-between items-center gap-4 max-w-[1024px] mx-auto w-full">
-				<div className="flex flex-col text-center sm:text-left">
+				<div className="flex flex-col items-center sm:items-start">
 					<PantheonLogo />
 					<div>
 						An open-source project by{" "}
@@ -32,7 +32,7 @@ const Footer = () => {
 					</div>
 				</div>
 
-				<div className="flex flex-col text-center sm:text-right">
+				<div className="flex flex-col items-center sm:items-end">
 					<a
 						href="https://www.lesswrong.com/posts/JHsfMWtwxBGGTmb8A/pantheon-interface"
 						target="_blank"

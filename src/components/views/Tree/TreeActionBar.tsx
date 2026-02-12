@@ -55,7 +55,7 @@ function TreeActionBar() {
 
 	useEffect(() => {
 		setActionBar(
-			<div className="relative w-full flex flex-row items-center bg-[var(--bg-color)] px-4 py-1 border-b border-[var(--line-color-stronger)]">
+			<div className="relative w-full flex flex-row items-center bg-[var(--bg-color)] px-4 py-1 border-b border-[var(--line-color-strong)]">
 				<span className="text-sm text-[var(--text-color-secondary)] truncate">
 					{treeName || "New tree"}
 				</span>
@@ -64,11 +64,7 @@ function TreeActionBar() {
 						type="button"
 						title="Back to parent section"
 						onClick={handleUp}
-						className="absolute left-1/2 -translate-x-1/2 top-0 h-full w-[39%] bg-transparent border-0 cursor-pointer text-[var(--text-color)] flex items-center justify-center transition-colors duration-200 hover:bg-[var(--highlight-weak)]"
-						style={{
-							borderLeft: "0.5px solid var(--line-color-strong)",
-							borderRight: "0.5px solid var(--line-color-strong)",
-						}}
+						className="absolute left-1/2 -translate-x-1/2 top-0 h-full w-[39%] bg-transparent border-0 cursor-pointer text-[var(--text-color)] flex items-center justify-center transition-colors duration-200 hover:bg-[var(--highlight-weak)] border-r border-l border-l-[var(--line-color-strong)] border-r-[var(--line-color-strong)]"
 					>
 						<SlArrowUp />
 					</button>

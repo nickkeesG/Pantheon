@@ -22,7 +22,7 @@ function Navbar() {
 
 	return (
 		<div className="sticky top-0 z-50">
-			<div className="w-full box-border flex flex-row justify-between items-center gap-1 bg-[var(--bg-color-secondary)] px-4 py-2 border-b border-[var(--line-color)] border-b-[var(--line-color-strong)]">
+			<div className="w-full box-border flex flex-row justify-between items-center gap-1 bg-[var(--bg-color-secondary)] px-8 py-2 border-b border-[var(--line-color)] border-b-[var(--line-color-strong)]">
 				<PantheonLogo />
 				<div className="flex gap-1 ml-auto">
 					<IconButtonMedium title="New tree" onClick={handleCreateTree}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FiCheckCircle, FiCopy } from "react-icons/fi";
 import { SlArrowUp } from "react-icons/sl";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -25,14 +25,14 @@ function TreeActionBar() {
 	);
 	const [isCopied, setIsCopied] = useState(false);
 
-	const copyContextToMarkdown = async () => {
+	const copyContextToMarkdown = useCallback(async () => {
 		try {
 			await navigator.clipboard.writeText(markdown);
 			setIsCopied(true);
 		} catch (err) {
 			console.error("Failed to copy context to clipboard", err);
 		}
-	};
+	}, [markdown]);
 
 	useEffect(() => {
 		if (isCopied) {
@@ -43,13 +43,13 @@ function TreeActionBar() {
 		}
 	}, [isCopied]);
 
-	const handleUp = () => {
+	const handleUp = useCallback(() => {
 		if (creatingSection) {
 			dispatch(setCreatingSection(false));
 		} else if (activeSection.parentSectionId !== null) {
 			dispatch(navigateToParentSection());
 		}
-	};
+	}, [activeSection.parentSectionId, creatingSection, dispatch]);
 
 	const showUp = creatingSection || activeSection.parentSectionId !== null;
 
@@ -82,7 +82,16 @@ function TreeActionBar() {
 		);
 
 		return () => setActionBar(null);
-	});
+	}, [
+		activeSection.ideaIds.length,
+		copyContextToMarkdown,
+		creatingSection,
+		handleUp,
+		isCopied,
+		setActionBar,
+		showUp,
+		treeName,
+	]);
 
 	return null;
 }

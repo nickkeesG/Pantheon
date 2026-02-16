@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { Hint, TextButton } from "../../styles/sharedStyles";
 import ChatDaemonSettings from "./ChatDaemonSettings";
 import { ChatDaemonConfig } from "../../redux/models";
-import BaseDaemonSettings from "./BaseDaemonSettings";
+
 import { addChatDaemon } from "../../redux/daemonSlice"
 
 function createEmptyChatDaemonConfig(): ChatDaemonConfig {
@@ -25,9 +25,7 @@ Leave a useful, short comment on this note. Don't write any more than 1-2 senten
 
 const DaemonSettings = () => {
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
-  const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const chatModel = useAppSelector(state => state.config.openAI.chatModel);
-  const baseModel = useAppSelector(state => state.config.openAI.baseModel);
 
   const dispatch = useAppDispatch();
 
@@ -48,11 +46,6 @@ const DaemonSettings = () => {
       <TextButton onClick={() => addNewDaemon()}>
         + New daemon
       </TextButton>
-      <h4>AI suggestions</h4>
-      <Hint style={{ paddingBottom: '8px' }}>
-        AI suggestions are the AI's ideas for what might come next. They are powered by the given <i>base model</i> (currently <b>{baseModel}</b>).
-      </Hint>
-      <BaseDaemonSettings config={baseDaemonConfig} />
     </div>
   )
 }

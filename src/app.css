@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-ai: "Monaspace Neon", monospace;
+}
+
 @font-face {
   font-family: 'Monaspace Neon';
   src: url('./fonts/MonaspaceNeon-Regular.woff') format('woff');

@@ -26,7 +26,7 @@ const Settings = () => {
 	const openSettings = () => {
 		addModal(
 			<Modal>
-				<ModalBox style={{ width: "70vw", maxWidth: "550px" }}>
+				<ModalBox style={{ width: "90vw", maxWidth: "640px" }}>
 					<div className="space-y-8">
 						<h3 className="text-center">Settings</h3>
 						<ConfigSettings />

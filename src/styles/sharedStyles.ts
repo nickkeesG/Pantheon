@@ -183,11 +183,6 @@ export const ModalBox = styled.div`
   overflow-y: auto;
 `;
 
-export const ModalHeader = styled.h3`
-  text-align: center;
-  font-size: 1.2em;
-`;
-
 export const Hint = styled.div`
   font-size: 0.85em;
   color: var(--text-color-tertiary);

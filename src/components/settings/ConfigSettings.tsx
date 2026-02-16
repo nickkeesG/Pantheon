@@ -31,6 +31,7 @@ const ConfigSettings = () => {
 
 	return (
 		<div>
+			<h4>OpenAI</h4>
 			<TextSetting
 				label="OpenAI API key"
 				placeholder="sk-..."

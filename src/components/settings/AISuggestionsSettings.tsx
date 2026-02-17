@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BaseDaemon from "../../daemons/baseDaemon";
+import { defaultDaemonState } from "../../daemons/daemonInstructions";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { updateBaseDaemon } from "../../redux/daemonSlice";
-import { selectActiveThoughts } from "../../redux/ideaSlice";
-import type { BaseDaemonConfig } from "../../redux/models";
+import type { BaseDaemonConfig, Idea } from "../../redux/models";
 import { Button, ContainerHorizontal, Hint } from "../../styles/sharedStyles";
 import InfoModal from "../common/InfoModal";
+import ResetButton from "../common/ResetButton";
 import { useModal } from "../ModalContext";
 
 const useConfigChanged = (
@@ -20,10 +21,11 @@ const useConfigChanged = (
 	}, [config, currentState]);
 };
 
+const defaults = defaultDaemonState.baseDaemon;
+
 const AISuggestionsSettings = () => {
 	const config = useAppSelector((state) => state.daemon.baseDaemon);
 	const baseModel = useAppSelector((state) => state.config.openAI.baseModel);
-	const activeThoughts = useAppSelector(selectActiveThoughts);
 	const [mainTemplate, setMainTemplate] = useState(config.mainTemplate || "");
 	const [ideaTemplate, setIdeaTemplate] = useState(config.ideaTemplate || "");
 	const [temperature, setTemperature] = useState(
@@ -52,22 +54,43 @@ const AISuggestionsSettings = () => {
 		resizeTextArea(ideaTemplateRef.current);
 	}, [resizeTextArea]);
 
+	const exampleIdeas: Idea[] = [
+		{
+			id: 1,
+			type: 0,
+			sectionId: 1,
+			parentIdeaId: null,
+			text: "The city was quiet, but not in the way that felt peaceful.",
+		},
+		{
+			id: 2,
+			type: 0,
+			sectionId: 1,
+			parentIdeaId: 1,
+			text: "She noticed the streetlights flickering in a pattern she hadn't seen before.",
+		},
+		{
+			id: 3,
+			type: 0,
+			sectionId: 1,
+			parentIdeaId: 2,
+			text: "It reminded her of something from childhood, though she couldn't place it.",
+		},
+	];
+
 	const showExample = useCallback(() => {
 		const daemon = new BaseDaemon(config);
-		const prompt = daemon.getContext(activeThoughts);
+		const prompt = daemon.getContext(exampleIdeas);
 		addModal(
 			<InfoModal>
 				<br />
-				<Hint>
-					Final prompt given to the base model. This is what the AI will see,
-					given these templates, in the selected tree.
-				</Hint>
+				<Hint>What the base model will see with current templates</Hint>
 				<div className="bg-[var(--bg-color-secondary)] p-3 rounded-lg mt-2.5 whitespace-pre-wrap break-words font-ai text-[0.8em]">
 					{prompt}
 				</div>
 			</InfoModal>,
 		);
-	}, [config, activeThoughts, addModal]);
+	}, [config, addModal]);
 
 	useEffect(() => {
 		if (!configChanged) return;
@@ -99,65 +122,92 @@ const AISuggestionsSettings = () => {
 				powered by the given <i>base model</i> (currently <b>{baseModel}</b>).
 			</Hint>
 			<div className="space-y-4">
-				<div>
-					<label
-						htmlFor="main-template"
-						className="text-sm mb-[5px] text-[var(--text-color-secondary)]"
-					>
-						Main template
-					</label>
-					<textarea
-						id="main-template"
-						ref={mainTemplateRef}
-						value={mainTemplate}
-						onChange={(e) => {
-							setMainTemplate(e.target.value);
-							resizeTextArea(e.target);
-						}}
-						className="w-full min-w-full max-w-full p-2.5 box-border border-[0.5px] border-[var(--line-color)] rounded bg-[var(--bg-color-secondary)] text-[var(--text-color)] font-ai text-[0.8em] overflow-hidden block m-auto focus:outline-none focus:border-[var(--text-color)]"
-					/>
+				<div className="flex items-start gap-3">
+					<div className="flex-1">
+						<label
+							htmlFor="main-template"
+							className="text-sm mb-[5px] text-[var(--text-color-secondary)]"
+						>
+							Main template
+						</label>
+						<textarea
+							id="main-template"
+							ref={mainTemplateRef}
+							value={mainTemplate}
+							onChange={(e) => {
+								setMainTemplate(e.target.value);
+								resizeTextArea(e.target);
+							}}
+							className="w-full min-w-full max-w-full p-2.5 box-border border-[0.5px] border-[var(--line-color)] rounded bg-[var(--bg-color-secondary)] text-[var(--text-color)] font-ai text-[0.8em] overflow-hidden block m-auto focus:outline-none focus:border-[var(--text-color)]"
+						/>
+					</div>
+					<div className="w-6 flex justify-center pt-5">
+						{mainTemplate !== defaults.mainTemplate && (
+							<ResetButton
+								onClick={() => setMainTemplate(defaults.mainTemplate)}
+							/>
+						)}
+					</div>
 				</div>
-				<div>
-					<label
-						htmlFor="idea-template"
-						className="text-sm mb-[5px] text-[var(--text-color-secondary)]"
-					>
-						Idea template
-					</label>
-					<textarea
-						id="idea-template"
-						ref={ideaTemplateRef}
-						value={ideaTemplate}
-						onChange={(e) => {
-							setIdeaTemplate(e.target.value);
-							resizeTextArea(e.target);
-						}}
-						className="w-full min-w-full max-w-full p-2.5 box-border border-[0.5px] border-[var(--line-color)] rounded bg-[var(--bg-color-secondary)] text-[var(--text-color)] font-ai text-[0.8em] overflow-hidden block m-auto focus:outline-none focus:border-[var(--text-color)]"
-					/>
+				<div className="flex items-start gap-3">
+					<div className="flex-1">
+						<label
+							htmlFor="idea-template"
+							className="text-sm mb-[5px] text-[var(--text-color-secondary)]"
+						>
+							Idea template
+						</label>
+						<textarea
+							id="idea-template"
+							ref={ideaTemplateRef}
+							value={ideaTemplate}
+							onChange={(e) => {
+								setIdeaTemplate(e.target.value);
+								resizeTextArea(e.target);
+							}}
+							className="w-full min-w-full max-w-full p-2.5 box-border border-[0.5px] border-[var(--line-color)] rounded bg-[var(--bg-color-secondary)] text-[var(--text-color)] font-ai text-[0.8em] overflow-hidden block m-auto focus:outline-none focus:border-[var(--text-color)]"
+						/>
+					</div>
+					<div className="w-6 flex justify-center pt-5">
+						{ideaTemplate !== defaults.ideaTemplate && (
+							<ResetButton
+								onClick={() => setIdeaTemplate(defaults.ideaTemplate)}
+							/>
+						)}
+					</div>
 				</div>
 				<Button onClick={showExample}>Show example prompt</Button>
-				<div>
-					<label
-						htmlFor="temperature"
-						className="text-sm mb-[5px] text-[var(--text-color-secondary)]"
-					>
-						Temperature
-					</label>
-					<ContainerHorizontal>
-						<input
-							id="temperature"
-							type="range"
-							min="0"
-							max="2"
-							step="0.05"
-							value={temperature}
-							onChange={(e) => setTemperature(parseFloat(e.target.value))}
-							style={{ width: "100%" }}
-						/>
-						<div style={{ padding: "4px 8px 4px 16px" }}>
-							{temperature.toFixed(2)}
-						</div>
-					</ContainerHorizontal>
+				<div className="flex gap-3">
+					<div className="flex-1">
+						<label
+							htmlFor="temperature"
+							className="text-sm mb-[5px] text-[var(--text-color-secondary)]"
+						>
+							Temperature
+						</label>
+						<ContainerHorizontal>
+							<input
+								id="temperature"
+								type="range"
+								min="0"
+								max="2"
+								step="0.05"
+								value={temperature}
+								onChange={(e) => setTemperature(parseFloat(e.target.value))}
+								style={{ width: "100%" }}
+							/>
+							<div style={{ padding: "4px 8px 4px 16px" }}>
+								{temperature.toFixed(2)}
+							</div>
+						</ContainerHorizontal>
+					</div>
+					<div className="w-6 flex justify-center items-center">
+						{temperature !== defaults.temperature && (
+							<ResetButton
+								onClick={() => setTemperature(defaults.temperature)}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

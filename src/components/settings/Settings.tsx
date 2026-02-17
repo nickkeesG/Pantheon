@@ -34,7 +34,7 @@ const Settings = () => {
 						<AISuggestionsSettings />
 						<ThemeSettings />
 						<ImportExportButtons />
-						<div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+						<div className="p-4 bg-red-50 dark:bg-red-950/25 border border-red-200 dark:border-red-900 rounded-lg">
 							<h4>Danger zone</h4>
 							<Hint>
 								Reset all daemon settings back to default. All custom daemons,

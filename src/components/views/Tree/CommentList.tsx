@@ -43,7 +43,7 @@ const CommentList: React.FC<CommentListProps> = ({
 		return () => {
 			resizeObserver.disconnect();
 		};
-	}, [listRef, offset, comments, onHeightChanged]);
+	}, [onHeightChanged]);
 
 	return (
 		<CommentListContainer

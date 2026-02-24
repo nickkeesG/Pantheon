@@ -132,7 +132,7 @@ const DaemonManager = () => {
 				mostRecentComment,
 			} = stateRef.current;
 			if (chatDaemonActive) return;
-			const secondsInactive = (new Date().getTime() - lastTimeActive) / 1000;
+			const secondsInactive = (Date.now() - lastTimeActive) / 1000;
 			if (secondsInactive < maxSecondsInactive && !newActivity) {
 				setNewActivity(true);
 			} else if (
@@ -182,7 +182,7 @@ const DaemonManager = () => {
 		intervalRef.current = interval;
 
 		return () => clearInterval(interval);
-	}, [chatModel, dispatch, generateComment]);
+	}, [generateComment]);
 
 	return null;
 };

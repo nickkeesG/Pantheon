@@ -42,7 +42,7 @@ const commentSlice = createSlice({
 		},
 		approveComment(state, action: PayloadAction<number>) {
 			const comment = state.comments[action.payload];
-			if (!comment) console.error("Error fetching comment " + action.payload);
+			if (!comment) console.error(`Error fetching comment ${action.payload}`);
 			else comment.userApproved = true;
 		},
 		removeComment(state, action: PayloadAction<number>) {

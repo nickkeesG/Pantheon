@@ -315,7 +315,7 @@ export const importAppState =
 		}
 	};
 
-export const resetState = (): AppThunk => (dispatch, getState) => {
+export const resetState = (): AppThunk => (dispatch, _getState) => {
 	console.info("Resetting app state");
 	dispatch(resetTreeSlice());
 	dispatch(resetSectionSlice());

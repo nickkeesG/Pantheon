@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch } from "../../hooks";
@@ -84,19 +84,19 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 		}
 	};
 
-	const resizeTextArea = (textArea: HTMLTextAreaElement | null) => {
+	const resizeTextArea = useCallback((textArea: HTMLTextAreaElement | null) => {
 		if (textArea) {
 			textArea.style.height = "auto";
-			textArea.style.height = textArea.scrollHeight + "px";
+			textArea.style.height = `${textArea.scrollHeight}px`;
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		if (!isCollapsed) {
 			resizeTextArea(systemPromptRef.current);
 			userPromptRefs.current.forEach((ref) => resizeTextArea(ref));
 		}
-	}, [systemPrompt, userPrompts, isCollapsed]);
+	}, [isCollapsed, resizeTextArea]);
 
 	useEffect(() => {
 		if (!configChanged) return;
@@ -109,7 +109,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 				enabled: isEnabled,
 			};
 			dispatch(updateChatDaemon(newConfig));
-		} catch (error) {
+		} catch (_error) {
 			dispatchError("Couldn't update daemon config");
 		}
 	}, [

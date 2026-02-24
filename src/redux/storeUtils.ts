@@ -60,7 +60,7 @@ export const getAllAncestorIds = (
 	while (currentId) {
 		const current = findIdeaById(currentId);
 		if (!current) {
-			console.error("Error finding idea list! IdeaId: " + currentId);
+			console.error(`Error finding idea list! IdeaId: ${currentId}`);
 			break;
 		}
 		ancestorIds.unshift(current.id);
@@ -144,7 +144,7 @@ export function findDaemonMention(
 				: null;
 		})
 		.filter((mention) => mention !== null)
-		.sort((a, b) => a!.index - b!.index);
+		.sort((a, b) => a?.index - b?.index);
 
 	return mentions.length > 0 && mentions[0] ? mentions[0].name : null;
 }

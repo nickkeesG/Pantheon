@@ -82,7 +82,7 @@ const uiSlice = createSlice({
 				state.incomingComment = undefined;
 			}
 		},
-		resetUiSlice: (state) => initialState,
+		resetUiSlice: (_state) => initialState,
 	},
 });
 

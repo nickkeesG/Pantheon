@@ -63,7 +63,7 @@ const InputArea = () => {
 		dispatch(createIdea(textAreaText));
 		textAreaRef.current?.clearAndScrollToView();
 		updateText();
-	}, [dispatch, textAreaText, textAreaRef, updateText]);
+	}, [dispatch, textAreaText, updateText]);
 
 	const dispatchInstruction = useCallback(async () => {
 		dispatch(createIdea(textAreaText, IdeaType.InstructionToAi));

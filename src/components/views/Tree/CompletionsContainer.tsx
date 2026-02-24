@@ -85,14 +85,7 @@ const CompletionsContainer = () => {
 			getNewCompletions(activeThoughts);
 			branchLength.current = activeThoughts.length;
 		}
-	}, [
-		activeThoughts,
-		baseDaemon,
-		openAIKey,
-		openAIOrgId,
-		baseModel,
-		getNewCompletions,
-	]);
+	}, [activeThoughts, getNewCompletions]);
 
 	return (
 		<TopLevelContainer>

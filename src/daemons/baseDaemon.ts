@@ -15,7 +15,7 @@ class BaseDaemon {
 	getContext(pastIdeas: Idea[]): string {
 		let context = "";
 		for (let i = 0; i < pastIdeas.length; i++) {
-			context += "\n" + this.ideaTemplate.replace("{}", pastIdeas[i].text);
+			context += `\n${this.ideaTemplate.replace("{}", pastIdeas[i].text)}`;
 		}
 		context = this.mainTemplate.replace("{}", context);
 		return context;
@@ -27,7 +27,7 @@ class BaseDaemon {
 
 	getContextWithPrefix(pastIdeas: Idea[]): string {
 		let context = this.getContext(pastIdeas);
-		context += "\n" + this.getPrefix();
+		context += `\n${this.getPrefix()}`;
 		return context;
 	}
 

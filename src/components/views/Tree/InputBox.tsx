@@ -86,7 +86,7 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(
 				textAreaRef.current.style.height = "auto";
 				textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
 			}
-		}, [textAreaRef]);
+		}, []);
 
 		const clearAndScrollToView = useCallback(() => {
 			if (textAreaRef.current) {
@@ -95,7 +95,7 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(
 				resize();
 				textAreaRef.current.scrollIntoView();
 			}
-		}, [textAreaRef, resize]);
+		}, [resize]);
 
 		useImperativeHandle(ref, () => ({
 			getText: () => {

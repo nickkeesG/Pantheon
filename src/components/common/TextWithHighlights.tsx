@@ -7,7 +7,7 @@ const generateHighlightedTextWithLineBreaks = (
 	const textParts: React.ReactNode[] = [];
 	let lastEnd = 0;
 
-	highlights.forEach(([start, end], index) => {
+	highlights.forEach(([start, end], _index) => {
 		// Add non-highlighted text with line breaks
 		const nonHighlighted = text
 			.slice(lastEnd, start)

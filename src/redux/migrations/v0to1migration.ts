@@ -50,12 +50,12 @@ export const V0to1Migration = (state: PersistedState): V1StoreState => {
 					return {
 						id: daemon.id,
 						name: daemon.name,
-						systemPrompt: daemon.description + "\n" + daemon.rules,
+						systemPrompt: `${daemon.description}\n${daemon.rules}`,
 						userPrompts: [V0to1UserPrompt],
 						enabled: daemon.enabled,
 					};
 				}),
-				...defaultDaemonState.chatDaemons.map((daemon, index) => ({
+				...defaultDaemonState.chatDaemons.map((daemon, _index) => ({
 					...daemon,
 					id: daemon.id + daemonState.chatDaemons.length,
 				})),

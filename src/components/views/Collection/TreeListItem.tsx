@@ -82,7 +82,7 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, []);
+	}, [handleClickOutside]);
 
 	const handleTreeClick = () => {
 		navigate(`/tree/${tree.id}`);

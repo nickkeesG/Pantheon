@@ -1,8 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import { aiFont, fadeInAnimation } from '../../../styles/mixins';
-import TypingAnimation from '../../../animations/typingAnimation/TypingAnimation';
-
+import type React from "react";
+import styled from "styled-components";
+import TypingAnimation from "../../../animations/typingAnimation/TypingAnimation";
+import { aiFont, fadeInAnimation } from "../../../styles/mixins";
 
 const CommentName = styled.div`
   text-align: right;
@@ -27,14 +26,14 @@ const StyledCommentContainer = styled.div`
 `;
 
 const IncomingComment: React.FC<{ daemonName: string }> = ({ daemonName }) => {
-  return (
-    <StyledCommentContainer key='Incoming'>
-      <CommentName>{daemonName}</CommentName>
-      <AnimationContainer>
-        <TypingAnimation />
-      </AnimationContainer>
-    </StyledCommentContainer>
-  );
+	return (
+		<StyledCommentContainer key="Incoming">
+			<CommentName>{daemonName}</CommentName>
+			<AnimationContainer>
+				<TypingAnimation />
+			</AnimationContainer>
+		</StyledCommentContainer>
+	);
 };
 
 export default IncomingComment;

@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { FiSettings } from "react-icons/fi";
 import { useAppDispatch } from "../../hooks";
+import { resetDaemonSlice } from "../../redux/daemonSlice";
+import { resetState } from "../../redux/thunks";
 import {
 	ButtonDangerous,
 	Hint,
 	IconButtonMedium,
 	ModalBox,
 } from "../../styles/sharedStyles";
+import ButtonWithConfirmation from "../common/ButtonWithConfirmation";
 import Modal from "../common/Modal";
-import ConfigSettings from "./ConfigSettings";
+import { useModal } from "../ModalContext";
 import AISuggestionsSettings from "./AISuggestionsSettings";
+import ConfigSettings from "./ConfigSettings";
 import DaemonSettings from "./DaemonSettings";
 import ImportExportButtons from "./ImportExportButtons";
-import ButtonWithConfirmation from "../common/ButtonWithConfirmation";
-import { resetState } from "../../redux/thunks";
-import { resetDaemonSlice } from "../../redux/daemonSlice";
 import ThemeSettings from "./ThemeSettings";
-import { useModal } from "../ModalContext";
 
 const Settings = () => {
 	const dispatch = useAppDispatch();

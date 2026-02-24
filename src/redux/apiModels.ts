@@ -1,6 +1,6 @@
 export interface OpenAIApi {
-  ApiKey: string;
-  OrgId: string;
-  baseModel: string;
-  chatModel: string;
+	ApiKey: string;
+	OrgId: string;
+	baseModel: string;
+	chatModel: string;
 }

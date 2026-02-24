@@ -1,10 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import InfoModal from '../common/InfoModal';
-import { aiFont } from '../../styles/mixins';
-import ChatDaemon from '../../daemons/chatDaemon';
-import { Hint } from '../../styles/sharedStyles';
-
+import type React from "react";
+import styled from "styled-components";
+import ChatDaemon from "../../daemons/chatDaemon";
+import { aiFont } from "../../styles/mixins";
+import { Hint } from "../../styles/sharedStyles";
+import InfoModal from "../common/InfoModal";
 
 const GridContainer = styled.div`
   display: grid;
@@ -35,23 +34,26 @@ const Definition = styled(GridItem)`
   justify-content: right;
 `;
 
-
 const ChainOfThoughtInfo: React.FC = () => {
-  return (
-    <InfoModal>
-      <div style={{ height: '20px' }}></div>
-      <Hint>
-        The following variables are available in chain-of-thought prompts:
-      </Hint>
-      <GridContainer>
-        <Variable>{ChatDaemon.PAST_VAR}</Variable>
-        <Definition>Past user-generated thoughts as a list. 'Ask AI' instructions, as well as responses, are omitted.</Definition>
-        <Variable>{ChatDaemon.CURRENT_VAR}</Variable>
-        <Definition>The thought selected as the subject for the comment.</Definition>
-      </GridContainer>
-    </InfoModal>
-  );
+	return (
+		<InfoModal>
+			<div style={{ height: "20px" }}></div>
+			<Hint>
+				The following variables are available in chain-of-thought prompts:
+			</Hint>
+			<GridContainer>
+				<Variable>{ChatDaemon.PAST_VAR}</Variable>
+				<Definition>
+					Past user-generated thoughts as a list. 'Ask AI' instructions, as well
+					as responses, are omitted.
+				</Definition>
+				<Variable>{ChatDaemon.CURRENT_VAR}</Variable>
+				<Definition>
+					The thought selected as the subject for the comment.
+				</Definition>
+			</GridContainer>
+		</InfoModal>
+	);
 };
 
 export default ChainOfThoughtInfo;
-

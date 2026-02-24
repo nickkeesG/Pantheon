@@ -1,5 +1,4 @@
-import { css } from 'styled-components';
-
+import { css } from "styled-components";
 
 export const styledBackground = css`
   background-color: var(--bg-color-secondary);

@@ -1,18 +1,22 @@
-import styled from 'styled-components';
-import { Tree } from '../../../redux/models';
-import { ContainerHorizontal, ContainerVertical, IconButtonMedium, TextInput } from '../../../styles/sharedStyles';
-import { useNavigate } from 'react-router-dom';
-import { MdDeleteOutline } from "react-icons/md";
-import ButtonWithConfirmation from '../../common/ButtonWithConfirmation';
-import { useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { deleteTreeAndContent } from '../../../redux/thunks';
-import { highlightOnHover } from '../../../styles/mixins';
-import { selectIdeasInTree } from '../../../redux/ideaSlice';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
-import { renameTree } from '../../../redux/treeSlice';
-
+import { MdDeleteOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { selectIdeasInTree } from "../../../redux/ideaSlice";
+import type { Tree } from "../../../redux/models";
+import { deleteTreeAndContent } from "../../../redux/thunks";
+import { renameTree } from "../../../redux/treeSlice";
+import { highlightOnHover } from "../../../styles/mixins";
+import {
+	ContainerHorizontal,
+	ContainerVertical,
+	IconButtonMedium,
+	TextInput,
+} from "../../../styles/sharedStyles";
+import ButtonWithConfirmation from "../../common/ButtonWithConfirmation";
 
 const TreeListItemContainer = styled(ContainerHorizontal)`
   width: 100%;
@@ -47,88 +51,100 @@ const Description = styled.div`
   font-size: 0.9em;
 `;
 
+const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
+	tree,
+	mostRecentEdit,
+}) => {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const ideas = useAppSelector((state) => selectIdeasInTree(state, tree.id));
+	const [hovering, setHovering] = useState(false); // TODO Would be nice to have this as a custom hook
+	const [editing, setEditing] = useState(false);
+	const treeListItemRef = useRef<HTMLDivElement>(null);
 
-const TreeListItem: React.FC<{ tree: Tree, mostRecentEdit: Date }> = ({ tree, mostRecentEdit }) => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const ideas = useAppSelector(state => selectIdeasInTree(state, tree.id));
-  const [hovering, setHovering] = useState(false); // TODO Would be nice to have this as a custom hook
-  const [editing, setEditing] = useState(false);
-  const treeListItemRef = useRef<HTMLDivElement>(null);
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			setEditing(false);
+		}
+	};
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      setEditing(false);
-    }
-  };
+	const handleClickOutside = (event: MouseEvent) => {
+		if (
+			treeListItemRef.current &&
+			!treeListItemRef.current.contains(event.target as Node)
+		) {
+			setEditing(false);
+		}
+	};
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (treeListItemRef.current && !treeListItemRef.current.contains(event.target as Node)) {
-      setEditing(false);
-    }
-  };
+	useEffect(() => {
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+	const handleTreeClick = () => {
+		navigate(`/tree/${tree.id}`);
+	};
 
-  const handleTreeClick = () => {
-    navigate(`/tree/${tree.id}`)
-  };
+	const handleDelete = () => {
+		dispatch(deleteTreeAndContent(tree.id));
+	};
 
-  const handleDelete = () => {
-    dispatch(deleteTreeAndContent(tree.id));
-  }
-
-  return (
-    <TreeListItemContainer
-      ref={treeListItemRef}
-      onClick={handleTreeClick}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-    >
-      <ContainerVertical>
-        {editing ? (
-          <TextInput
-            onClick={(evt) => evt.stopPropagation()}
-            value={tree.name || ''}
-            onChange={(e) => { dispatch(renameTree({ treeId: tree.id, newName: e.target.value })) }}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
-        ) : (
-          <Header>{tree.name || 'New tree'}</Header>
-        )}
-        <Description>
-          Sections: {tree.sectionIds.length} |
-          Ideas: {ideas.length}
-          {mostRecentEdit.getFullYear() > 2020 && // The first generated tree has id / timestamp 0
-            <> | Last edit {formatDistanceToNow(mostRecentEdit, { addSuffix: true })}</>
-          }
-        </Description>
-      </ContainerVertical>
-      <ButtonContainer onClick={(evt) => evt.stopPropagation()}>
-        {hovering &&
-          <>
-            <IconButtonMedium onClick={() => setEditing(true)}>
-              <FaRegEdit />
-            </IconButtonMedium>
-            <ButtonWithConfirmation
-              confirmationText="Are you sure you want to delete this tree? This cannot be undone."
-              onConfirm={handleDelete}
-            >
-              <IconButtonMedium>
-                <MdDeleteOutline />
-              </IconButtonMedium>
-            </ButtonWithConfirmation>
-          </>
-        }
-      </ButtonContainer>
-    </TreeListItemContainer>
-  )
-}
+	return (
+		<TreeListItemContainer
+			ref={treeListItemRef}
+			onClick={handleTreeClick}
+			onMouseEnter={() => setHovering(true)}
+			onMouseLeave={() => setHovering(false)}
+		>
+			<ContainerVertical>
+				{editing ? (
+					<TextInput
+						onClick={(evt) => evt.stopPropagation()}
+						value={tree.name || ""}
+						onChange={(e) => {
+							dispatch(
+								renameTree({ treeId: tree.id, newName: e.target.value }),
+							);
+						}}
+						onKeyDown={handleKeyDown}
+						autoFocus
+					/>
+				) : (
+					<Header>{tree.name || "New tree"}</Header>
+				)}
+				<Description>
+					Sections: {tree.sectionIds.length} | Ideas: {ideas.length}
+					{mostRecentEdit.getFullYear() > 2020 && ( // The first generated tree has id / timestamp 0
+						<>
+							{" "}
+							| Last edit{" "}
+							{formatDistanceToNow(mostRecentEdit, { addSuffix: true })}
+						</>
+					)}
+				</Description>
+			</ContainerVertical>
+			<ButtonContainer onClick={(evt) => evt.stopPropagation()}>
+				{hovering && (
+					<>
+						<IconButtonMedium onClick={() => setEditing(true)}>
+							<FaRegEdit />
+						</IconButtonMedium>
+						<ButtonWithConfirmation
+							confirmationText="Are you sure you want to delete this tree? This cannot be undone."
+							onConfirm={handleDelete}
+						>
+							<IconButtonMedium>
+								<MdDeleteOutline />
+							</IconButtonMedium>
+						</ButtonWithConfirmation>
+					</>
+				)}
+			</ButtonContainer>
+		</TreeListItemContainer>
+	);
+};
 
 export default TreeListItem;

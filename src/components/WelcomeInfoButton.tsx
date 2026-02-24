@@ -1,62 +1,86 @@
-import { useEffect } from "react";
-import { InfoButton } from "../styles/sharedStyles";
+import { useEffect, useState } from "react";
+import { ButtonSmall, InfoButton, ModalBox } from "../styles/sharedStyles";
 import Modal from "./common/Modal";
 import { useModal } from "./ModalContext";
 
-const InfoModal = () => {
+const steps = [
+	<>
+		<h3 className="text-center text-xl my-4">Welcome to Pantheon</h3>
+		<p>
+			<b>Pick a topic</b> you would like to make progress on, and make an effort
+			to think out loud, typing out your thoughts as they appear. <b>Daemons</b>{" "}
+			will appear to the left and right of your thoughts offering commentary.
+		</p>
+		<p>
+			Press <b>ENTER</b> after each thought so they can be added to the context.
+			Try not to wait for the daemons to respond, and treat the page more as a
+			diary or some personal notes. They will share their thoughts when they are
+			ready!
+		</p>
+	</>,
+	<>
+		<h3 className="text-center text-xl my-4">Branching & Editing</h3>
+		<p>
+			It is not possible to go back and edit/delete your thoughts, but you can{" "}
+			<b>branch</b> your thoughts at any point by clicking the little plus icon
+			next to a thought.
+		</p>
+		<p>
+			If you would like a fresh page, you can either create a new section of the
+			tree by clicking <b>New Section</b>, or create a completely new tree by
+			clicking the icon in the top left.
+		</p>
+	</>,
+	<>
+		<h3 className="text-center text-xl my-4">Additional Features</h3>
+		<ul className="space-y-2">
+			<li>
+				<b>Mentions:</b> Daemons are selected randomly by default. Include{" "}
+				<code>@daemon_name</code> to solicit a comment from a specific daemon.
+			</li>
+			<li>
+				<b>Ask AI:</b> You can also give direct instructions/questions to the
+				system with "Ask AI." Your instruction will be preceded by all prior
+				thoughts in the current branch.
+			</li>
+		</ul>
+	</>,
+];
+
+export const InfoModal = () => {
+	const [step, setStep] = useState(0);
+	const { removeModal } = useModal();
+
+	useEffect(() => {
+		localStorage.setItem("hasSeenWelcomeMessage", "true");
+	}, []);
+
 	return (
 		<Modal>
-			<div className="p-5 bg-[var(--bg-color)] text-[var(--text-color)] rounded-[10px] border-[0.5px] border-[var(--line-color)] w-[90vw] max-w-[700px] max-h-[60vh] overflow-y-auto space-y-4">
-				<h3 className="text-center text-xl my-4">Welcome to Pantheon</h3>
-				<p>
-					<b>Pick a topic</b> you would like to make progress on, and make an
-					effort to think out loud, typing out your thoughts as they appear.{" "}
-					<b>Daemons</b> will appear to the left and right of your thoughts
-					offering commentary.
-				</p>
-				<p>
-					Press <b>ENTER</b> after each thought so they can be added to the
-					context. Try not to wait for the daemons to respond, and treat the
-					page more as a diary or some personal notes. They will share their
-					thoughts when they are ready!
-				</p>
-				<p>
-					It is not possible to go back and edit/delete your thoughts, but you
-					can <b>branch</b> your thoughts at any point by clicking the little
-					plus icon next to a thought.
-				</p>
-				<p>Some additional features:</p>
-				<ul>
-					<li>
-						<b>Mentions:</b> Daemons are selected randomly by default. Include
-						@daemon_name to solicit a comment from a specific daemon.
-					</li>
-					<li>
-						<b>Ask AI:</b> You can also give direct instructions/questions to
-						the system with "Ask AI." Your instruction will be preceded by all
-						prior thoughts in the current branch.
-					</li>
-				</ul>
-				<p>
-					Finally, if you would like a fresh page, you can either create a new
-					section of the tree by clicking <b>New Section</b>, or by creating a
-					completely new tree by clicking the icon in the top left.
-				</p>
-			</div>
+			<ModalBox className="flex flex-col h-[300px]">
+				<div className="flex-1 space-y-4">{steps[step]}</div>
+				<div className="flex justify-between items-center pt-2">
+					<span className="text-[var(--text-color-tertiary)] text-sm">
+						{step + 1} / {steps.length}
+					</span>
+					<div className="flex gap-2">
+						{step > 0 && (
+							<ButtonSmall onClick={() => setStep(step - 1)}>Back</ButtonSmall>
+						)}
+						{step < steps.length - 1 ? (
+							<ButtonSmall onClick={() => setStep(step + 1)}>Next</ButtonSmall>
+						) : (
+							<ButtonSmall onClick={() => removeModal()}>Done</ButtonSmall>
+						)}
+					</div>
+				</div>
+			</ModalBox>
 		</Modal>
 	);
 };
 
 const WelcomeInfoButton = () => {
 	const { addModal } = useModal();
-
-	useEffect(() => {
-		const hasSeenWelcomeMessage = localStorage.getItem("hasSeenWelcomeMessage");
-		if (!hasSeenWelcomeMessage) {
-			addModal(<InfoModal />);
-			localStorage.setItem("hasSeenWelcomeMessage", "true");
-		}
-	}, [addModal]);
 
 	return <InfoButton onClick={() => addModal(<InfoModal />)} />;
 };

@@ -4,6 +4,8 @@ import ErrorDisplay from "../../../errorHandler";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { openTree } from "../../../redux/thunks";
 import { ContainerVertical } from "../../../styles/sharedStyles";
+import { useModal } from "../../ModalContext";
+import { InfoModal } from "../../WelcomeInfoButton";
 import CompletionsContainer from "./CompletionsContainer";
 import HistoryContainer from "./HistoryContainer";
 import InputArea from "./InputArea";
@@ -16,6 +18,13 @@ const TreeView = () => {
 	const trees = useAppSelector((state) => state.tree.trees);
 	const mostRecentTreeId = useAppSelector((state) => state.ui.activeTreeId);
 	const [treeFound, setTreeFound] = useState(false);
+	const { addModal } = useModal();
+
+	useEffect(() => {
+		if (localStorage.getItem("hasSeenWelcomeMessage")) return;
+		localStorage.setItem("hasSeenWelcomeMessage", "true");
+		addModal(<InfoModal />);
+	}, [addModal]);
 
 	useEffect(() => {
 		const requestedTreeExists = treeId && trees[parseInt(treeId, 10)];

@@ -4,7 +4,7 @@ import { defaultDaemonState } from "../../daemons/daemonInstructions";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { updateBaseDaemon } from "../../redux/daemonSlice";
-import type { BaseDaemonConfig, Idea } from "../../redux/models";
+import { type BaseDaemonConfig, type Idea, IdeaType } from "../../redux/models";
 import { Button, ContainerHorizontal, Hint } from "../../styles/sharedStyles";
 import InfoModal from "../common/InfoModal";
 import ResetButton from "../common/ResetButton";
@@ -22,6 +22,30 @@ const useConfigChanged = (
 };
 
 const defaults = defaultDaemonState.baseDaemon;
+
+const exampleIdeas: Idea[] = [
+	{
+		id: 1,
+		type: IdeaType.User,
+		sectionId: 1,
+		parentIdeaId: null,
+		text: "The city was quiet, but not in the way that felt peaceful.",
+	},
+	{
+		id: 2,
+		type: IdeaType.User,
+		sectionId: 1,
+		parentIdeaId: 1,
+		text: "She noticed the streetlights flickering in a pattern she hadn't seen before.",
+	},
+	{
+		id: 3,
+		type: IdeaType.User,
+		sectionId: 1,
+		parentIdeaId: 2,
+		text: "It reminded her of something from childhood, though she couldn't place it.",
+	},
+];
 
 const AISuggestionsSettings = () => {
 	const config = useAppSelector((state) => state.daemon.baseDaemon);
@@ -53,30 +77,6 @@ const AISuggestionsSettings = () => {
 		resizeTextArea(mainTemplateRef.current);
 		resizeTextArea(ideaTemplateRef.current);
 	}, [resizeTextArea]);
-
-	const exampleIdeas: Idea[] = [
-		{
-			id: 1,
-			type: 0,
-			sectionId: 1,
-			parentIdeaId: null,
-			text: "The city was quiet, but not in the way that felt peaceful.",
-		},
-		{
-			id: 2,
-			type: 0,
-			sectionId: 1,
-			parentIdeaId: 1,
-			text: "She noticed the streetlights flickering in a pattern she hadn't seen before.",
-		},
-		{
-			id: 3,
-			type: 0,
-			sectionId: 1,
-			parentIdeaId: 2,
-			text: "It reminded her of something from childhood, though she couldn't place it.",
-		},
-	];
 
 	const showExample = useCallback(() => {
 		const daemon = new BaseDaemon(config);

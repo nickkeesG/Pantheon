@@ -144,7 +144,9 @@ export function findDaemonMention(
 				? { name: daemon.name, index: match.index }
 				: null;
 		})
-		.filter((mention) => mention !== null)
+		.filter(
+			(mention): mention is { name: string; index: number } => mention !== null,
+		)
 		.sort((a, b) => a.index - b.index);
 
 	return mentions.length > 0 && mentions[0] ? mentions[0].name : null;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FiSettings } from "react-icons/fi";
 import { useAppDispatch } from "../../hooks";
+import { useConfirmation } from "../../hooks/useConfirmation";
 import { resetDaemonSlice } from "../../redux/daemonSlice";
 import { resetState } from "../../redux/thunks";
 import {
@@ -9,7 +10,6 @@ import {
 	IconButtonMedium,
 	ModalBox,
 } from "../../styles/sharedStyles";
-import ButtonWithConfirmation from "../common/ButtonWithConfirmation";
 import Modal from "../common/Modal";
 import { useModal } from "../ModalContext";
 import AISuggestionsSettings from "./AISuggestionsSettings";
@@ -22,6 +22,7 @@ const Settings = () => {
 	const dispatch = useAppDispatch();
 	const [key, setKey] = useState(Date.now()); // Key modifier for UI reset
 	const { addModal } = useModal();
+	const confirm = useConfirmation();
 
 	const openSettings = () => {
 		addModal(
@@ -41,12 +42,16 @@ const Settings = () => {
 								and edits made to default daemons, will be lost.
 							</Hint>
 							<div style={{ display: "flex" }}>
-								<ButtonWithConfirmation
-									confirmationText="Are you sure you want to reset all daemon settings? This cannot be undone."
-									onConfirm={resetDaemonSettings}
+								<ButtonDangerous
+									onClick={() =>
+										confirm(
+											"Are you sure you want to reset all daemon settings? This cannot be undone.",
+											resetDaemonSettings,
+										)
+									}
 								>
-									<ButtonDangerous>Reset daemon settings</ButtonDangerous>
-								</ButtonWithConfirmation>
+									Reset daemon settings
+								</ButtonDangerous>
 							</div>
 							<div className="mt-4" />
 							<Hint>
@@ -54,12 +59,16 @@ const Settings = () => {
 								and custom daemons will be lost.
 							</Hint>
 							<div style={{ display: "flex" }}>
-								<ButtonWithConfirmation
-									confirmationText="Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone."
-									onConfirm={resetAppState}
+								<ButtonDangerous
+									onClick={() =>
+										confirm(
+											"Are you sure you want to reset the entire app state? All progress will be lost. This cannot be undone.",
+											resetAppState,
+										)
+									}
 								>
-									<ButtonDangerous>Reset entire app state</ButtonDangerous>
-								</ButtonWithConfirmation>
+									Reset entire app state
+								</ButtonDangerous>
 							</div>
 						</div>
 					</div>

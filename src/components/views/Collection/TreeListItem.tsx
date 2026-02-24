@@ -5,6 +5,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useConfirmation } from "../../../hooks/useConfirmation";
 import { selectIdeasInTree } from "../../../redux/ideaSlice";
 import type { Tree } from "../../../redux/models";
 import { deleteTreeAndContent } from "../../../redux/thunks";
@@ -16,7 +17,6 @@ import {
 	IconButtonMedium,
 	TextInput,
 } from "../../../styles/sharedStyles";
-import ButtonWithConfirmation from "../../common/ButtonWithConfirmation";
 
 const TreeListItemContainer = styled(ContainerHorizontal)`
   width: 100%;
@@ -57,6 +57,7 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 }) => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const confirm = useConfirmation();
 	const ideas = useAppSelector((state) => selectIdeasInTree(state, tree.id));
 	const [hovering, setHovering] = useState(false); // TODO Would be nice to have this as a custom hook
 	const [editing, setEditing] = useState(false);
@@ -132,14 +133,16 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 						<IconButtonMedium onClick={() => setEditing(true)}>
 							<FaRegEdit />
 						</IconButtonMedium>
-						<ButtonWithConfirmation
-							confirmationText="Are you sure you want to delete this tree? This cannot be undone."
-							onConfirm={handleDelete}
+						<IconButtonMedium
+							onClick={() =>
+								confirm(
+									"Are you sure you want to delete this tree? This cannot be undone.",
+									handleDelete,
+								)
+							}
 						>
-							<IconButtonMedium>
-								<MdDeleteOutline />
-							</IconButtonMedium>
-						</ButtonWithConfirmation>
+							<MdDeleteOutline />
+						</IconButtonMedium>
 					</>
 				)}
 			</ButtonContainer>

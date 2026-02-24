@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch } from "../../hooks";
+import { useConfirmation } from "../../hooks/useConfirmation";
 import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice";
 import type { ChatDaemonConfig } from "../../redux/models";
 import { styledBackground } from "../../styles/mixins";
@@ -17,7 +18,6 @@ import {
 	TextButton,
 	TextInput,
 } from "../../styles/sharedStyles";
-import ButtonWithConfirmation from "../common/ButtonWithConfirmation";
 import { useModal } from "../ModalContext";
 import ChainOfThoughtInfo from "./ChainOfThoughtInfo";
 
@@ -55,6 +55,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 	const userPromptRefs = useRef<HTMLTextAreaElement[]>([]);
 	const dispatch = useAppDispatch();
 	const { addModal } = useModal();
+	const confirm = useConfirmation();
 
 	const configChanged = useConfigChanged(config, {
 		name,
@@ -193,12 +194,16 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 					<Button onClick={() => setUserPrompts([...userPrompts, ""])}>
 						Add User Prompt
 					</Button>
-					<ButtonWithConfirmation
-						confirmationText="Are you sure you want to delete this daemon? This cannot be undone."
-						onConfirm={() => dispatch(removeChatDaemon(config.id))}
+					<ButtonDangerous
+						onClick={() =>
+							confirm(
+								"Are you sure you want to delete this daemon? This cannot be undone.",
+								() => dispatch(removeChatDaemon(config.id)),
+							)
+						}
 					>
-						<ButtonDangerous>Delete daemon</ButtonDangerous>
-					</ButtonWithConfirmation>
+						Delete daemon
+					</ButtonDangerous>
 				</StyledDiv>
 			)}
 		</ChatDaemonSettingsContainer>

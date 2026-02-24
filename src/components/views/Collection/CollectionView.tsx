@@ -17,7 +17,7 @@ function CollectionView() {
 		<div className="flex flex-col w-full box-border items-center">
 			<div className="flex flex-col w-full items-center py-10 px-4">
 				<div className="flex flex-col max-w-[1024px] w-full">
-					<h1 className="text-4xl font-light text-center">Trees</h1>
+					<h2 className="text-center">Trees</h2>
 					<TextButton style={{ alignSelf: "end" }} onClick={handleCreateTree}>
 						+ New tree
 					</TextButton>

@@ -18,8 +18,8 @@ const StyledCommentList = styled.div`
 interface CommentListProps {
 	offset: number;
 	comments: Comment[];
-	onHeightChanged: (newHeight: number) => any;
-	onHoverChange: (isHovered: boolean) => any;
+	onHeightChanged: (newHeight: number) => void;
+	onHoverChange: (isHovered: boolean) => void;
 	daemonCommenting?: string;
 }
 

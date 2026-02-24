@@ -225,8 +225,8 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 						/>
 					</ActionPanel>
 				</Row>
-				{branchingSectionsRootIdeas.map((idea, index) => (
-					<Row key={index}>
+				{branchingSectionsRootIdeas.map((idea) => (
+					<Row key={idea.id}>
 						<SectionButton
 							title="Go to child section"
 							onClick={() => dispatch(navigateToChildSection(idea))}

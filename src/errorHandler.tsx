@@ -19,7 +19,7 @@ const ErrorContainer = styled.div`
   margin: 4px;
 `;
 
-export function dispatchError(error: any) {
+export function dispatchError(error: string | Error) {
 	store.dispatch({ type: "error/addError", payload: error });
 }
 

@@ -28,7 +28,8 @@ export const getMostRecentDescendent = (
 	}
 	const queue = [mostRecentDescendent];
 	while (queue.length > 0) {
-		const currentIdea = queue.shift()!;
+		const currentIdea = queue.shift();
+		if (!currentIdea) break;
 		const children = ideas.filter(
 			(idea) => idea.parentIdeaId === currentIdea.id,
 		);
@@ -83,9 +84,9 @@ export const getIdeasSinceLastComment = (
 ): Idea[] => {
 	// Extract idea IDs from comments and store them in a set for uniqueness
 	const ideaIdsWithComments = new Set<number>();
-	Object.values(comments).forEach((comment) =>
-		ideaIdsWithComments.add(comment.ideaId),
-	);
+	Object.values(comments).forEach((comment) => {
+		ideaIdsWithComments.add(comment.ideaId);
+	});
 	// Find the ID of the most recently commented idea
 	const newestCommentedIdeaId = Math.max(...Array.from(ideaIdsWithComments));
 	// Return ideas that were created after the most recent comment
@@ -144,7 +145,7 @@ export function findDaemonMention(
 				: null;
 		})
 		.filter((mention) => mention !== null)
-		.sort((a, b) => a?.index - b?.index);
+		.sort((a, b) => a.index - b.index);
 
 	return mentions.length > 0 && mentions[0] ? mentions[0].name : null;
 }

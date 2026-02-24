@@ -41,7 +41,8 @@ const ideaSlice = createSlice({
 			state,
 			action: PayloadAction<{ ideaId: number; mention: string }>,
 		) {
-			const idea = state.ideas[action.payload.ideaId]!;
+			const idea = state.ideas[action.payload.ideaId];
+			if (!idea) return;
 			idea.mention = action.payload.mention;
 		},
 		replaceSlice: (_, action: PayloadAction<IdeaState>) => action.payload,

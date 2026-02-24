@@ -94,7 +94,9 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 	useEffect(() => {
 		if (!isCollapsed) {
 			resizeTextArea(systemPromptRef.current);
-			userPromptRefs.current.forEach((ref) => resizeTextArea(ref));
+			userPromptRefs.current.forEach((ref) => {
+				resizeTextArea(ref);
+			});
 		}
 	}, [isCollapsed, resizeTextArea]);
 
@@ -137,11 +139,13 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 			</span>
 			{!isCollapsed && (
 				<StyledDiv>
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: TextInput is a styled input */}
 					<label>
 						<SettingLabel>Name</SettingLabel>
 						<TextInput value={name} onChange={(e) => setName(e.target.value)} />
 					</label>
 					<br />
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: TextArea is a styled textarea */}
 					<label>
 						<SettingLabel>System prompt</SettingLabel>
 						<TextArea
@@ -162,20 +166,22 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 						<Filler />
 					</ContainerHorizontal>
 					{userPrompts.map((prompt, index) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: prompts are plain strings with no stable ID
 						<div key={index}>
+							{/* biome-ignore lint/a11y/noLabelWithoutControl: TextArea is a styled textarea */}
 							<label>
 								<SettingLabel>Prompt {index + 1}</SettingLabel>
+								<TextArea
+									ref={(el) => {
+										userPromptRefs.current[index] = el as HTMLTextAreaElement;
+									}}
+									value={prompt}
+									onChange={(e) =>
+										handleUserPromptChange(index, e.target.value, e.target)
+									}
+									style={{ width: "100%" }}
+								/>
 							</label>
-							<TextArea
-								ref={(el) =>
-									(userPromptRefs.current[index] = el as HTMLTextAreaElement)
-								}
-								value={prompt}
-								onChange={(e) =>
-									handleUserPromptChange(index, e.target.value, e.target)
-								}
-								style={{ width: "100%" }}
-							/>
 							<ButtonSmall
 								onClick={() => deleteUserPrompt(index)}
 								style={{ marginBottom: "10px" }}

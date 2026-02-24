@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -68,14 +68,14 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 		}
 	};
 
-	const handleClickOutside = (event: MouseEvent) => {
+	const handleClickOutside = useCallback((event: MouseEvent) => {
 		if (
 			treeListItemRef.current &&
 			!treeListItemRef.current.contains(event.target as Node)
 		) {
 			setEditing(false);
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);

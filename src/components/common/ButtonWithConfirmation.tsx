@@ -28,7 +28,11 @@ const ButtonWithConfirmation: React.FC<ButtonWithConfirmationProps> = ({
 		onConfirm();
 	};
 
-	return <div onClick={onClick}>{children}</div>;
+	return (
+		<button type="button" onClick={onClick} style={{ all: "unset" }}>
+			{children}
+		</button>
+	);
 };
 
 export default ButtonWithConfirmation;

@@ -14,6 +14,7 @@ const generateHighlightedTextWithLineBreaks = (
 			.split("\n")
 			.map((part, idx, arr) =>
 				idx < arr.length - 1 ? (
+					// biome-ignore lint/suspicious/noArrayIndexKey: static split result, order never changes
 					<React.Fragment key={`${lastEnd}-${start}-${idx}`}>
 						{part}
 						<br />
@@ -29,6 +30,7 @@ const generateHighlightedTextWithLineBreaks = (
 			.split("\n")
 			.map((part, idx, arr) => (
 				<span
+					// biome-ignore lint/suspicious/noArrayIndexKey: static split result, order never changes
 					key={`${start}-${end}-${idx}`}
 					style={{ color: "var(--accent-color-coral)" }}
 				>

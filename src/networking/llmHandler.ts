@@ -23,7 +23,7 @@ async function CallOpenAIAPI(
 	};
 	try {
 		return await axios.post(url, data, config);
-	} catch (error: any) {
+	} catch (error: unknown) {
 		dispatchError("Error calling OpenAI API");
 		console.error(error);
 	}
@@ -46,7 +46,7 @@ async function CallChatAPI(
 				(choice: { message: { content: string } }) =>
 					choice.message.content.trim(),
 			);
-		} catch (error: any) {
+		} catch (error: unknown) {
 			dispatchError("Couldn't parse response from OpenAI Chat API");
 			console.error(error);
 			return null;
@@ -72,7 +72,7 @@ async function CallBaseAPI(
 			return response.data.choices.map((choice: { text: string }) =>
 				choice.text.trim(),
 			);
-		} catch (error: any) {
+		} catch (error: unknown) {
 			dispatchError("Couldn't parse response from OpenAI Base API");
 			console.error(error);
 			return null;
@@ -146,7 +146,7 @@ export async function GenerateChatComment(
 			],
 		);
 		return { text: commentText, chainOfThought: chainOfThought };
-	} catch (error: any) {
+	} catch (error: unknown) {
 		dispatchError("Couldn't finish daemon chain-of-thought");
 		console.error(error);
 		return null;

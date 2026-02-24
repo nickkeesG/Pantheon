@@ -55,30 +55,36 @@ function TreeActionBar() {
 
 	useEffect(() => {
 		setActionBar(
-			<div className="relative w-full flex flex-row items-center bg-[var(--bg-color)] px-4 py-1 border-b border-[var(--line-color-strong)]">
-				<span className="text-sm text-[var(--text-color-secondary)] truncate">
-					{treeName || "New tree"}
-				</span>
-				{showUp && (
-					<button
-						type="button"
-						title="Back to parent section"
-						onClick={handleUp}
-						className="absolute left-1/2 -translate-x-1/2 top-0 h-full w-[39%] bg-transparent border-0 cursor-pointer text-[var(--text-color)] flex items-center justify-center transition-colors duration-200 hover:bg-[var(--highlight-weak)] border-r border-l border-l-[var(--line-color-strong)] border-r-[var(--line-color-strong)]"
-					>
-						<SlArrowUp />
-					</button>
-				)}
-				<div className="ml-auto">
-					<IconButtonMedium
-						title="Copy context"
-						onClick={copyContextToMarkdown}
-						disabled={creatingSection || activeSection.ideaIds.length === 0}
-					>
-						{isCopied ? <FiCheckCircle /> : <FiCopy />}
-					</IconButtonMedium>
+			<>
+				<div className="relative w-full flex flex-row items-center bg-[var(--bg-color)] px-4 py-1 border-b border-[var(--line-color-strong)]">
+					<span className="text-sm text-[var(--text-color-secondary)] truncate">
+						{treeName || "New tree"}
+					</span>
+					{showUp && (
+						<button
+							type="button"
+							title="Back to parent section"
+							onClick={handleUp}
+							className="absolute left-1/2 -translate-x-1/2 top-0 h-full w-[39%] bg-transparent border-0 cursor-pointer text-[var(--text-color)] flex items-center justify-center transition-colors duration-200 hover:bg-[var(--highlight-weak)] border-r border-l border-l-[var(--line-color-strong)] border-r-[var(--line-color-strong)]"
+						>
+							<SlArrowUp />
+						</button>
+					)}
+					<div className="ml-auto">
+						<IconButtonMedium
+							title="Copy context"
+							onClick={copyContextToMarkdown}
+							disabled={creatingSection || activeSection.ideaIds.length === 0}
+						>
+							{isCopied ? <FiCheckCircle /> : <FiCopy />}
+						</IconButtonMedium>
+					</div>
 				</div>
-			</div>,
+				<div className="hidden max-md:block px-3 py-2 text-xs bg-red-50 dark:bg-red-950 border-b border-red-200 dark:border-red-900 text-red-800 dark:text-red-400">
+					This view is not optimised for narrow screens and might render
+					incorrectly
+				</div>
+			</>,
 		);
 
 		return () => setActionBar(null);

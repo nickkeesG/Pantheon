@@ -6,9 +6,14 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { updateBaseDaemon } from "../../redux/daemonSlice";
 import { type BaseDaemonConfig, type Idea, IdeaType } from "../../redux/models";
 import { Button, ContainerHorizontal, Hint } from "../../styles/sharedStyles";
-import InfoModal from "../common/InfoModal";
 import ResetButton from "../common/ResetButton";
-import { useModal } from "../ModalContext";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/Dialog";
 
 const useConfigChanged = (
 	config: BaseDaemonConfig,
@@ -57,7 +62,6 @@ const AISuggestionsSettings = () => {
 	);
 	const mainTemplateRef = useRef<HTMLTextAreaElement>(null);
 	const ideaTemplateRef = useRef<HTMLTextAreaElement>(null);
-	const { addModal } = useModal();
 	const dispatch = useAppDispatch();
 
 	const configChanged = useConfigChanged(config, {
@@ -77,20 +81,6 @@ const AISuggestionsSettings = () => {
 		resizeTextArea(mainTemplateRef.current);
 		resizeTextArea(ideaTemplateRef.current);
 	}, [resizeTextArea]);
-
-	const showExample = useCallback(() => {
-		const daemon = new BaseDaemon(config);
-		const prompt = daemon.getContext(exampleIdeas);
-		addModal(
-			<InfoModal>
-				<br />
-				<Hint>What the base model will see with current templates</Hint>
-				<div className="bg-[var(--bg-color-secondary)] p-3 rounded-lg mt-2.5 whitespace-pre-wrap break-words font-ai text-[0.8em]">
-					{prompt}
-				</div>
-			</InfoModal>,
-		);
-	}, [config, addModal]);
 
 	useEffect(() => {
 		if (!configChanged) return;
@@ -176,7 +166,22 @@ const AISuggestionsSettings = () => {
 						)}
 					</div>
 				</div>
-				<Button onClick={showExample}>Show example prompt</Button>
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button>Show example prompt</Button>
+					</DialogTrigger>
+					<DialogContent>
+						<DialogTitle className="sr-only">Example prompt</DialogTitle>
+						<DialogDescription className="sr-only">
+							Preview of what the base model will see
+						</DialogDescription>
+						<br />
+						<Hint>What the base model will see with current templates</Hint>
+						<div className="bg-[var(--bg-color-secondary)] p-3 rounded-lg mt-2.5 whitespace-pre-wrap break-words font-ai text-[0.8em]">
+							{new BaseDaemon(config).getContext(exampleIdeas)}
+						</div>
+					</DialogContent>
+				</Dialog>
 				<div className="flex gap-3">
 					<div className="flex-1">
 						<label

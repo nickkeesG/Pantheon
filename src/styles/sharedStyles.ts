@@ -172,17 +172,6 @@ export const TextInput = styled.input`
   }
 `;
 
-export const ModalBox = styled.div`
-  box-sizing: border-box;
-  background-color: var(--bg-color);
-  padding: 20px 44px 20px 20px;
-  border-radius: 10px;
-  border: 0.5px solid var(--line-color);
-  width: min(550px, 80vw);
-  max-height: 80vh;
-  overflow-y: auto;
-`;
-
 export const Hint = styled.div`
   font-size: 0.85em;
   color: var(--text-color-tertiary);

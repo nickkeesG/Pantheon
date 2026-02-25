@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import styled from "styled-components";
 import { ChainOfThoughtType, type Comment } from "../../../redux/models";
-import { Hint, ModalBox } from "../../../styles/sharedStyles";
+import { Hint } from "../../../styles/sharedStyles";
 import TextWithHighlights from "../../common/TextWithHighlights";
 
 const InnerPanel = styled.div`
@@ -33,7 +33,7 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
 	);
 
 	return (
-		<ModalBox style={{ width: "70vw" }}>
+		<>
 			<h3 className="text-center">Comment context</h3>
 			<hr />
 			<Hint>
@@ -70,7 +70,7 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
 					<Hint>Comment context is not available for old comments.</Hint>
 				)}
 			</InnerPanel>
-		</ModalBox>
+		</>
 	);
 };
 

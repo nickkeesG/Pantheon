@@ -3,7 +3,7 @@ import styled from "styled-components";
 import ChatDaemon from "../../daemons/chatDaemon";
 import { aiFont } from "../../styles/mixins";
 import { Hint } from "../../styles/sharedStyles";
-import InfoModal from "../common/InfoModal";
+import { DialogDescription, DialogTitle } from "../ui/Dialog";
 
 const GridContainer = styled.div`
   display: grid;
@@ -36,8 +36,14 @@ const Definition = styled(GridItem)`
 
 const ChainOfThoughtInfo: React.FC = () => {
 	return (
-		<InfoModal>
-			<div style={{ height: "20px" }}></div>
+		<>
+			<DialogTitle className="sr-only">
+				Chain-of-thought prompt variables
+			</DialogTitle>
+			<DialogDescription className="sr-only">
+				Available variables for chain-of-thought prompts
+			</DialogDescription>
+			<div style={{ height: "20px" }} />
 			<Hint>
 				The following variables are available in chain-of-thought prompts:
 			</Hint>
@@ -52,7 +58,7 @@ const ChainOfThoughtInfo: React.FC = () => {
 					The thought selected as the subject for the comment.
 				</Definition>
 			</GridContainer>
-		</InfoModal>
+		</>
 	);
 };
 

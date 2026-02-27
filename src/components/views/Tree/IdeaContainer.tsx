@@ -2,7 +2,6 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { HiPlus } from "react-icons/hi2";
 import { SlArrowLeft } from "react-icons/sl";
-import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { selectCommentsForIdea } from "../../../redux/commentSlice";
 import {
@@ -12,79 +11,14 @@ import {
 import { type Idea, IdeaType } from "../../../redux/models";
 import { navigateToChildSection, switchBranch } from "../../../redux/thunks";
 import { createBranch } from "../../../redux/uiSlice";
-import { emergeAnimation } from "../../../styles/mixins";
-import { IconButtonLarge, TextButton } from "../../../styles/sharedStyles";
-import { getHighlightsArray } from "../../../styles/uiUtils.ts";
+import { getHighlightsArray } from "../../../styles/uiUtils";
 import TextWithHighlights from "../../common/TextWithHighlights";
 import CommentList from "./CommentList";
 
 // TODO Massively cleanup this file, it's way too big
 
-const Container = styled.div`
-  display: flex;
-  position: relative;
-  width: 100%;
-  word-break: break-word;
-  padding: 8px 0px;
-`;
-
-const ActionPanel = styled.div`
-  flex: 0 0 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ArrowButton = styled(IconButtonLarge).attrs({
-	as: SlArrowLeft,
-})`
-  height: 24px;
-  width: 16px;
-  padding: 4px 2px;
-  margin: 4px;
-`;
-
-const SectionButton = styled(TextButton)`
-  white-space: nowrap;
-  margin: 0px 28px;
-  font-size: 0.75rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const CenterPanel = styled.div`
-  max-width: 46%;
-  flex: 0 0 46%;
-  display: flex;
-  flex-direction: column;
-  ${emergeAnimation};
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const StyledIdeaContainer = styled.div`
-  position: relative;
-  flex: 1;
-  padding: 10px 28px 10px 10px;
-  margin: 2px 0px;
-  border: 0.5px solid var(--line-color-strong);
-  border-radius: 4px;
-  transition: background-color 0.3s, border-color 0.3s;
-`;
-
-const PlusButton = styled(IconButtonLarge).attrs({
-	as: HiPlus,
-})`
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  margin: 0px;
-  padding: 2px;
-`;
+const iconBtnBase =
+	"cursor-pointer font-inherit bg-transparent text-[var(--text-color-secondary)] border-none rounded inline-flex items-center justify-center box-content [&>svg]:w-full [&>svg]:h-full transition-[background-color,border-color,color,opacity,transform] duration-200 hover:not-disabled:bg-[var(--highlight-weak)] active:not-disabled:opacity-70";
 
 interface IdeaContainerProps {
 	idea: Idea;
@@ -161,7 +95,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 		dispatch(switchBranch(idea, moveForward));
 	};
 
-	const ideaContainerStyle = isHighlighted
+	const ideaContainerStyle: React.CSSProperties = isHighlighted
 		? {
 				borderColor: "var(--line-color)",
 				backgroundColor: "var(--bg-color-secondary)",
@@ -172,8 +106,10 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 	}
 
 	return (
-		<Container
+		// biome-ignore lint/a11y/noStaticElementInteractions: hover highlight only, not interactive
+		<div
 			ref={containerRef}
+			className="flex relative w-full break-words py-2"
 			onMouseEnter={() => setShowPlusButton(true)}
 			onMouseLeave={() => setShowPlusButton(false)}
 		>
@@ -186,16 +122,18 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 				onHoverChange={setIsHighlighted}
 				daemonCommenting={daemonCommentingLeft}
 			/>
-			<CenterPanel>
-				<Row>
-					<ActionPanel>
-						<ArrowButton
+			<div className="max-w-[46%] flex-[0_0_46%] flex flex-col animate-emerge">
+				<div className="flex flex-row">
+					<div className="flex-[0_0_28px] flex flex-col items-center justify-center">
+						<SlArrowLeft
 							title="Previous branch"
 							onClick={() => switchBranches(false)}
 							style={{ visibility: hasBranches ? "visible" : "hidden" }}
+							className={`${iconBtnBase} h-6 w-4 p-[4px_2px] m-1`}
 						/>
-					</ActionPanel>
-					<StyledIdeaContainer
+					</div>
+					<div
+						className="relative flex-1 p-[10px_28px_10px_10px] my-0.5 border-[0.5px] border-[var(--line-color-strong)] rounded transition-[background-color,border-color] duration-300"
 						style={{
 							...ideaContainerStyle,
 							marginLeft:
@@ -203,39 +141,44 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 						}}
 					>
 						<TextWithHighlights text={idea.text} highlights={highlights} />
-						<PlusButton
+						<HiPlus
 							title="New branch"
 							onClick={newBranch}
+							className={`${iconBtnBase} w-5 h-5 p-0.5 absolute top-1.5 right-1.5 m-0`}
 							style={{
 								visibility: showPlusButton ? "visible" : "hidden",
 								float: "right",
 							}}
 						/>
-					</StyledIdeaContainer>
-					<ActionPanel
+					</div>
+					<div
+						className="flex-[0_0_28px] flex flex-col items-center justify-center"
 						style={{ visibility: hasBranches ? "visible" : "hidden" }}
 					>
-						<ArrowButton
+						<SlArrowLeft
 							title="Next branch"
 							onClick={() => switchBranches(true)}
 							style={{
 								visibility: hasBranches ? "visible" : "hidden",
 								transform: "rotate(180deg)",
 							}}
+							className={`${iconBtnBase} h-6 w-4 p-[4px_2px] m-1`}
 						/>
-					</ActionPanel>
-				</Row>
+					</div>
+				</div>
 				{branchingSectionsRootIdeas.map((idea) => (
-					<Row key={idea.id}>
-						<SectionButton
+					<div className="flex flex-row" key={idea.id}>
+						<button
+							type="button"
 							title="Go to child section"
 							onClick={() => dispatch(navigateToChildSection(idea))}
+							className="cursor-pointer font-inherit text-[inherit] bg-transparent text-[var(--text-color-secondary)] border-none rounded-lg px-2 py-1 m-1 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:not-disabled:bg-[var(--highlight-weak)] active:not-disabled:opacity-70 whitespace-nowrap mx-7 text-[0.75rem] overflow-hidden text-ellipsis"
 						>
 							Child section: {idea.text}
-						</SectionButton>
-					</Row>
+						</button>
+					</div>
 				))}
-			</CenterPanel>
+			</div>
 			<CommentList
 				offset={rightCommentOffset}
 				comments={rightComments}
@@ -245,7 +188,7 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 				onHoverChange={setIsHighlighted}
 				daemonCommenting={daemonCommentingRight}
 			/>
-		</Container>
+		</div>
 	);
 };
 

@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch } from "../../hooks";
 import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice";
 import type { ChatDaemonConfig } from "../../redux/models";
-import { styledBackground } from "../../styles/mixins";
 import {
 	Button,
 	ButtonDangerous,
 	ButtonSmall,
-	ContainerHorizontal,
 	Filler,
 	InfoButton,
 	SettingLabel,
@@ -26,15 +23,6 @@ import {
 	DialogTrigger,
 } from "../ui/Dialog";
 import ChainOfThoughtInfo from "./ChainOfThoughtInfo";
-
-const ChatDaemonSettingsContainer = styled.div`
-  text-align: left;
-`;
-
-const StyledDiv = styled.div`
-  padding: 8px;
-  ${styledBackground};
-`;
 
 const useConfigChanged = (
 	config: ChatDaemonConfig,
@@ -130,7 +118,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 	]);
 
 	return (
-		<ChatDaemonSettingsContainer>
+		<div className="text-left">
 			<span>
 				<input
 					type="checkbox"
@@ -143,7 +131,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 				</TextButton>
 			</span>
 			{!isCollapsed && (
-				<StyledDiv>
+				<div className="p-2 bg-[var(--bg-color-secondary)] rounded">
 					{/* biome-ignore lint/a11y/noLabelWithoutControl: TextInput is a styled input */}
 					<label>
 						<SettingLabel>Name</SettingLabel>
@@ -163,9 +151,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 						/>
 					</label>
 					<br />
-					<ContainerHorizontal
-						style={{ alignItems: "center", justifyContent: "center" }}
-					>
+					<div className="flex flex-row w-full box-border items-center justify-center">
 						<h4 style={{ marginRight: "8px" }}>Chain-of-thought prompts</h4>
 						<Dialog>
 							<DialogTrigger asChild>
@@ -176,7 +162,7 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 							</DialogContent>
 						</Dialog>
 						<Filler />
-					</ContainerHorizontal>
+					</div>
 					{userPrompts.map((prompt, index) => (
 						// biome-ignore lint/suspicious/noArrayIndexKey: prompts are plain strings with no stable ID
 						<div key={index}>
@@ -229,9 +215,9 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 							</div>
 						</DialogContent>
 					</Dialog>
-				</StyledDiv>
+				</div>
 			)}
-		</ChatDaemonSettingsContainer>
+		</div>
 	);
 };
 

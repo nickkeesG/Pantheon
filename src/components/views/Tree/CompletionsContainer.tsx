@@ -1,54 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import BaseDaemon from "../../../daemons/baseDaemon";
 import { useAppSelector } from "../../../hooks";
 import { selectActiveThoughts } from "../../../redux/ideaSlice";
 import type { Idea } from "../../../redux/models";
-import { aiFont, fadeInAnimation } from "../../../styles/mixins";
-import {
-	ContainerHorizontal,
-	Filler,
-	Hint,
-	TextButton,
-} from "../../../styles/sharedStyles";
-
-const TopLevelContainer = styled.div`
-  width: 100%;
-  height: auto;
-  padding: 16px 12px;
-  box-sizing: border-box;
-`;
-
-const BackgroundContainer = styled.div`
-  background-color: var(--bg-color-secondary);
-  width: 100%;
-  height: auto;
-  padding: 0px 12px 12px 12px;
-  box-sizing: border-box;
-  border-radius: 4px;
-`;
-
-const StyledCompletionsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  width: 100%;
-  height: auto;
-  min-height: 200px;
-  box-sizing: border-box;
-`;
-
-const StyledIndividualCompletion = styled.div`
-  position: relative;
-  flex: 1;
-  padding: 8px;
-  border: 0.5px solid var(--line-color-strong);
-  border-radius: 4px;
-  white-space: normal;
-  word-break: break-word;
-  ${aiFont};
-  ${fadeInAnimation};
-`;
 
 const CompletionsContainer = () => {
 	const [completions, setCompletions] = useState<string[]>([]);
@@ -88,29 +42,36 @@ const CompletionsContainer = () => {
 	}, [activeThoughts, getNewCompletions]);
 
 	return (
-		<TopLevelContainer>
-			<BackgroundContainer>
-				<ContainerHorizontal style={{ alignItems: "center" }}>
+		<div className="w-full h-auto p-[16px_12px] box-border">
+			<div className="bg-[var(--bg-color-secondary)] w-full h-auto p-[0px_12px_12px_12px] box-border rounded">
+				<div className="flex flex-row w-full box-border items-center">
 					<h4>AI suggestions</h4>
-					<Filler />
-					<TextButton onClick={() => getNewCompletions(activeThoughts)}>
+					<div className="flex-1" />
+					<button
+						type="button"
+						onClick={() => getNewCompletions(activeThoughts)}
+						className="cursor-pointer font-inherit text-[inherit] bg-transparent text-[var(--text-color-secondary)] border-none rounded-lg px-2 py-1 m-1 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:not-disabled:bg-[var(--highlight-weak)] active:not-disabled:opacity-70"
+					>
 						Refresh
-					</TextButton>
-				</ContainerHorizontal>
+					</button>
+				</div>
 				{completions.length === 0 && (
-					<Hint>
+					<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
 						Here you will see the AI's thoughts of what might come next
-					</Hint>
+					</div>
 				)}
-				<StyledCompletionsContainer>
+				<div className="grid grid-cols-3 gap-2.5 w-full h-auto min-h-[200px] box-border">
 					{completions.map((completion, index) => (
-						<StyledIndividualCompletion key={index + completion}>
+						<div
+							key={index + completion}
+							className="relative flex-1 p-2 border-[0.5px] border-[var(--line-color-strong)] rounded whitespace-normal break-words font-ai text-[0.8em] animate-fade-in"
+						>
 							{completion}
-						</StyledIndividualCompletion>
+						</div>
 					))}
-				</StyledCompletionsContainer>
-			</BackgroundContainer>
-		</TopLevelContainer>
+				</div>
+			</div>
+		</div>
 	);
 };
 

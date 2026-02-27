@@ -3,18 +3,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { selectIdeasInTree } from "../../../redux/ideaSlice";
 import type { Tree } from "../../../redux/models";
 import { deleteTreeAndContent } from "../../../redux/thunks";
 import { renameTree } from "../../../redux/treeSlice";
-import { highlightOnHover } from "../../../styles/mixins";
 import {
 	Button,
 	ButtonDangerous,
-	ContainerHorizontal,
-	ContainerVertical,
 	IconButtonMedium,
 	TextInput,
 } from "../../../styles/sharedStyles";
@@ -26,39 +22,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../../ui/Dialog";
-
-const TreeListItemContainer = styled(ContainerHorizontal)`
-  width: 100%;
-  margin: 0px;
-  border: none;
-  border-bottom: 0.5px solid var(--line-color);
-  border-radius: 0px;
-  color: var(--text-color-secondary);
-  text-align: start;
-  ${highlightOnHover};
-  padding: 8px 16px;
-`;
-
-const ButtonContainer = styled(ContainerHorizontal)`
-  flex-grow: 0;
-  width: fit-content;
-  min-width: 64px;
-  padding-left: 8px;
-`;
-
-const Header = styled.div`
-  color: var(--text-color);
-  min-height: 33px;
-  font-size: 1.1em;
-  box-sizing: border-box;
-  align-items: center;
-  display: flex;
-`;
-
-const Description = styled.div`
-  margin-top: 8px;
-  font-size: 0.9em;
-`;
 
 const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 	tree,
@@ -102,13 +65,20 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 	};
 
 	return (
-		<TreeListItemContainer
+		// biome-ignore lint/a11y/useSemanticElements: complex list item layout with nested interactive elements
+		<div
 			ref={treeListItemRef}
+			role="button"
+			tabIndex={0}
 			onClick={handleTreeClick}
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") handleTreeClick();
+			}}
 			onMouseEnter={() => setHovering(true)}
 			onMouseLeave={() => setHovering(false)}
+			className="flex flex-row w-full box-border m-0 border-none border-b border-b-[0.5px] border-b-[var(--line-color)] rounded-none text-[var(--text-color-secondary)] text-start px-4 py-2 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:bg-[var(--highlight-weak)] cursor-pointer"
 		>
-			<ContainerVertical>
+			<div className="flex flex-col w-full box-border">
 				{editing ? (
 					<TextInput
 						onClick={(evt) => evt.stopPropagation()}
@@ -122,9 +92,11 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 						autoFocus
 					/>
 				) : (
-					<Header>{tree.name || "New tree"}</Header>
+					<div className="text-[var(--text-color)] min-h-[33px] text-[1.1em] box-border items-center flex">
+						{tree.name || "New tree"}
+					</div>
 				)}
-				<Description>
+				<div className="mt-2 text-[0.9em]">
 					Sections: {tree.sectionIds.length} | Ideas: {ideas.length}
 					{mostRecentEdit.getFullYear() > 2020 && ( // The first generated tree has id / timestamp 0
 						<>
@@ -133,9 +105,14 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 							{formatDistanceToNow(mostRecentEdit, { addSuffix: true })}
 						</>
 					)}
-				</Description>
-			</ContainerVertical>
-			<ButtonContainer onClick={(evt) => evt.stopPropagation()}>
+				</div>
+			</div>
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation only, no interactive behavior */}
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: stopPropagation only */}
+			<div
+				className="flex flex-row box-border grow-0 w-fit min-w-16 pl-2"
+				onClick={(evt) => evt.stopPropagation()}
+			>
 				{hovering && (
 					<IconButtonMedium onClick={() => setEditing(true)}>
 						<FaRegEdit />
@@ -166,8 +143,8 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 						</div>
 					</DialogContent>
 				</Dialog>
-			</ButtonContainer>
-		</TreeListItemContainer>
+			</div>
+		</div>
 	);
 };
 

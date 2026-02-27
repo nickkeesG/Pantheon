@@ -1,23 +1,9 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import { FiX } from "react-icons/fi";
 import { useAppSelector } from "./hooks";
 import { selectLatestError } from "./redux/errorSlice";
 import { store } from "./redux/store";
-import { ExitButtonSmall } from "./styles/sharedStyles";
-
-const ErrorContainer = styled.div`
-  position: fixed;
-  z-index: 50;
-  color: var(--accent-color-red);
-  background-color: var(--bg-color-secondary);
-  bottom: 16px;
-  left: 16px;
-  border: 0.5px solid var(--accent-color-red);
-  border-radius: 4px;
-  padding: 10px 28px 10px 10px;
-  margin: 4px;
-`;
 
 export function dispatchError(error: string | Error) {
 	store.dispatch({ type: "error/addError", payload: error });
@@ -53,10 +39,13 @@ const ErrorDisplay: React.FC = () => {
 	}
 
 	return (
-		<ErrorContainer>
-			<ExitButtonSmall onClick={() => setShowError(false)} />
+		<div className="fixed z-50 text-[var(--accent-color-red)] bg-[var(--bg-color-secondary)] bottom-4 left-4 border-[0.5px] border-[var(--accent-color-red)] rounded py-2.5 pl-2.5 pr-7 m-1">
+			<FiX
+				className="w-3 h-3 p-1 absolute top-1 right-1 cursor-pointer inline-flex items-center justify-center rounded box-content transition-[background-color] duration-200 hover:bg-[var(--highlight-weak)]"
+				onClick={() => setShowError(false)}
+			/>
 			<b>{latestError}</b>
-		</ErrorContainer>
+		</div>
 	);
 };
 

@@ -5,18 +5,27 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { useConfirmation } from "../../../hooks/useConfirmation";
 import { selectIdeasInTree } from "../../../redux/ideaSlice";
 import type { Tree } from "../../../redux/models";
 import { deleteTreeAndContent } from "../../../redux/thunks";
 import { renameTree } from "../../../redux/treeSlice";
 import { highlightOnHover } from "../../../styles/mixins";
 import {
+	Button,
+	ButtonDangerous,
 	ContainerHorizontal,
 	ContainerVertical,
 	IconButtonMedium,
 	TextInput,
 } from "../../../styles/sharedStyles";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../../ui/Dialog";
 
 const TreeListItemContainer = styled(ContainerHorizontal)`
   width: 100%;
@@ -57,7 +66,6 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 }) => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const confirm = useConfirmation();
 	const ideas = useAppSelector((state) => selectIdeasInTree(state, tree.id));
 	const [hovering, setHovering] = useState(false); // TODO Would be nice to have this as a custom hook
 	const [editing, setEditing] = useState(false);
@@ -129,22 +137,35 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 			</ContainerVertical>
 			<ButtonContainer onClick={(evt) => evt.stopPropagation()}>
 				{hovering && (
-					<>
-						<IconButtonMedium onClick={() => setEditing(true)}>
-							<FaRegEdit />
-						</IconButtonMedium>
+					<IconButtonMedium onClick={() => setEditing(true)}>
+						<FaRegEdit />
+					</IconButtonMedium>
+				)}
+				<Dialog>
+					<DialogTrigger asChild>
 						<IconButtonMedium
-							onClick={() =>
-								confirm(
-									"Are you sure you want to delete this tree? This cannot be undone.",
-									handleDelete,
-								)
-							}
+							style={hovering ? undefined : { display: "none" }}
 						>
 							<MdDeleteOutline />
 						</IconButtonMedium>
-					</>
-				)}
+					</DialogTrigger>
+					<DialogContent>
+						<DialogTitle className="sr-only">Confirm delete</DialogTitle>
+						<DialogDescription className="mb-5">
+							Are you sure you want to delete this tree? This cannot be undone.
+						</DialogDescription>
+						<div className="flex justify-around">
+							<DialogClose asChild>
+								<ButtonDangerous onClick={handleDelete}>
+									Confirm
+								</ButtonDangerous>
+							</DialogClose>
+							<DialogClose asChild>
+								<Button>Cancel</Button>
+							</DialogClose>
+						</div>
+					</DialogContent>
+				</Dialog>
 			</ButtonContainer>
 		</TreeListItemContainer>
 	);

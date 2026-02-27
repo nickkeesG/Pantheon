@@ -9,7 +9,13 @@ import {
 	highlightOnHover,
 } from "../../../styles/mixins";
 import { IconButtonSmall } from "../../../styles/sharedStyles";
-import { useModal } from "../../ModalContext";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../../ui/Dialog";
 import CommentContext from "./CommentContext";
 
 const CommentText = styled.div`
@@ -52,7 +58,6 @@ const StyledCommentContainer = styled.div`
 
 const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
 	const [isCopied, setIsCopied] = useState(false);
-	const { addModal } = useModal();
 
 	const copy = useCallback(
 		async (event: MouseEvent) => {
@@ -78,19 +83,28 @@ const CommentContainer: React.FC<{ comment: Comment }> = ({ comment }) => {
 
 	return (
 		<div className="m-1">
-			<StyledCommentContainer
-				onClick={() => addModal(<CommentContext comment={comment} />)}
-			>
-				<div className="flex w-full items-center">
-					<span className="text-[var(--accent-color-coral)]">
-						{comment.daemonName}
-					</span>
-					<CopyButton onClick={copy}>
-						{isCopied ? <FiCheckCircle /> : <FiCopy />}
-					</CopyButton>
-				</div>
-				<CommentText>{comment.text}</CommentText>
-			</StyledCommentContainer>
+			<Dialog>
+				<DialogTrigger asChild>
+					<StyledCommentContainer>
+						<div className="flex w-full items-center">
+							<span className="text-[var(--accent-color-coral)]">
+								{comment.daemonName}
+							</span>
+							<CopyButton onClick={copy}>
+								{isCopied ? <FiCheckCircle /> : <FiCopy />}
+							</CopyButton>
+						</div>
+						<CommentText>{comment.text}</CommentText>
+					</StyledCommentContainer>
+				</DialogTrigger>
+				<DialogContent className="w-[70vw]">
+					<DialogTitle className="sr-only">Comment context</DialogTitle>
+					<DialogDescription className="sr-only">
+						AI chain-of-thought for this comment
+					</DialogDescription>
+					<CommentContext comment={comment} />
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 };

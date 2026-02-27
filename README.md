@@ -8,6 +8,9 @@ Pantheon is an experimental LLM interface exploring new ways to use AI to improv
 - `npm run build` to build the app for production to the `build` folder.
 - `npm run preview` to locally preview the production build.
 - `npm test` to run tests.
+- `npm run check` to run Biome linting and formatting checks.
+- `npm run check:fix` to auto-fix linting and formatting issues.
+- `npm run typecheck` to run TypeScript type checking.
 
 > [!NOTE]
 > This project is transitioning from styled-components to Tailwind CSS.

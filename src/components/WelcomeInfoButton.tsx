@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
-import { ButtonSmall, InfoButton, ModalBox } from "../styles/sharedStyles";
-import Modal from "./common/Modal";
-import { useModal } from "./ModalContext";
+import { ButtonSmall, InfoButton } from "../styles/sharedStyles";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "./ui/Dialog";
 
 const steps = [
 	<>
@@ -47,17 +53,20 @@ const steps = [
 	</>,
 ];
 
-export const InfoModal = () => {
+export const WelcomeInfoContent = () => {
 	const [step, setStep] = useState(0);
-	const { removeModal } = useModal();
 
 	useEffect(() => {
 		localStorage.setItem("hasSeenWelcomeMessage", "true");
 	}, []);
 
 	return (
-		<Modal>
-			<ModalBox className="flex flex-col h-[300px]">
+		<>
+			<DialogTitle className="sr-only">Welcome</DialogTitle>
+			<DialogDescription className="sr-only">
+				Introduction to Pantheon
+			</DialogDescription>
+			<div className="flex flex-col h-[300px]">
 				<div className="flex-1 space-y-4">{steps[step]}</div>
 				<div className="flex justify-between items-center pt-2">
 					<span className="text-[var(--text-color-tertiary)] text-sm">
@@ -70,19 +79,28 @@ export const InfoModal = () => {
 						{step < steps.length - 1 ? (
 							<ButtonSmall onClick={() => setStep(step + 1)}>Next</ButtonSmall>
 						) : (
-							<ButtonSmall onClick={() => removeModal()}>Done</ButtonSmall>
+							<DialogClose asChild>
+								<ButtonSmall>Done</ButtonSmall>
+							</DialogClose>
 						)}
 					</div>
 				</div>
-			</ModalBox>
-		</Modal>
+			</div>
+		</>
 	);
 };
 
 const WelcomeInfoButton = () => {
-	const { addModal } = useModal();
-
-	return <InfoButton onClick={() => addModal(<InfoModal />)} />;
+	return (
+		<Dialog>
+			<DialogTrigger asChild>
+				<InfoButton />
+			</DialogTrigger>
+			<DialogContent>
+				<WelcomeInfoContent />
+			</DialogContent>
+		</Dialog>
+	);
 };
 
 export default WelcomeInfoButton;

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch } from "../../hooks";
-import { useConfirmation } from "../../hooks/useConfirmation";
 import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice";
 import type { ChatDaemonConfig } from "../../redux/models";
 import { styledBackground } from "../../styles/mixins";
@@ -18,7 +17,14 @@ import {
 	TextButton,
 	TextInput,
 } from "../../styles/sharedStyles";
-import { useModal } from "../ModalContext";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/Dialog";
 import ChainOfThoughtInfo from "./ChainOfThoughtInfo";
 
 const ChatDaemonSettingsContainer = styled.div`
@@ -54,8 +60,6 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 	const systemPromptRef = useRef<HTMLTextAreaElement>(null);
 	const userPromptRefs = useRef<HTMLTextAreaElement[]>([]);
 	const dispatch = useAppDispatch();
-	const { addModal } = useModal();
-	const confirm = useConfirmation();
 
 	const configChanged = useConfigChanged(config, {
 		name,
@@ -163,7 +167,14 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 						style={{ alignItems: "center", justifyContent: "center" }}
 					>
 						<h4 style={{ marginRight: "8px" }}>Chain-of-thought prompts</h4>
-						<InfoButton onClick={() => addModal(<ChainOfThoughtInfo />)} />
+						<Dialog>
+							<DialogTrigger asChild>
+								<InfoButton />
+							</DialogTrigger>
+							<DialogContent>
+								<ChainOfThoughtInfo />
+							</DialogContent>
+						</Dialog>
 						<Filler />
 					</ContainerHorizontal>
 					{userPrompts.map((prompt, index) => (
@@ -194,16 +205,30 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 					<Button onClick={() => setUserPrompts([...userPrompts, ""])}>
 						Add User Prompt
 					</Button>
-					<ButtonDangerous
-						onClick={() =>
-							confirm(
-								"Are you sure you want to delete this daemon? This cannot be undone.",
-								() => dispatch(removeChatDaemon(config.id)),
-							)
-						}
-					>
-						Delete daemon
-					</ButtonDangerous>
+					<Dialog>
+						<DialogTrigger asChild>
+							<ButtonDangerous>Delete daemon</ButtonDangerous>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogTitle className="sr-only">Confirm delete</DialogTitle>
+							<DialogDescription className="mb-5">
+								Are you sure you want to delete this daemon? This cannot be
+								undone.
+							</DialogDescription>
+							<div className="flex justify-around">
+								<DialogClose asChild>
+									<ButtonDangerous
+										onClick={() => dispatch(removeChatDaemon(config.id))}
+									>
+										Confirm
+									</ButtonDangerous>
+								</DialogClose>
+								<DialogClose asChild>
+									<Button>Cancel</Button>
+								</DialogClose>
+							</div>
+						</DialogContent>
+					</Dialog>
 				</StyledDiv>
 			)}
 		</ChatDaemonSettingsContainer>

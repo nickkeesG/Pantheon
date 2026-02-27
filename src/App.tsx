@@ -5,7 +5,6 @@ import { ActionBarProvider } from "./components/common/ActionBarContext";
 import Navbar from "./components/common/Navbar";
 import DaemonManager from "./components/DaemonManager";
 import Footer from "./components/Footer";
-import { ModalProvider } from "./components/ModalContext";
 import CollectionView from "./components/views/Collection/CollectionView";
 import LandingView from "./components/views/Landing/LandingView";
 import TreeView from "./components/views/Tree/TreeView";
@@ -56,17 +55,15 @@ function App() {
 	return (
 		<BrowserRouter>
 			<div className={`App`}>
-				<ModalProvider>
-					<ActionBarProvider>
-						<Routes>
-							<Route element={<Layout />}>
-								<Route path="/" element={<LandingView />} />
-								<Route path="/tree/:treeId" element={<TreeView />} />
-								<Route path="/collection" element={<CollectionView />} />
-							</Route>
-						</Routes>
-					</ActionBarProvider>
-				</ModalProvider>
+				<ActionBarProvider>
+					<Routes>
+						<Route element={<Layout />}>
+							<Route path="/" element={<LandingView />} />
+							<Route path="/tree/:treeId" element={<TreeView />} />
+							<Route path="/collection" element={<CollectionView />} />
+						</Route>
+					</Routes>
+				</ActionBarProvider>
 			</div>
 		</BrowserRouter>
 	);

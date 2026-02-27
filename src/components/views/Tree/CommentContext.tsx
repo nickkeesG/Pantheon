@@ -1,14 +1,6 @@
 import { useMemo } from "react";
-import styled from "styled-components";
 import { ChainOfThoughtType, type Comment } from "../../../redux/models";
-import { Hint } from "../../../styles/sharedStyles";
 import TextWithHighlights from "../../common/TextWithHighlights";
-
-const InnerPanel = styled.div`
-  background-color: var(--bg-color-secondary);
-  padding: 12px;
-  border-radius: 10px;
-`;
 
 interface CommentContextProps {
 	comment: Comment;
@@ -36,13 +28,13 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
 		<>
 			<h3 className="text-center">Comment context</h3>
 			<hr />
-			<Hint>
+			<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
 				A record of the AI's internal chain-of-thought process leading up to
 				this comment.{" "}
 				<b>You can modify the system and user prompts in the settings.</b>
-			</Hint>
+			</div>
 			<br />
-			<InnerPanel>
+			<div className="bg-[var(--bg-color-secondary)] p-3 rounded-[10px]">
 				{chainOfThoughtExists &&
 					modifiedChainOfThought?.map(([author, text], index) => (
 						<div key={`${author}-${text}`}>
@@ -67,9 +59,11 @@ const CommentContext: React.FC<CommentContextProps> = ({ comment }) => {
 						</div>
 					))}
 				{!chainOfThoughtExists && (
-					<Hint>Comment context is not available for old comments.</Hint>
+					<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
+						Comment context is not available for old comments.
+					</div>
 				)}
-			</InnerPanel>
+			</div>
 		</>
 	);
 };

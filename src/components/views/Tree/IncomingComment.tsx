@@ -1,38 +1,19 @@
 import type React from "react";
-import styled from "styled-components";
 import TypingAnimation from "../../../animations/typingAnimation/TypingAnimation";
-import { aiFont, fadeInAnimation } from "../../../styles/mixins";
-
-const CommentName = styled.div`
-  text-align: right;
-  color: var(--accent-color-coral);
-  opacity: 50%;
-`;
-
-const AnimationContainer = styled.div`
-  text-align: left;
-  opacity: 50%;
-  height: 20px;
-`;
-
-const StyledCommentContainer = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  padding: 6px 12px;
-  color: var(--text-color-secondary);
-  ${aiFont};
-  ${fadeInAnimation};
-`;
 
 const IncomingComment: React.FC<{ daemonName: string }> = ({ daemonName }) => {
 	return (
-		<StyledCommentContainer key="Incoming">
-			<CommentName>{daemonName}</CommentName>
-			<AnimationContainer>
+		<div
+			className="w-full box-border relative px-3 py-1.5 text-[var(--text-color-secondary)] font-ai text-[0.8em] animate-fade-in"
+			key="Incoming"
+		>
+			<div className="text-right text-[var(--accent-color-coral)] opacity-50">
+				{daemonName}
+			</div>
+			<div className="text-left opacity-50 h-5">
 				<TypingAnimation />
-			</AnimationContainer>
-		</StyledCommentContainer>
+			</div>
+		</div>
 	);
 };
 

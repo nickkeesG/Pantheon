@@ -8,56 +8,10 @@ import {
 	useState,
 } from "react";
 import { FaArrowUp } from "react-icons/fa6";
-import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { findDaemonMention } from "../../../redux/storeUtils";
 import { setLastTimeActive } from "../../../redux/uiSlice";
-import { fadeInAnimation } from "../../../styles/mixins";
-import { Hint, IconButtonLarge, TextArea } from "../../../styles/sharedStyles";
 import TextWithHighlights from "../../common/TextWithHighlights";
-
-const TextAreaField = styled(TextArea)`
-  width: 100%;
-  font-family: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  overflow: hidden;
-  resize: none;
-  margin: 0px 0px 12px 0px;
-  padding: 10px 42px 20px 10px;
-`;
-
-const SendButton = styled(IconButtonLarge).attrs({
-	"aria-label": "Send thought",
-})`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 6px;
-  color: var(--bg-color);
-  background-color: var(--text-color-secondary);
-  svg {
-    fill: currentColor;
-  }
-
-  &:disabled {
-    opacity: 40%;
-    color: var(--bg-color);
-    background-color: var(--text-color-secondary);
-  }
-
-  &:hover:not(:disabled) {
-    opacity: 70%;
-    background-color: var(--text-color-secondary);
-  }
-`;
-
-const MentionHint = styled(Hint)`
-  position: absolute;
-  bottom: 16px;
-  left: 10px;
-  ${fadeInAnimation};
-`;
 
 interface InputBoxProps {
 	dispatchIdea: () => void;
@@ -131,8 +85,8 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(
 		};
 
 		return (
-			<div style={{ position: "relative", width: "46%" }}>
-				<TextAreaField
+			<div className="relative w-[46%]">
+				<textarea
 					ref={textAreaRef}
 					placeholder="What are you thinking about?"
 					onChange={() => {
@@ -141,23 +95,27 @@ const InputBox = forwardRef<InputBoxHandle, InputBoxProps>(
 						onChange();
 					}}
 					onKeyDown={handleKeyDown}
+					className="w-full min-w-full max-w-full box-border border-[0.5px] border-[var(--line-color)] rounded bg-[var(--bg-color-secondary)] text-[var(--text-color)] font-ai text-[0.8em] overflow-hidden block m-auto focus:outline-none focus:border-[var(--text-color)] font-inherit font-normal text-[inherit] resize-none mb-3 p-[10px_42px_20px_10px]"
 				/>
-				<SendButton
+				<button
+					type="button"
+					aria-label="Send thought"
 					disabled={!textAreaRef?.current?.value.trim()}
 					onClick={() => {
 						dispatchIdea();
 						textAreaRef.current?.focus();
 					}}
+					className="cursor-pointer font-inherit bg-transparent border-none rounded inline-flex items-center justify-center box-content [&>svg]:w-full [&>svg]:h-full w-5 h-5 absolute top-2 right-2 p-1.5 text-[var(--bg-color)] bg-[var(--text-color-secondary)]! [&>svg]:fill-current disabled:opacity-40 disabled:text-[var(--bg-color)] disabled:bg-[var(--text-color-secondary)]! disabled:cursor-default hover:not-disabled:opacity-70 hover:not-disabled:bg-[var(--text-color-secondary)]! transition-[background-color,border-color,color,opacity,transform] duration-200"
 				>
 					<FaArrowUp />
-				</SendButton>
+				</button>
 				{mentionedDaemon && (
-					<MentionHint>
+					<div className="absolute bottom-4 left-2.5 text-[0.85em] text-[var(--text-color-tertiary)] animate-fade-in">
 						<TextWithHighlights
 							text={`Pings ${mentionedDaemon}.`}
 							highlights={[[6, 6 + mentionedDaemon.length]]}
 						/>
-					</MentionHint>
+					</div>
 				)}
 			</div>
 		);

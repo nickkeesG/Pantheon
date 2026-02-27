@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import InstructDaemon from "../../../daemons/instructDaemon";
 import { dispatchError } from "../../../errorHandler";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -7,18 +6,8 @@ import { selectActiveBranch } from "../../../redux/ideaSlice";
 import { IdeaType } from "../../../redux/models";
 import { createIdea } from "../../../redux/thunks";
 import { setCreatingSection } from "../../../redux/uiSlice";
-import {
-	Button,
-	ContainerHorizontal,
-	ContainerVertical,
-} from "../../../styles/sharedStyles";
+import { Button } from "../../../styles/sharedStyles";
 import InputBox, { type InputBoxHandle } from "./InputBox";
-
-const ButtonRow = styled(ContainerHorizontal)`
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-`;
 
 const InputArea = () => {
 	const dispatch = useAppDispatch();
@@ -101,16 +90,14 @@ const InputArea = () => {
 	]);
 
 	return (
-		<ContainerVertical
-			style={{ alignItems: "center", justifyContent: "center" }}
-		>
+		<div className="flex flex-col w-full box-border items-center justify-center">
 			<InputBox
 				ref={textAreaRef}
 				dispatchIdea={dispatchIdea}
 				dispatchInstruction={dispatchInstruction}
 				onChange={updateText}
 			/>
-			<ButtonRow>
+			<div className="flex flex-row w-full box-border items-center justify-center gap-2.5">
 				<Button
 					onClick={() => dispatch(setCreatingSection(true))}
 					disabled={newSectionButtonDisabled}
@@ -124,8 +111,8 @@ const InputArea = () => {
 				>
 					Ask AI
 				</Button>
-			</ButtonRow>
-		</ContainerVertical>
+			</div>
+		</div>
 	);
 };
 

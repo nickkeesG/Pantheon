@@ -20,6 +20,10 @@ import CommentContext from "./CommentContext";
 
 const CommentText = styled.div`
   text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   ${fadeInAnimation};
 `;
 

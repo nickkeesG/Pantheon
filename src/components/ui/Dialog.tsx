@@ -18,7 +18,7 @@ export const DialogContent = forwardRef<
 			{...props}
 		>
 			{children}
-			<DialogPrimitive.Close className="absolute top-1 right-1 w-5 h-5 p-2 inline-flex items-center justify-center rounded cursor-pointer bg-transparent border-none text-[var(--text-color-secondary)] hover:bg-[var(--line-color)]">
+			<DialogPrimitive.Close className="absolute top-1 right-1 box-content w-5 h-5 p-2 inline-flex items-center justify-center rounded cursor-pointer bg-transparent border-none text-[var(--text-color-secondary)] hover:bg-[var(--line-color)]">
 				<FiX className="w-full h-full" />
 			</DialogPrimitive.Close>
 		</DialogPrimitive.Content>

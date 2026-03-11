@@ -6,7 +6,7 @@ import { selectActiveBranch } from "../../../redux/ideaSlice";
 import { IdeaType } from "../../../redux/models";
 import { createIdea } from "../../../redux/thunks";
 import { setCreatingSection } from "../../../redux/uiSlice";
-import { Button } from "../../../styles/sharedStyles";
+import { Button } from "../../ui/Button";
 import InputBox, { type InputBoxHandle } from "./InputBox";
 
 const InputArea = () => {

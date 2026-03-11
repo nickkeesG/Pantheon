@@ -1,19 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { IoInformationCircleOutline } from "react-icons/io5";
 import { dispatchError } from "../../errorHandler";
 import { useAppDispatch } from "../../hooks";
 import { removeChatDaemon, updateChatDaemon } from "../../redux/daemonSlice";
 import type { ChatDaemonConfig } from "../../redux/models";
-import {
-	Button,
-	ButtonDangerous,
-	ButtonSmall,
-	Filler,
-	InfoButton,
-	SettingLabel,
-	TextArea,
-	TextButton,
-	TextInput,
-} from "../../styles/sharedStyles";
+import { Button, ButtonDangerous, ButtonSmall, TextButton } from "../ui/Button";
 import {
 	Dialog,
 	DialogClose,
@@ -22,6 +13,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/Dialog";
+import { IconButtonLarge } from "../ui/IconButton";
+import { TextArea } from "../ui/TextArea";
+import { TextInput } from "../ui/TextInput";
 import ChainOfThoughtInfo from "./ChainOfThoughtInfo";
 
 const useConfigChanged = (
@@ -134,13 +128,17 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 				<div className="p-2 bg-[var(--bg-color-secondary)] rounded">
 					{/* biome-ignore lint/a11y/noLabelWithoutControl: TextInput is a styled input */}
 					<label>
-						<SettingLabel>Name</SettingLabel>
+						<p className="text-[0.85em] mb-[5px] text-[var(--text-color-secondary)]">
+							Name
+						</p>
 						<TextInput value={name} onChange={(e) => setName(e.target.value)} />
 					</label>
 					<br />
 					{/* biome-ignore lint/a11y/noLabelWithoutControl: TextArea is a styled textarea */}
 					<label>
-						<SettingLabel>System prompt</SettingLabel>
+						<p className="text-[0.85em] mb-[5px] text-[var(--text-color-secondary)]">
+							System prompt
+						</p>
 						<TextArea
 							ref={systemPromptRef}
 							value={systemPrompt}
@@ -155,20 +153,24 @@ const ChatDaemonSettings: React.FC<ChatDaemonSettingsProps> = ({ config }) => {
 						<h4 style={{ marginRight: "8px" }}>Chain-of-thought prompts</h4>
 						<Dialog>
 							<DialogTrigger asChild>
-								<InfoButton />
+								<IconButtonLarge>
+									<IoInformationCircleOutline className="w-full h-full" />
+								</IconButtonLarge>
 							</DialogTrigger>
 							<DialogContent>
 								<ChainOfThoughtInfo />
 							</DialogContent>
 						</Dialog>
-						<Filler />
+						<div className="flex-1" />
 					</div>
 					{userPrompts.map((prompt, index) => (
 						// biome-ignore lint/suspicious/noArrayIndexKey: prompts are plain strings with no stable ID
 						<div key={index}>
 							{/* biome-ignore lint/a11y/noLabelWithoutControl: TextArea is a styled textarea */}
 							<label>
-								<SettingLabel>Prompt {index + 1}</SettingLabel>
+								<p className="text-[0.85em] mb-[5px] text-[var(--text-color-secondary)]">
+									Prompt {index + 1}
+								</p>
 								<TextArea
 									ref={(el) => {
 										userPromptRefs.current[index] = el as HTMLTextAreaElement;

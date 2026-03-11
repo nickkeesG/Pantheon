@@ -3,12 +3,7 @@ import { FiSettings } from "react-icons/fi";
 import { useAppDispatch } from "../../hooks";
 import { resetDaemonSlice } from "../../redux/daemonSlice";
 import { resetState } from "../../redux/thunks";
-import {
-	Button,
-	ButtonDangerous,
-	Hint,
-	IconButtonMedium,
-} from "../../styles/sharedStyles";
+import { Button, ButtonDangerous } from "../ui/Button";
 import {
 	Dialog,
 	DialogClose,
@@ -17,6 +12,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/Dialog";
+import { IconButtonMedium } from "../ui/IconButton";
 import AISuggestionsSettings from "./AISuggestionsSettings";
 import ConfigSettings from "./ConfigSettings";
 import DaemonSettings from "./DaemonSettings";
@@ -50,10 +46,10 @@ const SettingsModalContent = () => {
 			<ImportExportButtons />
 			<div className="p-4 bg-red-50 dark:bg-red-950/25 border border-red-200 dark:border-red-900 rounded-lg">
 				<h4>Danger zone</h4>
-				<Hint>
+				<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
 					Reset all daemon settings back to default. All custom daemons, and
 					edits made to default daemons, will be lost.
-				</Hint>
+				</div>
 				<div style={{ display: "flex" }}>
 					<Dialog>
 						<DialogTrigger asChild>
@@ -79,10 +75,10 @@ const SettingsModalContent = () => {
 					</Dialog>
 				</div>
 				<div className="mt-4" />
-				<Hint>
+				<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
 					Reset the entire app state back to default. All ideas, comments, and
 					custom daemons will be lost.
-				</Hint>
+				</div>
 				<div style={{ display: "flex" }}>
 					<Dialog>
 						<DialogTrigger asChild>

@@ -9,7 +9,6 @@ import CollectionView from "./components/views/Collection/CollectionView";
 import LandingView from "./components/views/Landing/LandingView";
 import TreeView from "./components/views/Tree/TreeView";
 import { useAppSelector } from "./hooks";
-import { Filler } from "./styles/sharedStyles";
 
 function Layout() {
 	return (
@@ -17,7 +16,7 @@ function Layout() {
 			<Navbar />
 			<Outlet />
 			<DaemonManager />
-			<Filler />
+			<div className="flex-1" />
 			<Footer />
 		</>
 	);

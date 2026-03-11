@@ -5,8 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { selectSectionContentAsMarkdown } from "../../../redux/sectionSlice";
 import { navigateToParentSection } from "../../../redux/thunks";
 import { setCreatingSection } from "../../../redux/uiSlice";
-import { IconButtonMedium } from "../../../styles/sharedStyles";
 import { useActionBar } from "../../common/ActionBarContext";
+import { IconButtonMedium } from "../../ui/IconButton";
 
 function TreeActionBar() {
 	const { setActionBar } = useActionBar();

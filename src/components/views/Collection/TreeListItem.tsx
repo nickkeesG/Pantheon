@@ -8,12 +8,7 @@ import { selectIdeasInTree } from "../../../redux/ideaSlice";
 import type { Tree } from "../../../redux/models";
 import { deleteTreeAndContent } from "../../../redux/thunks";
 import { renameTree } from "../../../redux/treeSlice";
-import {
-	Button,
-	ButtonDangerous,
-	IconButtonMedium,
-	TextInput,
-} from "../../../styles/sharedStyles";
+import { Button, ButtonDangerous } from "../../ui/Button";
 import {
 	Dialog,
 	DialogClose,
@@ -22,6 +17,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../../ui/Dialog";
+import { IconButtonMedium } from "../../ui/IconButton";
+import { TextInput } from "../../ui/TextInput";
 
 const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 	tree,

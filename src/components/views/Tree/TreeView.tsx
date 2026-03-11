@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import ErrorDisplay from "../../../errorHandler";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { openTree } from "../../../redux/thunks";
-import { ContainerVertical } from "../../../styles/sharedStyles";
 import { Dialog, DialogContent } from "../../ui/Dialog";
 import { WelcomeInfoContent } from "../../WelcomeInfoButton";
 import CompletionsContainer from "./CompletionsContainer";
@@ -37,7 +36,7 @@ const TreeView = () => {
 	}, [treeId, dispatch, navigate, trees, mostRecentTreeId]);
 
 	return (
-		<ContainerVertical>
+		<div className="flex flex-col w-full box-border">
 			{treeFound && (
 				<>
 					<TreeActionBar />
@@ -52,7 +51,7 @@ const TreeView = () => {
 					<WelcomeInfoContent />
 				</DialogContent>
 			</Dialog>
-		</ContainerVertical>
+		</div>
 	);
 };
 

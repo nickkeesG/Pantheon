@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ButtonSmall, InfoButton } from "../styles/sharedStyles";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { ButtonSmall } from "./ui/Button";
 import {
 	Dialog,
 	DialogClose,
@@ -8,6 +9,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "./ui/Dialog";
+import { IconButtonLarge } from "./ui/IconButton";
 
 const steps = [
 	<>
@@ -94,7 +96,9 @@ const WelcomeInfoButton = () => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<InfoButton />
+				<IconButtonLarge>
+					<IoInformationCircleOutline className="w-full h-full" />
+				</IconButtonLarge>
 			</DialogTrigger>
 			<DialogContent>
 				<WelcomeInfoContent />

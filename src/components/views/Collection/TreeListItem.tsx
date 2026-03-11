@@ -73,7 +73,7 @@ const TreeListItem: React.FC<{ tree: Tree; mostRecentEdit: Date }> = ({
 			}}
 			onMouseEnter={() => setHovering(true)}
 			onMouseLeave={() => setHovering(false)}
-			className="flex flex-row w-full box-border m-0 border-none border-b border-b-[0.5px] border-b-[var(--line-color)] rounded-none text-[var(--text-color-secondary)] text-start px-4 py-2 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:bg-[var(--highlight-weak)] cursor-pointer"
+			className="flex flex-row w-full box-border m-0 border-none border-b-[0.5px] border-b-[var(--line-color)] rounded-none text-[var(--text-color-secondary)] text-start px-4 py-2 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:bg-[var(--highlight-weak)] cursor-pointer"
 		>
 			<div className="flex flex-col w-full box-border">
 				{editing ? (

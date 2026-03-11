@@ -1,8 +1,5 @@
 import { type ComponentPropsWithoutRef, forwardRef } from "react";
-
-function cn(...classes: (string | undefined | false)[]) {
-	return classes.filter(Boolean).join(" ");
-}
+import { cn } from "./utils";
 
 export const TextInput = forwardRef<
 	HTMLInputElement,

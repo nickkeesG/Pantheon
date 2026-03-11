@@ -3,6 +3,7 @@ import BaseDaemon from "../../../daemons/baseDaemon";
 import { useAppSelector } from "../../../hooks";
 import { selectActiveThoughts } from "../../../redux/ideaSlice";
 import type { Idea } from "../../../redux/models";
+import { TextButton } from "../../ui/Button";
 
 const CompletionsContainer = () => {
 	const [completions, setCompletions] = useState<string[]>([]);
@@ -47,13 +48,9 @@ const CompletionsContainer = () => {
 				<div className="flex flex-row w-full box-border items-center">
 					<h4>AI suggestions</h4>
 					<div className="flex-1" />
-					<button
-						type="button"
-						onClick={() => getNewCompletions(activeThoughts)}
-						className="cursor-pointer font-inherit text-[inherit] bg-transparent text-[var(--text-color-secondary)] border-none rounded-lg px-2 py-1 m-1 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:not-disabled:bg-[var(--highlight-weak)] active:not-disabled:opacity-70"
-					>
+					<TextButton onClick={() => getNewCompletions(activeThoughts)}>
 						Refresh
-					</button>
+					</TextButton>
 				</div>
 				{completions.length === 0 && (
 					<div className="text-[0.85em] text-[var(--text-color-tertiary)]">

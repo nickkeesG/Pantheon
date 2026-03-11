@@ -40,10 +40,13 @@ const ErrorDisplay: React.FC = () => {
 
 	return (
 		<div className="fixed z-50 text-[var(--accent-color-red)] bg-[var(--bg-color-secondary)] bottom-4 left-4 border-[0.5px] border-[var(--accent-color-red)] rounded py-2.5 pl-2.5 pr-7 m-1">
-			<FiX
-				className="w-3 h-3 p-1 absolute top-1 right-1 cursor-pointer inline-flex items-center justify-center rounded box-content transition-[background-color] duration-200 hover:bg-[var(--highlight-weak)]"
+			<button
+				type="button"
 				onClick={() => setShowError(false)}
-			/>
+				className="w-3 h-3 p-1 absolute top-1 right-1 cursor-pointer inline-flex items-center justify-center rounded box-content bg-transparent border-none text-inherit transition-[background-color] duration-200 hover:bg-[var(--highlight-weak)] [&>svg]:w-full [&>svg]:h-full"
+			>
+				<FiX />
+			</button>
 			<b>{latestError}</b>
 		</div>
 	);

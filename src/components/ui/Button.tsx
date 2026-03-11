@@ -1,8 +1,5 @@
 import { type ComponentPropsWithoutRef, forwardRef } from "react";
-
-function cn(...classes: (string | undefined | false)[]) {
-	return classes.filter(Boolean).join(" ");
-}
+import { cn } from "./utils";
 
 const buttonBase =
 	"cursor-pointer font-inherit text-[0.9em] bg-transparent text-[var(--text-color-secondary)] border-[0.5px] border-[var(--line-color-strong)] rounded-[50px] px-4 py-2 m-1 transition-[background-color,border-color,color,opacity,transform] duration-200 hover:not-disabled:bg-[var(--highlight-weak)] active:not-disabled:opacity-70 disabled:text-[var(--text-color-tertiary)] disabled:border-[var(--line-color-stronger)] disabled:cursor-default";

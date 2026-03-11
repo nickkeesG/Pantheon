@@ -125,12 +125,15 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 			<div className="max-w-[46%] flex-[0_0_46%] flex flex-col animate-emerge">
 				<div className="flex flex-row">
 					<div className="flex-[0_0_28px] flex flex-col items-center justify-center">
-						<SlArrowLeft
+						<button
+							type="button"
 							title="Previous branch"
 							onClick={() => switchBranches(false)}
 							style={{ visibility: hasBranches ? "visible" : "hidden" }}
 							className={`${iconBtnBase} h-6 w-4 p-[4px_2px] m-1`}
-						/>
+						>
+							<SlArrowLeft />
+						</button>
 					</div>
 					<div
 						className="relative flex-1 p-[10px_28px_10px_10px] my-0.5 border-[0.5px] border-[var(--line-color-strong)] rounded transition-[background-color,border-color] duration-300"
@@ -141,29 +144,31 @@ const IdeaContainer: React.FC<IdeaContainerProps> = ({
 						}}
 					>
 						<TextWithHighlights text={idea.text} highlights={highlights} />
-						<HiPlus
+						<button
+							type="button"
 							title="New branch"
 							onClick={newBranch}
 							className={`${iconBtnBase} w-5 h-5 p-0.5 absolute top-1.5 right-1.5 m-0`}
 							style={{
 								visibility: showPlusButton ? "visible" : "hidden",
-								float: "right",
 							}}
-						/>
+						>
+							<HiPlus />
+						</button>
 					</div>
 					<div
 						className="flex-[0_0_28px] flex flex-col items-center justify-center"
 						style={{ visibility: hasBranches ? "visible" : "hidden" }}
 					>
-						<SlArrowLeft
+						<button
+							type="button"
 							title="Next branch"
 							onClick={() => switchBranches(true)}
-							style={{
-								visibility: hasBranches ? "visible" : "hidden",
-								transform: "rotate(180deg)",
-							}}
+							style={{ visibility: hasBranches ? "visible" : "hidden" }}
 							className={`${iconBtnBase} h-6 w-4 p-[4px_2px] m-1`}
-						/>
+						>
+							<SlArrowLeft style={{ transform: "rotate(180deg)" }} />
+						</button>
 					</div>
 				</div>
 				{branchingSectionsRootIdeas.map((idea) => (

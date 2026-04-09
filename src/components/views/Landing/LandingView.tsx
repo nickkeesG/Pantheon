@@ -51,13 +51,17 @@ const LandingView: React.FC = () => {
 			</div>
 			<div className="w-full overflow-hidden rounded-lg border border-[var(--line-color-stronger)] shadow-2xl">
 				<img
-					src="/splash-light.png"
+					src="/splash-light.webp"
 					alt="Pantheon screenshot"
+					width={2026}
+					height={1352}
 					className="min-w-[600px] w-full dark:hidden"
 				/>
 				<img
-					src="/splash-dark.png"
+					src="/splash-dark.webp"
 					alt="Pantheon screenshot"
+					width={2026}
+					height={1352}
 					className="min-w-[600px] w-full hidden dark:block"
 				/>
 			</div>

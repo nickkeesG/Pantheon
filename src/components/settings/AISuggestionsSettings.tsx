@@ -5,8 +5,8 @@ import { dispatchError } from "../../errorHandler";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { updateBaseDaemon } from "../../redux/daemonSlice";
 import { type BaseDaemonConfig, type Idea, IdeaType } from "../../redux/models";
-import { Button, ContainerHorizontal, Hint } from "../../styles/sharedStyles";
 import ResetButton from "../common/ResetButton";
+import { Button } from "../ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -107,10 +107,10 @@ const AISuggestionsSettings = () => {
 	return (
 		<div>
 			<h4>AI suggestions</h4>
-			<Hint style={{ paddingBottom: "8px" }}>
+			<div className="text-[0.85em] text-[var(--text-color-tertiary)] pb-2">
 				AI suggestions are the AI's ideas for what might come next. They are
 				powered by the given <i>base model</i> (currently <b>{baseModel}</b>).
-			</Hint>
+			</div>
 			<div className="space-y-4">
 				<div className="flex items-start gap-3">
 					<div className="flex-1">
@@ -176,7 +176,9 @@ const AISuggestionsSettings = () => {
 							Preview of what the base model will see
 						</DialogDescription>
 						<br />
-						<Hint>What the base model will see with current templates</Hint>
+						<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
+							What the base model will see with current templates
+						</div>
 						<div className="bg-[var(--bg-color-secondary)] p-3 rounded-lg mt-2.5 whitespace-pre-wrap break-words font-ai text-[0.8em]">
 							{new BaseDaemon(config).getContext(exampleIdeas)}
 						</div>
@@ -190,7 +192,7 @@ const AISuggestionsSettings = () => {
 						>
 							Temperature
 						</label>
-						<ContainerHorizontal>
+						<div className="flex flex-row w-full box-border">
 							<input
 								id="temperature"
 								type="range"
@@ -204,7 +206,7 @@ const AISuggestionsSettings = () => {
 							<div style={{ padding: "4px 8px 4px 16px" }}>
 								{temperature.toFixed(2)}
 							</div>
-						</ContainerHorizontal>
+						</div>
 					</div>
 					<div className="w-6 flex justify-center items-center">
 						{temperature !== defaults.temperature && (

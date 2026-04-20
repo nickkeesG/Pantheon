@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { addChatDaemon } from "../../redux/daemonSlice";
 import type { ChatDaemonConfig } from "../../redux/models";
-import { Hint, TextButton } from "../../styles/sharedStyles";
+import { TextButton } from "../ui/Button";
 import ChatDaemonSettings from "./ChatDaemonSettings";
 
 function createEmptyChatDaemonConfig(): ChatDaemonConfig {
@@ -39,10 +39,10 @@ const DaemonSettings = () => {
 	return (
 		<div>
 			<h4>Daemons</h4>
-			<Hint style={{ paddingBottom: "8px" }}>
+			<div className="text-[0.85em] text-[var(--text-color-tertiary)] pb-2">
 				Daemons are the characters leaving comments on what you write. They are
 				powered by the given <i>chat model</i> (currently <b>{chatModel}</b>).
-			</Hint>
+			</div>
 			{chatDaemonConfigs.map((config) => (
 				<ChatDaemonSettings key={config.id} config={config} />
 			))}

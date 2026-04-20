@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { createTree } from "../../../redux/thunks";
 import { selectTreesWithMostRecentEdit } from "../../../redux/treeSlice";
-import { TextButton } from "../../../styles/sharedStyles";
+import { TextButton } from "../../ui/Button";
 import TreeListItem from "./TreeListItem";
 
 function CollectionView() {

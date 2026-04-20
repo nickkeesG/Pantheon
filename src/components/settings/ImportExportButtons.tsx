@@ -3,7 +3,7 @@ import { LuImport } from "react-icons/lu";
 import { PiExportBold } from "react-icons/pi";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { importAppState } from "../../redux/thunks";
-import { Button, ButtonHighlighted, Hint } from "../../styles/sharedStyles";
+import { Button, ButtonHighlighted } from "../ui/Button";
 
 const ImportExportButtons = () => {
 	const dispatch = useAppDispatch();
@@ -51,11 +51,11 @@ const ImportExportButtons = () => {
 	return (
 		<div className="flex flex-col w-full box-border">
 			<h4>Import / Export</h4>
-			<Hint>
+			<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
 				Import or export entire app state, including trees, comments, daemons
 				and settings. Importing will override the existing state and cannot be
 				undone.
-			</Hint>
+			</div>
 			<div className="flex">
 				<ButtonHighlighted
 					className="flex items-center gap-1"

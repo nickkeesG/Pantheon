@@ -1,19 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
-import styled from "styled-components";
 import type { Comment } from "../../../redux/models";
 import CommentContainer from "./CommentContainer";
 import IncomingComment from "./IncomingComment";
-
-const CommentListContainer = styled.div`
-  flex: 0 0 27%;
-`;
-
-const StyledCommentList = styled.div`
-  position: absolute;
-  top: 0;
-  width: 27%;
-  z-index: 10;
-`;
 
 interface CommentListProps {
 	offset: number;
@@ -46,11 +34,17 @@ const CommentList: React.FC<CommentListProps> = ({
 	}, [onHeightChanged]);
 
 	return (
-		<CommentListContainer
+		// biome-ignore lint/a11y/noStaticElementInteractions: hover highlight only, not interactive
+		<div
+			className="flex-[0_0_27%]"
 			onMouseEnter={() => onHoverChange(true)}
 			onMouseLeave={() => onHoverChange(false)}
 		>
-			<StyledCommentList ref={listRef} style={{ top: `${offset}px` }}>
+			<div
+				ref={listRef}
+				className="absolute top-0 w-[27%] z-10"
+				style={{ top: `${offset}px` }}
+			>
 				{comments.length > 0 &&
 					comments.map((comment) => (
 						<CommentContainer key={comment.id} comment={comment} />
@@ -58,8 +52,8 @@ const CommentList: React.FC<CommentListProps> = ({
 				{comments.length === 0 && daemonCommenting && (
 					<IncomingComment daemonName={daemonCommenting} />
 				)}
-			</StyledCommentList>
-		</CommentListContainer>
+			</div>
+		</div>
 	);
 };
 

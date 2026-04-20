@@ -1,38 +1,6 @@
 import type React from "react";
-import styled from "styled-components";
 import ChatDaemon from "../../daemons/chatDaemon";
-import { aiFont } from "../../styles/mixins";
-import { Hint } from "../../styles/sharedStyles";
 import { DialogDescription, DialogTitle } from "../ui/Dialog";
-
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 0px;
-  padding: 20px 20px 0px 20px;
-  align-tems: 'center';
-`;
-
-const GridItem = styled.div`
-  padding: 2px;
-  margin: 4px 4px 16px 4px;
-  display: flex;
-  align-items: center;
-`;
-
-const Variable = styled(GridItem)`
-  ${aiFont};
-  border-right: 0.5px solid var(--line-color-strong);
-  justify-content: center;
-`;
-
-const Definition = styled(GridItem)`
-  color: var(--text-color-secondary);
-  font-size: 0.9em;
-  width: 100%;
-  text-align: right;
-  justify-content: right;
-`;
 
 const ChainOfThoughtInfo: React.FC = () => {
 	return (
@@ -44,20 +12,24 @@ const ChainOfThoughtInfo: React.FC = () => {
 				Available variables for chain-of-thought prompts
 			</DialogDescription>
 			<div style={{ height: "20px" }} />
-			<Hint>
+			<div className="text-[0.85em] text-[var(--text-color-tertiary)]">
 				The following variables are available in chain-of-thought prompts:
-			</Hint>
-			<GridContainer>
-				<Variable>{ChatDaemon.PAST_VAR}</Variable>
-				<Definition>
+			</div>
+			<div className="grid grid-cols-[auto_auto] gap-0 p-[20px_20px_0px_20px] items-center">
+				<div className="p-0.5 m-[4px_4px_16px_4px] flex items-center font-ai text-[0.8em] border-r-[0.5px] border-r-[var(--line-color-strong)] justify-center">
+					{ChatDaemon.PAST_VAR}
+				</div>
+				<div className="p-0.5 m-[4px_4px_16px_4px] flex items-center text-[var(--text-color-secondary)] text-[0.9em] w-full text-right justify-end">
 					Past user-generated thoughts as a list. 'Ask AI' instructions, as well
 					as responses, are omitted.
-				</Definition>
-				<Variable>{ChatDaemon.CURRENT_VAR}</Variable>
-				<Definition>
+				</div>
+				<div className="p-0.5 m-[4px_4px_16px_4px] flex items-center font-ai text-[0.8em] border-r-[0.5px] border-r-[var(--line-color-strong)] justify-center">
+					{ChatDaemon.CURRENT_VAR}
+				</div>
+				<div className="p-0.5 m-[4px_4px_16px_4px] flex items-center text-[var(--text-color-secondary)] text-[0.9em] w-full text-right justify-end">
 					The thought selected as the subject for the comment.
-				</Definition>
-			</GridContainer>
+				</div>
+			</div>
 		</>
 	);
 };
